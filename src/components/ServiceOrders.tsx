@@ -229,8 +229,8 @@ export default function ServiceOrders() {
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
-                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
                       {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {order.performedService}
                     </div>
                   </div>
@@ -238,10 +238,10 @@ export default function ServiceOrders() {
                     <span className={`badge ${statusColors[order.status] || "badge-gray"}`}>
                       {order.status}
                     </span>
-                    <span style={{ fontWeight: 700, color: "#2596be", fontSize: 13 }}>
+                    <span style={{ fontWeight: "bold", color: "#fff", fontSize: 13 }}>
                       ${order.totalCost.toLocaleString("es-AR")}
                     </span>
-                    <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                    <span style={{ fontSize: 11, color: "#fff", fontWeight: "bold" }}>
                       {new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}
                     </span>
                   </div>
@@ -504,14 +504,14 @@ export default function ServiceOrders() {
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, marginBottom: 16 }}>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 13, color: "#64748b" }}>Mano de obra: ${viewingOrder.laborCost.toLocaleString("es-AR")}</div>
-                  <div style={{ fontSize: 13, color: "#64748b" }}>Repuestos: ${viewingOrder.partsCost.toLocaleString("es-AR")}</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#2596be" }}>Total: ${viewingOrder.totalCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 13, color: "#fff", fontWeight: "bold" }}>Mano de obra: ${viewingOrder.laborCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 13, color: "#fff", fontWeight: "bold" }}>Repuestos: ${viewingOrder.partsCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 18, fontWeight: "bold", color: "#fff" }}>Total: ${viewingOrder.totalCost.toLocaleString("es-AR")}</div>
                 </div>
               </div>
 
               {viewingOrder.notes && (
-                <div style={{ padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+                <div style={{ padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13, marginBottom: 16, color: "#fff", fontWeight: "bold" }}>
                   📝 {viewingOrder.notes}
                 </div>
               )}

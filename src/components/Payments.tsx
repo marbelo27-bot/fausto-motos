@@ -187,8 +187,8 @@ export default function Payments() {
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
-                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
                       {methodIcons[payment.method]} {payment.method}
                       {order ? ` · #${order.id.slice(0, 8).toUpperCase()}` : ""}
                     </div>
@@ -197,10 +197,10 @@ export default function Payments() {
                     <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>
                       {payment.type}
                     </span>
-                    <span style={{ fontWeight: 700, color: "#16a34a", fontSize: 14 }}>
+                    <span style={{ fontWeight: "bold", color: "#fff", fontSize: 14 }}>
                       ${payment.amount.toLocaleString("es-AR")}
                     </span>
-                    <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                    <span style={{ fontSize: 11, color: "#fff", fontWeight: "bold" }}>
                       {new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}
                     </span>
                   </div>

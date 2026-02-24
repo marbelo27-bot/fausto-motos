@@ -121,13 +121,13 @@ export default function Parts() {
                 gap: 12,
               }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13 }}>{part.description}</div>
-                  <div style={{ color: "#64748b", fontSize: 12 }}>
+                  <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{part.description}</div>
+                  <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
                     Costo: ${part.costPrice.toLocaleString("es-AR")}
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                  <span style={{ fontWeight: 700, color: "#2596be", fontSize: 13 }}>
+                  <span style={{ fontWeight: "bold", color: "#fff", fontSize: 13 }}>
                     ${part.salePrice.toLocaleString("es-AR")}
                   </span>
                   <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>

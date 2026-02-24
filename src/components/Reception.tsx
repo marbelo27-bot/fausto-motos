@@ -192,8 +192,8 @@ export default function Reception() {
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
-                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
                       {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {r.km.toLocaleString("es-AR")} km
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export default function Reception() {
                       {r.bodyCondition}
                     </span>
                     {r.images.length > 0 && <span className="badge badge-blue">📷 {r.images.length}</span>}
-                    <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                    <span style={{ fontSize: 11, color: "#fff", fontWeight: "bold" }}>
                       {new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")}
                     </span>
                   </div>
@@ -430,7 +430,7 @@ export default function Reception() {
               </div>
 
               {viewingReception.notes && (
-                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13 }}>
+                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13, color: "#fff", fontWeight: "bold" }}>
                   📝 {viewingReception.notes}
                 </div>
               )}
