@@ -71,3 +71,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Added Parts Inventory Margin section to Dashboard: total cost price, total sale price, profit difference, and margin percentage with visual bar chart |
 | 2026-02 | Applied full dark color theme: #CAF404 (lime), #11A900 (green), #FFF, #000, #0F0 — updated globals.css, all components, Sidebar, Dashboard, and pdfGenerator (black header with lime accent) |
 | 2026-02 | Fixed dark theme contrast: explicit background on tbody tr, td, table; improved td text color to #ddd; form inputs/selects/textareas use #222 background; select options styled dark; hover row uses #242424 |
+| 2026-02 | Replaced table-based lists in all 6 section pages (Clients, Motorcycles, Reception, ServiceOrders, Parts, Payments) with Dashboard-style card rows: background #f8fafc, border #e2e8f0, flex layout matching "Últimas Órdenes" in Dashboard |
