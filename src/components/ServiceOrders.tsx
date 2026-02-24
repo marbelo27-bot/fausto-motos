@@ -20,21 +20,25 @@ interface OrderFormData {
   notes: string;
 }
 
-const getEmptyForm = (): OrderFormData => ({
-  clientId: "",
-  motorcycleId: "",
-  receptionId: "",
-  date: new Date().toISOString().split("T")[0],
-  requiredService: "",
-  performedService: "",
-  parts: [],
-  laborCost: 0,
-  partsCost: 0,
-  totalCost: 0,
-  warranty: "",
-  status: "pendiente",
-  notes: "",
-});
+const getEmptyForm = (): OrderFormData => {
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return {
+    clientId: "",
+    motorcycleId: "",
+    receptionId: "",
+    date: today,
+    requiredService: "",
+    performedService: "",
+    parts: [],
+    laborCost: 0,
+    partsCost: 0,
+    totalCost: 0,
+    warranty: "",
+    status: "pendiente",
+    notes: "",
+  };
+};
 
 const statusColors: Record<string, string> = {
   pendiente: "badge-yellow",

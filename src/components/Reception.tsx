@@ -22,21 +22,25 @@ interface ReceptionFormData {
   notes: string;
 }
 
-const emptyForm: ReceptionFormData = {
-  clientId: "",
-  motorcycleId: "",
-  date: new Date().toISOString().split("T")[0],
-  km: 0,
-  fuelPercent: 50,
-  tiresPercent: 75,
-  transmissionPercent: 75,
-  bodyCondition: "buena",
-  missing: "",
-  accessories: "",
-  helmet: false,
-  documentation: false,
-  images: [],
-  notes: "",
+const getEmptyForm = (): ReceptionFormData => {
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return {
+    clientId: "",
+    motorcycleId: "",
+    date: today,
+    km: 0,
+    fuelPercent: 50,
+    tiresPercent: 75,
+    transmissionPercent: 75,
+    bodyCondition: "buena",
+    missing: "",
+    accessories: "",
+    helmet: false,
+    documentation: false,
+    images: [],
+    notes: "",
+  };
 };
 
 function PercentBar({ value, label }: { value: number; label: string }) {
@@ -58,7 +62,7 @@ export default function Reception() {
   const { clients, motorcycles, receptions, addReception, updateReception, deleteReception } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<ReceptionFormData>(emptyForm);
+  const [form, setForm] = useState<ReceptionFormData>(getEmptyForm());
   const [search, setSearch] = useState("");
   const [viewingReception, setViewingReception] = useState<ReceptionType | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -86,7 +90,7 @@ export default function Reception() {
     }
     setShowForm(false);
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(getEmptyForm());
   };
 
   const handleEdit = (r: ReceptionType) => {
@@ -150,7 +154,7 @@ export default function Reception() {
     <div>
       <div className="page-header">
         <h1 className="page-title">📋 Recepción</h1>
-        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}>
+        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(getEmptyForm()); }}>
           + Nueva Recepción
         </button>
       </div>

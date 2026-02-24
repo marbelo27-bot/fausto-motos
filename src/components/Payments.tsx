@@ -14,14 +14,18 @@ interface PaymentFormData {
   notes: string;
 }
 
-const emptyForm: PaymentFormData = {
-  clientId: "",
-  serviceOrderId: "",
-  date: new Date().toISOString().split("T")[0],
-  type: "pago total",
-  method: "efectivo",
-  amount: 0,
-  notes: "",
+const getEmptyForm = (): PaymentFormData => {
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return {
+    clientId: "",
+    serviceOrderId: "",
+    date: today,
+    type: "pago total",
+    method: "efectivo",
+    amount: 0,
+    notes: "",
+  };
 };
 
 const typeColors: Record<string, string> = {
@@ -43,7 +47,7 @@ export default function Payments() {
   const { clients, serviceOrders, payments, addPayment, updatePayment, deletePayment } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<PaymentFormData>(emptyForm);
+  const [form, setForm] = useState<PaymentFormData>(getEmptyForm());
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("all");
 
@@ -74,7 +78,7 @@ export default function Payments() {
     }
     setShowForm(false);
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(getEmptyForm());
   };
 
   const handleEdit = (payment: Payment) => {
@@ -109,7 +113,7 @@ export default function Payments() {
     <div>
       <div className="page-header">
         <h1 className="page-title">💰 Pagos</h1>
-        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}>
+        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(getEmptyForm()); }}>
           + Registrar Pago
         </button>
       </div>
