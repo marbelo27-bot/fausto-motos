@@ -9,8 +9,8 @@ const ACCENT = "#39FF14";
 const DARK = "#1a1a2e";
 const LIGHT_BG = "#f0f9ff";
 
-// Header height in mm
-const HEADER_H = 32;
+// Header height in mm (≈ 38mm to match the mockup proportions)
+const HEADER_H = 38;
 
 async function addHeader(doc: jsPDF, title: string, subtitle?: string): Promise<number> {
   // Black header background
@@ -20,56 +20,59 @@ async function addHeader(doc: jsPDF, title: string, subtitle?: string): Promise<
   // --- Logo on the left ---
   const logoDataUrl = await getLogoDataUrl();
   if (logoDataUrl) {
-    // 60px at 96dpi ≈ 15.875mm; keep aspect ratio (assume ~2.5:1 width:height)
-    const logoH = 22; // mm
-    const logoW = logoH * 2.5; // mm — adjust if logo has different ratio
+    // Logo: ~280px wide at 96dpi ≈ 74mm; height auto (assume ~3.5:1 width:height for LOGO1_PNG_CALCO)
+    const logoH = 24; // mm
+    const logoW = logoH * 3.5; // mm — wide logo (LOGO1_PNG_CALCO is wide)
     const logoY = (HEADER_H - logoH) / 2;
     try {
-      doc.addImage(logoDataUrl, "PNG", 10, logoY, logoW, logoH);
+      doc.addImage(logoDataUrl, "PNG", 8, logoY, logoW, logoH);
     } catch {
       // If logo fails, fall back to text
       doc.setTextColor(255, 255, 255);
-      doc.setFontSize(16);
+      doc.setFontSize(18);
       doc.setFont("helvetica", "bold");
       doc.text("FAUSTO MOTOS", 14, HEADER_H / 2 + 3);
     }
   } else {
     // No logo available — show text fallback
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
+    doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
     doc.text("FAUSTO MOTOS", 14, HEADER_H / 2 + 3);
   }
 
   // --- Title, order number, date on the right ---
+  // Title: 24px → ~18pt in jsPDF
   doc.setTextColor(255, 255, 255);
-
-  doc.setFontSize(13);
+  doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text(title, 200, 10, { align: "right" });
+  doc.text(title, 202, 13, { align: "right" });
 
   if (subtitle) {
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.text(subtitle, 200, 18, { align: "right" });
+    // N°: 18px → ~14pt
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(subtitle, 202, 23, { align: "right" });
   }
 
-  doc.setFontSize(9);
+  // Date: 14px → ~10pt, color #CCCCCC
+  doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
+  doc.setTextColor(204, 204, 204); // #CCCCCC
   doc.text(
     `Fecha: ${new Date().toLocaleDateString("es-AR")}`,
-    200,
-    subtitle ? 26 : 20,
+    202,
+    subtitle ? 32 : 26,
     { align: "right" }
   );
 
-  // --- Neon green accent line below header ---
+  // --- Neon green accent line below header (4px ≈ 1.4mm) ---
   doc.setDrawColor(57, 255, 20); // #39FF14
-  doc.setLineWidth(0.8);
+  doc.setLineWidth(1.4);
   doc.line(0, HEADER_H, 210, HEADER_H);
 
   doc.setTextColor(DARK);
-  return HEADER_H + 5;
+  return HEADER_H + 6;
 }
 
 function addClientInfo(
