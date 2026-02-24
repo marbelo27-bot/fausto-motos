@@ -196,7 +196,7 @@ export default function Payments() {
                   const order = payment.serviceOrderId ? serviceOrders.find(o => o.id === payment.serviceOrderId) : null;
                   return (
                     <tr key={payment.id}>
-                      <td>{new Date(payment.date).toLocaleDateString("es-AR")}</td>
+                      <td>{new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
                       <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
                       <td>
                         <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>

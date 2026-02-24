@@ -91,7 +91,7 @@ export async function generateReceptionPDF(
   y += 10;
 
   const details = [
-    ["Fecha de recepción", new Date(reception.date).toLocaleDateString("es-AR")],
+    ["Fecha de recepción", new Date(reception.date + "T00:00:00").toLocaleDateString("es-AR")],
     ["Kilómetros", `${reception.km.toLocaleString("es-AR")} km`],
     ["Combustible", `${reception.fuelPercent}% (${reception.fuelPercent >= 75 ? "Lleno" : reception.fuelPercent >= 50 ? "3/4" : reception.fuelPercent >= 25 ? "1/2" : "Vacío"})`],
     ["Cubiertas", `${reception.tiresPercent}% (${reception.tiresPercent >= 75 ? "Excelente" : reception.tiresPercent >= 50 ? "Buenas" : reception.tiresPercent >= 25 ? "Regular" : "Malas"})`],
@@ -211,7 +211,7 @@ export async function generateServiceOrderPDF(
   autoTable(doc, {
     startY: y,
     body: [
-      ["Fecha", new Date(order.date).toLocaleDateString("es-AR")],
+      ["Fecha", new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")],
       ["Servicio requerido", order.requiredService],
       ["Servicio realizado", order.performedService],
       ["Estado", order.status.toUpperCase()],
@@ -314,7 +314,7 @@ export async function generatePaymentPDF(
   y += 10;
 
   const paymentData = [
-    ["Fecha", new Date(payment.date).toLocaleDateString("es-AR")],
+    ["Fecha", new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")],
     ["Tipo de pago", payment.type.toUpperCase()],
     ["Forma de pago", payment.method.toUpperCase()],
     ...(serviceOrder ? [["Orden de servicio", `N° ${serviceOrder.id.slice(0, 8).toUpperCase()}`]] : []),

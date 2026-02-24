@@ -202,7 +202,7 @@ export default function Reception() {
                   const moto = motorcycles.find(m => m.id === r.motorcycleId);
                   return (
                     <tr key={r.id}>
-                      <td>{new Date(r.date).toLocaleDateString("es-AR")}</td>
+                      <td>{new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
                       <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
                       <td>
                         <div style={{ fontWeight: 500 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
@@ -417,7 +417,7 @@ export default function Reception() {
           <div className="modal-overlay" onClick={() => setViewingReception(null)}>
             <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
-                <h2 className="modal-title">📋 Recepción — {new Date(viewingReception.date).toLocaleDateString("es-AR")}</h2>
+                <h2 className="modal-title">📋 Recepción — {new Date(viewingReception.date + "T00:00:00").toLocaleDateString("es-AR")}</h2>
                 <button onClick={() => setViewingReception(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
               </div>
 

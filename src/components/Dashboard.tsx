@@ -113,7 +113,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                         {order.status}
                       </span>
                       <span style={{ fontSize: 11, color: "#94a3b8" }}>
-                        {new Date(order.date).toLocaleDateString("es-AR")}
+                        {new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}
                       </span>
                     </div>
                   </div>
@@ -156,7 +156,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                         ${payment.amount.toLocaleString("es-AR")}
                       </span>
                       <span style={{ fontSize: 11, color: "#94a3b8" }}>
-                        {new Date(payment.date).toLocaleDateString("es-AR")}
+                        {new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}
                       </span>
                     </div>
                   </div>

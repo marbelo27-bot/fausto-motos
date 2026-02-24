@@ -238,7 +238,7 @@ export default function ServiceOrders() {
                   const moto = motorcycles.find(m => m.id === order.motorcycleId);
                   return (
                     <tr key={order.id}>
-                      <td>{new Date(order.date).toLocaleDateString("es-AR")}</td>
+                      <td>{new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
                       <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
                       <td>
                         <div style={{ fontWeight: 500 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
@@ -314,7 +314,7 @@ export default function ServiceOrders() {
                     <option value="">Sin recepción asociada</option>
                     {clientReceptions.map(r => (
                       <option key={r.id} value={r.id}>
-                        {new Date(r.date).toLocaleDateString("es-AR")} — {r.km.toLocaleString("es-AR")} km
+                        {new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")} — {r.km.toLocaleString("es-AR")} km
                       </option>
                     ))}
                   </select>
@@ -479,7 +479,7 @@ export default function ServiceOrders() {
                   <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
                     <div>👤 <strong>{client?.fullName}</strong> — {client?.phone}</div>
                     <div>🏍️ <strong>{moto?.brand} {moto?.model}</strong> ({moto?.year}) — {moto?.plate}</div>
-                    <div>📅 {new Date(viewingOrder.date).toLocaleDateString("es-AR")}</div>
+                    <div>📅 {new Date(viewingOrder.date + "T00:00:00").toLocaleDateString("es-AR")}</div>
                   </div>
                 </div>
                 <div>

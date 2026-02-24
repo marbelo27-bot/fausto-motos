@@ -284,7 +284,7 @@ export default function Clients() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {serviceOrders.filter(o => o.clientId === viewingClient.id).map(o => (
                     <div key={o.id} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
-                      <span>🔧 {o.performedService} — {new Date(o.date).toLocaleDateString("es-AR")}</span>
+                      <span>🔧 {o.performedService} — {new Date(o.date + "T00:00:00").toLocaleDateString("es-AR")}</span>
                       <span style={{ fontWeight: 600, color: "#2596be" }}>${o.totalCost.toLocaleString("es-AR")}</span>
                     </div>
                   ))}
@@ -301,7 +301,7 @@ export default function Clients() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {payments.filter(p => p.clientId === viewingClient.id).map(p => (
                     <div key={p.id} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
-                      <span>💰 {p.type} ({p.method}) — {new Date(p.date).toLocaleDateString("es-AR")}</span>
+                      <span>💰 {p.type} ({p.method}) — {new Date(p.date + "T00:00:00").toLocaleDateString("es-AR")}</span>
                       <span style={{ fontWeight: 600, color: "#16a34a" }}>${p.amount.toLocaleString("es-AR")}</span>
                     </div>
                   ))}
