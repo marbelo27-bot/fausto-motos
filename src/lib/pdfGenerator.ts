@@ -2,35 +2,22 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { Client, Motorcycle, Reception, ServiceOrder, Payment } from "./types";
-import { getLogoDataUrl } from "./logoData";
 
 const PRIMARY = "#2596be";
 const ACCENT = "#f5a623";
 const DARK = "#1a1a2e";
 const LIGHT_BG = "#f0f9ff";
 
-function addHeader(doc: jsPDF, title: string, subtitle?: string, logoDataUrl?: string | null) {
+function addHeader(doc: jsPDF, title: string, subtitle?: string) {
   // Header background
   doc.setFillColor(PRIMARY);
   doc.rect(0, 0, 210, 28, "F");
-
-  // Logo (if available) — placed on the right side of the header
-  if (logoDataUrl) {
-    try {
-      // Draw white background behind logo for visibility
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(148, 2, 58, 24, 3, 3, "F");
-      doc.addImage(logoDataUrl, "PNG", 150, 3, 54, 22);
-    } catch {
-      // If logo fails, fall back to text only
-    }
-  }
 
   // Title text
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("TALLER DE MOTOS", 14, 12);
+  doc.text("FAUSTO MOTOS", 14, 12);
 
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
@@ -91,9 +78,8 @@ export async function generateReceptionPDF(
   client: Client,
   motorcycle: Motorcycle
 ) {
-  const logoDataUrl = await getLogoDataUrl();
   const doc = new jsPDF();
-  let y = addHeader(doc, "ORDEN DE RECEPCIÓN", `N° ${reception.id.slice(0, 8).toUpperCase()}`, logoDataUrl);
+  let y = addHeader(doc, "ORDEN DE RECEPCIÓN", `N° ${reception.id.slice(0, 8).toUpperCase()}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -210,9 +196,8 @@ export async function generateServiceOrderPDF(
   client: Client,
   motorcycle: Motorcycle
 ) {
-  const logoDataUrl = await getLogoDataUrl();
   const doc = new jsPDF();
-  let y = addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`, logoDataUrl);
+  let y = addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -316,9 +301,8 @@ export async function generatePaymentPDF(
   client: Client,
   serviceOrder?: ServiceOrder
 ) {
-  const logoDataUrl = await getLogoDataUrl();
   const doc = new jsPDF();
-  let y = addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`, logoDataUrl);
+  let y = addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`);
 
   y = addClientInfo(doc, y, client);
 
@@ -382,7 +366,7 @@ function addFooter(doc: jsPDF) {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(7);
     doc.setFont("helvetica", "normal");
-    doc.text("Taller de Motos - Sistema de Gestión", 14, 292);
+    doc.text("Fausto Motos - Sistema de Gestión", 14, 292);
     doc.text(`Página ${i} de ${pageCount}`, 196, 292, { align: "right" });
   }
 }

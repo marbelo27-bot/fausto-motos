@@ -20,7 +20,7 @@
   </g>
   
   <!-- Text: Workshop name -->
-  <text x="88" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">TALLER</text>
-  <text x="88" y="50" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2596be">DE MOTOS</text>
+  <text x="88" y="38" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">FAUSTO</text>
+  <text x="88" y="54" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2596be">MOTOS</text>
   <text x="88" y="65" font-family="Arial, sans-serif" font-size="9" fill="#64748b" letter-spacing="1">SISTEMA DE GESTIÓN</text>
 </svg>

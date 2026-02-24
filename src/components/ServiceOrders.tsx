@@ -20,7 +20,7 @@ interface OrderFormData {
   notes: string;
 }
 
-const emptyForm: OrderFormData = {
+const getEmptyForm = (): OrderFormData => ({
   clientId: "",
   motorcycleId: "",
   receptionId: "",
@@ -34,7 +34,7 @@ const emptyForm: OrderFormData = {
   warranty: "",
   status: "pendiente",
   notes: "",
-};
+});
 
 const statusColors: Record<string, string> = {
   pendiente: "badge-yellow",
@@ -51,7 +51,7 @@ export default function ServiceOrders() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<OrderFormData>(emptyForm);
+  const [form, setForm] = useState<OrderFormData>(getEmptyForm());
   const [search, setSearch] = useState("");
   const [viewingOrder, setViewingOrder] = useState<ServiceOrder | null>(null);
   const [newServiceType, setNewServiceType] = useState("");
@@ -129,7 +129,7 @@ export default function ServiceOrders() {
     }
     setShowForm(false);
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(getEmptyForm());
   };
 
   const handleEdit = (order: ServiceOrder) => {
@@ -178,7 +178,7 @@ export default function ServiceOrders() {
     <div>
       <div className="page-header">
         <h1 className="page-title">🔧 Órdenes de Servicio</h1>
-        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}>
+        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(getEmptyForm()); }}>
           + Nueva Orden
         </button>
       </div>
