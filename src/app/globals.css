@@ -255,10 +255,11 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: white !important;
 }
 
 thead {
-  background: #f8fafc;
+  background: #f8fafc !important;
 }
 
 th {
@@ -266,17 +267,23 @@ th {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #64748b !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc !important;
+}
+
+tbody tr {
+  background-color: white !important;
 }
 
 td {
   padding: 10px 14px;
   font-size: 14px;
-  color: #374151;
+  color: #374151 !important;
   border-bottom: 1px solid #f1f5f9;
+  background-color: white !important;
 }
 
 tr:last-child td {
@@ -284,7 +291,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background: #f8fafc;
+  background: #f0f7ff !important;
 }
 
 .badge {
