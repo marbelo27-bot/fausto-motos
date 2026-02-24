@@ -93,7 +93,7 @@ export default function Motorcycles() {
       {/* Search */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#555" }}>🔍</span>
+          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
           <input
             className="search-input"
             placeholder="Buscar por marca, modelo, dominio o cliente..."
@@ -120,7 +120,7 @@ export default function Motorcycles() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: "center", color: "#555", padding: "32px" }}>
+                  <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
                     No hay motos registradas
                   </td>
                 </tr>
@@ -130,18 +130,18 @@ export default function Motorcycles() {
                   return (
                     <tr key={moto.id}>
                       <td>
-                        <div style={{ fontWeight: 600, color: "#fff" }}>{moto.brand}</div>
-                        <div style={{ color: "#666", fontSize: 12 }}>{moto.model}</div>
+                        <div style={{ fontWeight: 600 }}>{moto.brand}</div>
+                        <div style={{ color: "#64748b", fontSize: 12 }}>{moto.model}</div>
                       </td>
                       <td>
-                        <span className="badge badge-yellow" style={{ fontSize: 13, padding: "3px 10px" }}>
+                        <span className="badge badge-blue" style={{ fontSize: 13, padding: "3px 10px" }}>
                           {moto.plate}
                         </span>
                       </td>
                       <td>{moto.year}</td>
                       <td>
-                        <div style={{ fontWeight: 500, color: "#fff" }}>{client?.fullName || "—"}</div>
-                        <div style={{ color: "#666", fontSize: 12 }}>{client?.phone}</div>
+                        <div style={{ fontWeight: 500 }}>{client?.fullName || "—"}</div>
+                        <div style={{ color: "#64748b", fontSize: 12 }}>{client?.phone}</div>
                       </td>
                       <td>
                         <div style={{ display: "flex", gap: 6 }}>
@@ -176,7 +176,7 @@ export default function Motorcycles() {
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">{editingId ? "Editar Moto" : "Nueva Moto"}</h2>
-              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
+              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">

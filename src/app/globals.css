@@ -1,12 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #CAF404;
-  --primary-dark: #a8cc00;
-  --primary-light: #f0ff80;
-  --accent: #0F0;
-  --secondary: #11A900;
-  --dark: #000;
+  --primary: #2596be;
+  --primary-dark: #1a7a9e;
+  --primary-light: #e0f4fb;
+  --accent: #f5a623;
+  --dark: #1a1a2e;
   --sidebar-width: 240px;
 }
 
@@ -16,20 +15,19 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #111;
-  color: #fff;
+  background-color: #f0f4f8;
+  color: #1a1a2e;
 }
 
 .sidebar {
   width: var(--sidebar-width);
   min-height: 100vh;
-  background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
   position: fixed;
   left: 0;
   top: 0;
   z-index: 50;
   overflow-y: auto;
-  border-right: 1px solid #CAF40430;
 }
 
 .main-content {
@@ -43,7 +41,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  color: #888;
+  color: #94a3b8;
   cursor: pointer;
   border-radius: 8px;
   margin: 2px 8px;
@@ -54,33 +52,33 @@ body {
 }
 
 .nav-item:hover {
-  background: rgba(202, 244, 4, 0.15);
-  color: #CAF404;
+  background: rgba(37, 150, 190, 0.2);
+  color: #2596be;
 }
 
 .nav-item.active {
-  background: rgba(202, 244, 4, 0.2);
-  color: #CAF404;
-  border-left: 3px solid #CAF404;
+  background: rgba(37, 150, 190, 0.25);
+  color: #2596be;
+  border-left: 3px solid #2596be;
 }
 
 .card {
-  background: #1a1a1a;
+  background: white;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  border: 1px solid #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border: 1px solid #e2e8f0;
 }
 
 .btn-primary {
-  background: #CAF404;
-  color: #000;
+  background: #2596be;
+  color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -88,13 +86,13 @@ body {
 }
 
 .btn-primary:hover {
-  background: #a8cc00;
+  background: #1a7a9e;
 }
 
 .btn-secondary {
-  background: #222;
-  color: #ccc;
-  border: 1px solid #333;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -107,15 +105,13 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #2a2a2a;
-  color: #CAF404;
-  border-color: #CAF40450;
+  background: #e2e8f0;
 }
 
 .btn-danger {
-  background: #2a0000;
-  color: #ff4444;
-  border: 1px solid #440000;
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -125,13 +121,13 @@ body {
 }
 
 .btn-danger:hover {
-  background: #3a0000;
+  background: #fecaca;
 }
 
 .btn-success {
-  background: #001a00;
-  color: #11A900;
-  border: 1px solid #003300;
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -141,7 +137,7 @@ body {
 }
 
 .btn-success:hover {
-  background: #002200;
+  background: #bbf7d0;
 }
 
 .form-group {
@@ -154,55 +150,50 @@ body {
 .form-label {
   font-size: 13px;
   font-weight: 600;
-  color: #aaa;
+  color: #374151;
 }
 
 .form-input {
   padding: 8px 12px;
-  border: 1px solid #333;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
-  color: #fff;
-  background: #222;
+  color: #1a1a2e;
+  background: white;
   transition: border-color 0.2s;
   width: 100%;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #CAF404;
-  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
+  border-color: #2596be;
+  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
 }
 
 .form-select {
   padding: 8px 12px;
-  border: 1px solid #333;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
-  color: #fff;
-  background: #1a1a1a;
+  color: #1a1a2e;
+  background: white;
   width: 100%;
   cursor: pointer;
 }
 
-.form-select option {
-  background: #1a1a1a;
-  color: #fff;
-}
-
 .form-select:focus {
   outline: none;
-  border-color: #CAF404;
-  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
+  border-color: #2596be;
+  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
 }
 
 .form-textarea {
   padding: 8px 12px;
-  border: 1px solid #333;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
-  color: #fff;
-  background: #222;
+  color: #1a1a2e;
+  background: white;
   width: 100%;
   resize: vertical;
   min-height: 80px;
@@ -210,14 +201,14 @@ body {
 
 .form-textarea:focus {
   outline: none;
-  border-color: #CAF404;
-  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
+  border-color: #2596be;
+  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.5);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -226,15 +217,14 @@ body {
 }
 
 .modal {
-  background: #1a1a1a;
+  background: white;
   border-radius: 16px;
   padding: 24px;
   width: 100%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-  border: 1px solid #2a2a2a;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 
 .modal-lg {
@@ -247,33 +237,28 @@ body {
   justify-content: space-between;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #CAF40430;
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .modal-title {
   font-size: 18px;
   font-weight: 700;
-  color: #CAF404;
+  color: #1a1a2e;
 }
 
 .table-container {
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid #2a2a2a;
+  border: 1px solid #e2e8f0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #1a1a1a !important;
 }
 
 thead {
-  background: #111 !important;
-}
-
-thead tr {
-  background: #111 !important;
+  background: #f8fafc;
 }
 
 th {
@@ -281,27 +266,17 @@ th {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #CAF404;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid #2a2a2a;
-  background: #111 !important;
-}
-
-tbody {
-  background: #1a1a1a !important;
-}
-
-tbody tr {
-  background: #1a1a1a !important;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 td {
   padding: 10px 14px;
   font-size: 14px;
-  color: #ddd;
-  border-bottom: 1px solid #2a2a2a;
-  background: #1a1a1a !important;
+  color: #374151;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 tr:last-child td {
@@ -309,8 +284,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background: #242424 !important;
-  color: #fff;
+  background: #f8fafc;
 }
 
 .badge {
@@ -323,47 +297,47 @@ tr:hover td {
 }
 
 .badge-blue {
-  background: #001a33;
-  color: #4db8ff;
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .badge-green {
-  background: #001a00;
-  color: #11A900;
+  background: #dcfce7;
+  color: #16a34a;
 }
 
 .badge-yellow {
-  background: #1a1500;
-  color: #CAF404;
+  background: #fef9c3;
+  color: #ca8a04;
 }
 
 .badge-red {
-  background: #1a0000;
-  color: #ff4444;
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .badge-gray {
-  background: #1a1a1a;
-  color: #888;
+  background: #f1f5f9;
+  color: #64748b;
 }
 
 .stat-card {
-  background: #1a1a1a;
+  background: white;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #2a2a2a;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #CAF404;
+  color: #1a1a2e;
 }
 
 .stat-label {
   font-size: 13px;
-  color: #888;
+  color: #64748b;
   margin-top: 4px;
 }
 
@@ -377,39 +351,38 @@ tr:hover td {
 .page-title {
   font-size: 22px;
   font-weight: 700;
-  color: #CAF404;
+  color: #1a1a2e;
 }
 
 .search-input {
   padding: 8px 12px 8px 36px;
-  border: 1px solid #333;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
   width: 280px;
-  background: #222;
-  color: #fff;
+  background: white;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #CAF404;
-  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
+  border-color: #2596be;
+  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
 }
 
 .range-slider {
   width: 100%;
-  accent-color: #CAF404;
+  accent-color: #2596be;
 }
 
 .section-title {
   font-size: 14px;
   font-weight: 700;
-  color: #CAF404;
+  color: #2596be;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 12px;
   padding-bottom: 6px;
-  border-bottom: 2px solid #CAF40430;
+  border-bottom: 2px solid #e0f4fb;
 }
 
 .grid-2 {

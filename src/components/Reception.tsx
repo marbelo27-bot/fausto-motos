@@ -44,14 +44,14 @@ const getEmptyForm = (): ReceptionFormData => {
 };
 
 function PercentBar({ value, label }: { value: number; label: string }) {
-  const color = value >= 75 ? "#11A900" : value >= 50 ? "#CAF404" : value >= 25 ? "#ff8800" : "#ff4444";
+  const color = value >= 75 ? "#16a34a" : value >= 50 ? "#2596be" : value >= 25 ? "#d97706" : "#dc2626";
   return (
     <div style={{ marginBottom: 4 }}>
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 3 }}>
-        <span style={{ color: "#aaa" }}>{label}</span>
+        <span>{label}</span>
         <span style={{ fontWeight: 600, color }}>{value}%</span>
       </div>
-      <div style={{ height: 8, background: "#222", borderRadius: 4, overflow: "hidden" }}>
+      <div style={{ height: 8, background: "#e2e8f0", borderRadius: 4, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${value}%`, background: color, borderRadius: 4, transition: "width 0.3s" }} />
       </div>
     </div>
@@ -162,7 +162,7 @@ export default function Reception() {
       {/* Search */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#555" }}>🔍</span>
+          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
           <input
             className="search-input"
             placeholder="Buscar por cliente, dominio o marca..."
@@ -192,7 +192,7 @@ export default function Reception() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: "center", color: "#555", padding: "32px" }}>
+                  <td colSpan={8} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
                     No hay recepciones registradas
                   </td>
                 </tr>
@@ -203,10 +203,10 @@ export default function Reception() {
                   return (
                     <tr key={r.id}>
                       <td>{new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
-                      <td style={{ fontWeight: 500, color: "#fff" }}>{client?.fullName || "—"}</td>
+                      <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
                       <td>
-                        <div style={{ fontWeight: 500, color: "#fff" }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
-                        <div style={{ color: "#666", fontSize: 12 }}>{moto?.plate}</div>
+                        <div style={{ fontWeight: 500 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
+                        <div style={{ color: "#64748b", fontSize: 12 }}>{moto?.plate}</div>
                       </td>
                       <td>{r.km.toLocaleString("es-AR")} km</td>
                       <td>
@@ -223,7 +223,7 @@ export default function Reception() {
                         {r.images.length > 0 ? (
                           <span className="badge badge-blue">📷 {r.images.length}</span>
                         ) : (
-                          <span style={{ color: "#555", fontSize: 12 }}>—</span>
+                          <span style={{ color: "#94a3b8", fontSize: 12 }}>—</span>
                         )}
                       </td>
                       <td>
@@ -249,7 +249,7 @@ export default function Reception() {
           <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">{editingId ? "Editar Recepción" : "Nueva Recepción"}</h2>
-              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
+              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               {/* Client & Moto */}
@@ -302,7 +302,7 @@ export default function Reception() {
                   <label className="form-label">Combustible: {form.fuelPercent}% — {fuelLabel(form.fuelPercent)}</label>
                   <input type="range" className="range-slider" min={0} max={100} step={25}
                     value={form.fuelPercent} onChange={e => setForm({ ...form, fuelPercent: parseInt(e.target.value) })} />
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#555" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#94a3b8" }}>
                     <span>Vacío</span><span>1/4</span><span>1/2</span><span>3/4</span><span>Lleno</span>
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export default function Reception() {
                   <label className="form-label">Cubiertas: {form.tiresPercent}% — {condLabel(form.tiresPercent)}</label>
                   <input type="range" className="range-slider" min={25} max={100} step={25}
                     value={form.tiresPercent} onChange={e => setForm({ ...form, tiresPercent: parseInt(e.target.value) })} />
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#555" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#94a3b8" }}>
                     <span>Mala</span><span>Regular</span><span>Buena</span><span>Excelente</span>
                   </div>
                 </div>
@@ -318,7 +318,7 @@ export default function Reception() {
                   <label className="form-label">Transmisión: {form.transmissionPercent}% — {condLabel(form.transmissionPercent)}</label>
                   <input type="range" className="range-slider" min={25} max={100} step={25}
                     value={form.transmissionPercent} onChange={e => setForm({ ...form, transmissionPercent: parseInt(e.target.value) })} />
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#555" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#94a3b8" }}>
                     <span>Mala</span><span>Regular</span><span>Buena</span><span>Excelente</span>
                   </div>
                 </div>
@@ -347,12 +347,12 @@ export default function Reception() {
               </div>
 
               <div style={{ display: "flex", gap: 24, marginBottom: 16 }}>
-                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14, color: "#ccc" }}>
-                  <input type="checkbox" checked={form.helmet} onChange={e => setForm({ ...form, helmet: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#CAF404" }} />
+                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14 }}>
+                  <input type="checkbox" checked={form.helmet} onChange={e => setForm({ ...form, helmet: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#2596be" }} />
                   🪖 Casco
                 </label>
-                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14, color: "#ccc" }}>
-                  <input type="checkbox" checked={form.documentation} onChange={e => setForm({ ...form, documentation: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#CAF404" }} />
+                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14 }}>
+                  <input type="checkbox" checked={form.documentation} onChange={e => setForm({ ...form, documentation: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#2596be" }} />
                   📄 Documentación
                 </label>
               </div>
@@ -376,13 +376,13 @@ export default function Reception() {
                     {form.images.map(img => (
                       <div key={img.id} style={{ position: "relative", width: 100, height: 80 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #2a2a2a" }} />
+                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #e2e8f0" }} />
                         <button
                           type="button"
                           onClick={() => removeImage(img.id)}
                           style={{
                             position: "absolute", top: -6, right: -6,
-                            background: "#ff4444", color: "white", border: "none",
+                            background: "#dc2626", color: "white", border: "none",
                             borderRadius: "50%", width: 20, height: 20, cursor: "pointer",
                             fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center"
                           }}
@@ -418,16 +418,16 @@ export default function Reception() {
             <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <h2 className="modal-title">📋 Recepción — {new Date(viewingReception.date + "T00:00:00").toLocaleDateString("es-AR")}</h2>
-                <button onClick={() => setViewingReception(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
+                <button onClick={() => setViewingReception(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
               </div>
 
               <div className="grid-2" style={{ marginBottom: 16 }}>
                 <div>
                   <div className="section-title">Cliente y Vehículo</div>
-                  <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6, color: "#ccc" }}>
-                    <div>👤 <strong style={{ color: "#fff" }}>{client?.fullName}</strong> — {client?.phone}</div>
-                    <div>🏍️ <strong style={{ color: "#fff" }}>{moto?.brand} {moto?.model}</strong> ({moto?.year}) — <span style={{ color: "#CAF404" }}>{moto?.plate}</span></div>
-                    <div>📏 <strong style={{ color: "#CAF404" }}>{viewingReception.km.toLocaleString("es-AR")} km</strong></div>
+                  <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div>👤 <strong>{client?.fullName}</strong> — {client?.phone}</div>
+                    <div>🏍️ <strong>{moto?.brand} {moto?.model}</strong> ({moto?.year}) — {moto?.plate}</div>
+                    <div>📏 <strong>{viewingReception.km.toLocaleString("es-AR")} km</strong></div>
                   </div>
                 </div>
                 <div>
@@ -435,23 +435,23 @@ export default function Reception() {
                   <PercentBar value={viewingReception.fuelPercent} label={`Combustible (${fuelLabel(viewingReception.fuelPercent)})`} />
                   <PercentBar value={viewingReception.tiresPercent} label={`Cubiertas (${condLabel(viewingReception.tiresPercent)})`} />
                   <PercentBar value={viewingReception.transmissionPercent} label={`Transmisión (${condLabel(viewingReception.transmissionPercent)})`} />
-                  <div style={{ fontSize: 13, marginTop: 6, color: "#ccc" }}>Carrocería: <strong style={{ color: "#fff" }}>{viewingReception.bodyCondition}</strong></div>
+                  <div style={{ fontSize: 13, marginTop: 6 }}>Carrocería: <strong>{viewingReception.bodyCondition}</strong></div>
                 </div>
               </div>
 
               <div className="grid-2" style={{ marginBottom: 16 }}>
                 <div>
-                  {viewingReception.missing && <div style={{ fontSize: 13, color: "#ccc" }}>⚠️ <strong style={{ color: "#ff8800" }}>Faltantes:</strong> {viewingReception.missing}</div>}
-                  {viewingReception.accessories && <div style={{ fontSize: 13, color: "#ccc" }}>🔩 <strong style={{ color: "#CAF404" }}>Accesorios:</strong> {viewingReception.accessories}</div>}
+                  {viewingReception.missing && <div style={{ fontSize: 13 }}>⚠️ <strong>Faltantes:</strong> {viewingReception.missing}</div>}
+                  {viewingReception.accessories && <div style={{ fontSize: 13 }}>🔩 <strong>Accesorios:</strong> {viewingReception.accessories}</div>}
                 </div>
-                <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#ccc" }}>
+                <div style={{ display: "flex", gap: 16, fontSize: 13 }}>
                   <div>{viewingReception.helmet ? "✅" : "❌"} Casco</div>
                   <div>{viewingReception.documentation ? "✅" : "❌"} Documentación</div>
                 </div>
               </div>
 
               {viewingReception.notes && (
-                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#111", borderRadius: 8, fontSize: 13, color: "#ccc", border: "1px solid #2a2a2a" }}>
+                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#f8fafc", borderRadius: 8, fontSize: 13 }}>
                   📝 {viewingReception.notes}
                 </div>
               )}
@@ -463,7 +463,7 @@ export default function Reception() {
                     {viewingReception.images.map(img => (
                       <div key={img.id} style={{ width: 120, height: 90 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #2a2a2a" }} />
+                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #e2e8f0" }} />
                       </div>
                     ))}
                   </div>
