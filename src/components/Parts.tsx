@@ -105,55 +105,46 @@ export default function Parts() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* List */}
       <div className="card">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Descripción</th>
-                <th>Costo compra</th>
-                <th>Precio venta</th>
-                <th>Margen</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={6} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
-                    No hay repuestos registrados
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(part => (
-                  <tr key={part.id}>
-                    <td style={{ fontWeight: 500 }}>{part.description}</td>
-                    <td>${part.costPrice.toLocaleString("es-AR")}</td>
-                    <td style={{ fontWeight: 600, color: "#2596be" }}>${part.salePrice.toLocaleString("es-AR")}</td>
-                    <td>
-                      <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>
-                        {margin(part)}%
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${part.stock > 5 ? "badge-green" : part.stock > 0 ? "badge-yellow" : "badge-red"}`}>
-                        {part.stock}
-                      </span>
-                    </td>
-                    <td>
-                      <div style={{ display: "flex", gap: 6 }}>
-                        <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(part)}>✏️ Editar</button>
-                        <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDelete(part.id)}>🗑️</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
+            No hay repuestos registrados
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map(part => (
+              <div key={part.id} style={{
+                padding: "10px 12px", borderRadius: 8,
+                background: "#f8fafc", border: "1px solid #e2e8f0",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                gap: 12,
+              }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13 }}>{part.description}</div>
+                  <div style={{ color: "#64748b", fontSize: 12 }}>
+                    Costo: ${part.costPrice.toLocaleString("es-AR")}
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                  <span style={{ fontWeight: 700, color: "#2596be", fontSize: 13 }}>
+                    ${part.salePrice.toLocaleString("es-AR")}
+                  </span>
+                  <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>
+                    {margin(part)}%
+                  </span>
+                  <span className={`badge ${part.stock > 5 ? "badge-green" : part.stock > 0 ? "badge-yellow" : "badge-red"}`}>
+                    Stock: {part.stock}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                  <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(part)}>✏️</button>
+                  <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(part.id)}>🗑️</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Form Modal */}

@@ -104,70 +104,42 @@ export default function Motorcycles() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* List */}
       <div className="card">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Marca / Modelo</th>
-                <th>Dominio</th>
-                <th>Año</th>
-                <th>Propietario</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
-                    No hay motos registradas
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(moto => {
-                  const client = clients.find(c => c.id === moto.clientId);
-                  return (
-                    <tr key={moto.id}>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{moto.brand}</div>
-                        <div style={{ color: "#64748b", fontSize: 12 }}>{moto.model}</div>
-                      </td>
-                      <td>
-                        <span className="badge badge-blue" style={{ fontSize: 13, padding: "3px 10px" }}>
-                          {moto.plate}
-                        </span>
-                      </td>
-                      <td>{moto.year}</td>
-                      <td>
-                        <div style={{ fontWeight: 500 }}>{client?.fullName || "—"}</div>
-                        <div style={{ color: "#64748b", fontSize: 12 }}>{client?.phone}</div>
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", gap: 6 }}>
-                          <button
-                            className="btn-secondary"
-                            style={{ padding: "4px 8px", fontSize: 12 }}
-                            onClick={() => handleEdit(moto)}
-                          >
-                            ✏️ Editar
-                          </button>
-                          <button
-                            className="btn-danger"
-                            style={{ padding: "4px 8px", fontSize: 12 }}
-                            onClick={() => handleDelete(moto.id)}
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
+            No hay motos registradas
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map(moto => {
+              const client = clients.find(c => c.id === moto.clientId);
+              return (
+                <div key={moto.id} style={{
+                  padding: "10px 12px", borderRadius: 8,
+                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  gap: 12,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{moto.brand} {moto.model}</div>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                      👤 {client?.fullName || "—"}{client?.phone ? ` · ${client.phone}` : ""}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                    <span className="badge badge-blue" style={{ fontSize: 12, padding: "3px 10px" }}>{moto.plate}</span>
+                    <span style={{ color: "#94a3b8", fontSize: 12 }}>{moto.year}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(moto)}>✏️</button>
+                    <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(moto.id)}>🗑️</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Form Modal */}

@@ -168,70 +168,52 @@ export default function Payments() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* List */}
       <div className="card">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Tipo</th>
-                <th>Forma de pago</th>
-                <th>Orden asociada</th>
-                <th>Monto</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={7} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
-                    No hay pagos registrados
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(payment => {
-                  const client = clients.find(c => c.id === payment.clientId);
-                  const order = payment.serviceOrderId ? serviceOrders.find(o => o.id === payment.serviceOrderId) : null;
-                  return (
-                    <tr key={payment.id}>
-                      <td>{new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
-                      <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
-                      <td>
-                        <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>
-                          {payment.type}
-                        </span>
-                      </td>
-                      <td>
-                        {methodIcons[payment.method]} {payment.method}
-                      </td>
-                      <td>
-                        {order ? (
-                          <span style={{ fontSize: 12, color: "#2596be" }}>
-                            #{order.id.slice(0, 8).toUpperCase()}
-                          </span>
-                        ) : (
-                          <span style={{ color: "#94a3b8", fontSize: 12 }}>—</span>
-                        )}
-                      </td>
-                      <td style={{ fontWeight: 700, color: "#16a34a", fontSize: 15 }}>
-                        ${payment.amount.toLocaleString("es-AR")}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", gap: 4 }}>
-                          <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(payment)}>✏️</button>
-                          <button className="btn-success" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleGeneratePDF(payment)}>📄</button>
-                          <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(payment.id)}>🗑️</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
+            No hay pagos registrados
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map(payment => {
+              const client = clients.find(c => c.id === payment.clientId);
+              const order = payment.serviceOrderId ? serviceOrders.find(o => o.id === payment.serviceOrderId) : null;
+              return (
+                <div key={payment.id} style={{
+                  padding: "10px 12px", borderRadius: 8,
+                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  gap: 12,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                      {methodIcons[payment.method]} {payment.method}
+                      {order ? ` · #${order.id.slice(0, 8).toUpperCase()}` : ""}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
+                    <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>
+                      {payment.type}
+                    </span>
+                    <span style={{ fontWeight: 700, color: "#16a34a", fontSize: 14 }}>
+                      ${payment.amount.toLocaleString("es-AR")}
+                    </span>
+                    <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                      {new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(payment)}>✏️</button>
+                    <button className="btn-success" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleGeneratePDF(payment)}>📄</button>
+                    <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(payment.id)}>🗑️</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Form Modal */}

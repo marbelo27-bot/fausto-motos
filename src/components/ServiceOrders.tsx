@@ -210,66 +210,52 @@ export default function ServiceOrders() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* List */}
       <div className="card">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Moto</th>
-                <th>Servicio</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={7} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
-                    No hay órdenes registradas
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(order => {
-                  const client = clients.find(c => c.id === order.clientId);
-                  const moto = motorcycles.find(m => m.id === order.motorcycleId);
-                  return (
-                    <tr key={order.id}>
-                      <td>{new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
-                      <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
-                      <td>
-                        <div style={{ fontWeight: 500 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
-                        <div style={{ color: "#64748b", fontSize: 12 }}>{moto?.plate}</div>
-                      </td>
-                      <td style={{ maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {order.performedService}
-                      </td>
-                      <td style={{ fontWeight: 700, color: "#2596be" }}>
-                        ${order.totalCost.toLocaleString("es-AR")}
-                      </td>
-                      <td>
-                        <span className={`badge ${statusColors[order.status] || "badge-gray"}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", gap: 4 }}>
-                          <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => setViewingOrder(order)}>👁️</button>
-                          <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(order)}>✏️</button>
-                          <button className="btn-success" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleGeneratePDF(order)}>📄</button>
-                          <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(order.id)}>🗑️</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
+            No hay órdenes registradas
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map(order => {
+              const client = clients.find(c => c.id === order.clientId);
+              const moto = motorcycles.find(m => m.id === order.motorcycleId);
+              return (
+                <div key={order.id} style={{
+                  padding: "10px 12px", borderRadius: 8,
+                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  gap: 12,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                      {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {order.performedService}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
+                    <span className={`badge ${statusColors[order.status] || "badge-gray"}`}>
+                      {order.status}
+                    </span>
+                    <span style={{ fontWeight: 700, color: "#2596be", fontSize: 13 }}>
+                      ${order.totalCost.toLocaleString("es-AR")}
+                    </span>
+                    <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                      {new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => setViewingOrder(order)}>👁️</button>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(order)}>✏️</button>
+                    <button className="btn-success" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleGeneratePDF(order)}>📄</button>
+                    <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(order.id)}>🗑️</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Form Modal */}

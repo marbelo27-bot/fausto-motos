@@ -173,74 +173,53 @@ export default function Reception() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* List */}
       <div className="card">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Moto</th>
-                <th>KMs</th>
-                <th>Combustible</th>
-                <th>Carrocería</th>
-                <th>Fotos</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={8} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
-                    No hay recepciones registradas
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(r => {
-                  const client = clients.find(c => c.id === r.clientId);
-                  const moto = motorcycles.find(m => m.id === r.motorcycleId);
-                  return (
-                    <tr key={r.id}>
-                      <td>{new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
-                      <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
-                      <td>
-                        <div style={{ fontWeight: 500 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
-                        <div style={{ color: "#64748b", fontSize: 12 }}>{moto?.plate}</div>
-                      </td>
-                      <td>{r.km.toLocaleString("es-AR")} km</td>
-                      <td>
-                        <span className={`badge ${r.fuelPercent >= 50 ? "badge-green" : r.fuelPercent >= 25 ? "badge-yellow" : "badge-red"}`}>
-                          {r.fuelPercent}% {fuelLabel(r.fuelPercent)}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`badge ${r.bodyCondition === "muy buena" || r.bodyCondition === "buena" ? "badge-green" : r.bodyCondition === "regular" ? "badge-yellow" : "badge-red"}`}>
-                          {r.bodyCondition}
-                        </span>
-                      </td>
-                      <td>
-                        {r.images.length > 0 ? (
-                          <span className="badge badge-blue">📷 {r.images.length}</span>
-                        ) : (
-                          <span style={{ color: "#94a3b8", fontSize: 12 }}>—</span>
-                        )}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", gap: 4 }}>
-                          <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => setViewingReception(r)}>👁️</button>
-                          <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(r)}>✏️</button>
-                          <button className="btn-success" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleGeneratePDF(r)}>📄 PDF</button>
-                          <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(r.id)}>🗑️</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
+            No hay recepciones registradas
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map(r => {
+              const client = clients.find(c => c.id === r.clientId);
+              const moto = motorcycles.find(m => m.id === r.motorcycleId);
+              return (
+                <div key={r.id} style={{
+                  padding: "10px 12px", borderRadius: 8,
+                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  gap: 12,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                      {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {r.km.toLocaleString("es-AR")} km
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                    <span className={`badge ${r.fuelPercent >= 50 ? "badge-green" : r.fuelPercent >= 25 ? "badge-yellow" : "badge-red"}`}>
+                      ⛽ {r.fuelPercent}%
+                    </span>
+                    <span className={`badge ${r.bodyCondition === "muy buena" || r.bodyCondition === "buena" ? "badge-green" : r.bodyCondition === "regular" ? "badge-yellow" : "badge-red"}`}>
+                      {r.bodyCondition}
+                    </span>
+                    {r.images.length > 0 && <span className="badge badge-blue">📷 {r.images.length}</span>}
+                    <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                      {new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => setViewingReception(r)}>👁️</button>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(r)}>✏️</button>
+                    <button className="btn-success" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleGeneratePDF(r)}>📄</button>
+                    <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(r.id)}>🗑️</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Form Modal */}

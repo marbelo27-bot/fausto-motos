@@ -90,79 +90,49 @@ export default function Clients() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* List */}
       <div className="card">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Teléfono</th>
-                <th>Dirección</th>
-                <th>Fecha ingreso</th>
-                <th>Motos</th>
-                <th>Órdenes</th>
-                <th>Total pagado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={8} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
-                    No hay clientes registrados
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(client => {
-                  const stats = getClientStats(client.id);
-                  return (
-                    <tr key={client.id}>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{client.fullName}</div>
-                      </td>
-                      <td>{client.phone}</td>
-                      <td style={{ maxWidth: 150, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {client.address}
-                      </td>
-                      <td>{new Date(client.createdAt).toLocaleDateString("es-AR")}</td>
-                      <td><span className="badge badge-blue">{stats.motos}</span></td>
-                      <td><span className="badge badge-yellow">{stats.orders}</span></td>
-                      <td style={{ fontWeight: 600, color: "#16a34a" }}>
-                        ${stats.totalPaid.toLocaleString("es-AR")}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", gap: 6 }}>
-                          <button
-                            className="btn-secondary"
-                            style={{ padding: "4px 8px", fontSize: 12 }}
-                            onClick={() => setViewingClient(client)}
-                          >
-                            👁️ Ver
-                          </button>
-                          <button
-                            className="btn-secondary"
-                            style={{ padding: "4px 8px", fontSize: 12 }}
-                            onClick={() => handleEdit(client)}
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            className="btn-danger"
-                            style={{ padding: "4px 8px", fontSize: 12 }}
-                            onClick={() => handleDelete(client.id)}
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
+            No hay clientes registrados
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map(client => {
+              const stats = getClientStats(client.id);
+              return (
+                <div key={client.id} style={{
+                  padding: "10px 12px", borderRadius: 8,
+                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  gap: 12,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{client.fullName}</div>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>
+                      📞 {client.phone}{client.address ? ` · ${client.address}` : ""}
+                    </div>
+                    <div style={{ color: "#94a3b8", fontSize: 11, marginTop: 2 }}>
+                      Ingreso: {new Date(client.createdAt).toLocaleDateString("es-AR")}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                    <span className="badge badge-blue" title="Motos">🏍️ {stats.motos}</span>
+                    <span className="badge badge-yellow" title="Órdenes">🔧 {stats.orders}</span>
+                    <span style={{ fontWeight: 700, color: "#16a34a", fontSize: 13 }}>
+                      ${stats.totalPaid.toLocaleString("es-AR")}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => setViewingClient(client)}>👁️</button>
+                    <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(client)}>✏️</button>
+                    <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(client.id)}>🗑️</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Form Modal */}
