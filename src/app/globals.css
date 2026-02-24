@@ -265,15 +265,15 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #1a1a1a;
+  background: #1a1a1a !important;
 }
 
 thead {
-  background: #111;
+  background: #111 !important;
 }
 
 thead tr {
-  background: #111;
+  background: #111 !important;
 }
 
 th {
@@ -285,11 +285,15 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid #2a2a2a;
-  background: #111;
+  background: #111 !important;
+}
+
+tbody {
+  background: #1a1a1a !important;
 }
 
 tbody tr {
-  background: #1a1a1a;
+  background: #1a1a1a !important;
 }
 
 td {
@@ -297,7 +301,7 @@ td {
   font-size: 14px;
   color: #ddd;
   border-bottom: 1px solid #2a2a2a;
-  background: #1a1a1a;
+  background: #1a1a1a !important;
 }
 
 tr:last-child td {
@@ -305,7 +309,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background: #242424;
+  background: #242424 !important;
   color: #fff;
 }
 
