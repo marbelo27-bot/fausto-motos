@@ -121,25 +121,25 @@ export default function Payments() {
       {/* Stats */}
       <div className="grid-4" style={{ marginBottom: 16 }}>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#2596be" }}>
+          <div className="stat-value" style={{ color: "#CAF404" }}>
             ${payments.reduce((s, p) => s + p.amount, 0).toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Total recaudado</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#d97706" }}>
+          <div className="stat-value" style={{ color: "#ff8800" }}>
             ${totalByType.anticipo.toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Anticipos</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#16a34a" }}>
+          <div className="stat-value" style={{ color: "#11A900" }}>
             ${totalByType["pago total"].toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Pagos totales</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#7c3aed" }}>
+          <div className="stat-value" style={{ color: "#0F0" }}>
             ${totalByType["pago saldo"].toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Saldos</div>
@@ -150,7 +150,7 @@ export default function Payments() {
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
-            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
+            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#555" }}>🔍</span>
             <input
               className="search-input"
               placeholder="Buscar por cliente o forma de pago..."
@@ -186,7 +186,7 @@ export default function Payments() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
+                  <td colSpan={7} style={{ textAlign: "center", color: "#555", padding: "32px" }}>
                     No hay pagos registrados
                   </td>
                 </tr>
@@ -197,25 +197,25 @@ export default function Payments() {
                   return (
                     <tr key={payment.id}>
                       <td>{new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
-                      <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
+                      <td style={{ fontWeight: 500, color: "#fff" }}>{client?.fullName || "—"}</td>
                       <td>
                         <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>
                           {payment.type}
                         </span>
                       </td>
-                      <td>
+                      <td style={{ color: "#ccc" }}>
                         {methodIcons[payment.method]} {payment.method}
                       </td>
                       <td>
                         {order ? (
-                          <span style={{ fontSize: 12, color: "#2596be" }}>
+                          <span style={{ fontSize: 12, color: "#CAF404" }}>
                             #{order.id.slice(0, 8).toUpperCase()}
                           </span>
                         ) : (
-                          <span style={{ color: "#94a3b8", fontSize: 12 }}>—</span>
+                          <span style={{ color: "#555", fontSize: 12 }}>—</span>
                         )}
                       </td>
-                      <td style={{ fontWeight: 700, color: "#16a34a", fontSize: 15 }}>
+                      <td style={{ fontWeight: 700, color: "#11A900", fontSize: 15 }}>
                         ${payment.amount.toLocaleString("es-AR")}
                       </td>
                       <td>
@@ -240,7 +240,7 @@ export default function Payments() {
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">{editingId ? "Editar Pago" : "Registrar Pago"}</h2>
-              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
+              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="grid-2">

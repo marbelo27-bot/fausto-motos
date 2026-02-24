@@ -23,7 +23,7 @@ export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
   return (
     <div className="sidebar">
       {/* Logo */}
-      <div style={{ padding: "20px 16px 16px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+      <div style={{ padding: "20px 16px 16px", borderBottom: "1px solid #CAF40430" }}>
         {!logoError ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 56 }}>
             <Image
@@ -40,15 +40,15 @@ export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{
               width: 40, height: 40, borderRadius: 10,
-              background: "linear-gradient(135deg, #2596be, #1a7a9e)",
+              background: "linear-gradient(135deg, #CAF404, #11A900)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 20
             }}>🏍️</div>
             <div>
-              <div style={{ color: "white", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>
-                Taller de Motos
+              <div style={{ color: "#CAF404", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>
+                Fausto Motos
               </div>
-              <div style={{ color: "#64748b", fontSize: 11 }}>Sistema de Gestión</div>
+              <div style={{ color: "#555", fontSize: 11 }}>Sistema de Gestión</div>
             </div>
           </div>
         )}
@@ -73,8 +73,8 @@ export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
         padding: "12px 16px",
-        borderTop: "1px solid rgba(255,255,255,0.1)",
-        color: "#475569", fontSize: 11, textAlign: "center"
+        borderTop: "1px solid #CAF40430",
+        color: "#444", fontSize: 11, textAlign: "center"
       }}>
         v1.0.0 © 2025
       </div>

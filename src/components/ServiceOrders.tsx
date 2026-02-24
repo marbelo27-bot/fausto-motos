@@ -191,7 +191,7 @@ export default function ServiceOrders() {
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
-            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
+            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#555" }}>🔍</span>
             <input
               className="search-input"
               placeholder="Buscar por cliente, dominio o servicio..."
@@ -228,7 +228,7 @@ export default function ServiceOrders() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
+                  <td colSpan={7} style={{ textAlign: "center", color: "#555", padding: "32px" }}>
                     No hay órdenes registradas
                   </td>
                 </tr>
@@ -239,15 +239,15 @@ export default function ServiceOrders() {
                   return (
                     <tr key={order.id}>
                       <td>{new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}</td>
-                      <td style={{ fontWeight: 500 }}>{client?.fullName || "—"}</td>
+                      <td style={{ fontWeight: 500, color: "#fff" }}>{client?.fullName || "—"}</td>
                       <td>
-                        <div style={{ fontWeight: 500 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
-                        <div style={{ color: "#64748b", fontSize: 12 }}>{moto?.plate}</div>
+                        <div style={{ fontWeight: 500, color: "#fff" }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
+                        <div style={{ color: "#666", fontSize: 12 }}>{moto?.plate}</div>
                       </td>
-                      <td style={{ maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <td style={{ maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#ccc" }}>
                         {order.performedService}
                       </td>
-                      <td style={{ fontWeight: 700, color: "#2596be" }}>
+                      <td style={{ fontWeight: 700, color: "#CAF404" }}>
                         ${order.totalCost.toLocaleString("es-AR")}
                       </td>
                       <td>
@@ -278,7 +278,7 @@ export default function ServiceOrders() {
           <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">{editingId ? "Editar Orden" : "Nueva Orden de Servicio"}</h2>
-              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
+              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               {/* Client & Moto */}
@@ -391,7 +391,7 @@ export default function ServiceOrders() {
                             <td>{p.description}</td>
                             <td>{p.quantity}</td>
                             <td>${p.unitPrice.toLocaleString("es-AR")}</td>
-                            <td style={{ fontWeight: 600 }}>${(p.quantity * p.unitPrice).toLocaleString("es-AR")}</td>
+                            <td style={{ fontWeight: 600, color: "#CAF404" }}>${(p.quantity * p.unitPrice).toLocaleString("es-AR")}</td>
                             <td>
                               <button type="button" className="btn-danger" style={{ padding: "2px 6px", fontSize: 11 }}
                                 onClick={() => removePartFromOrder(p.partId)}>✕</button>
@@ -415,12 +415,12 @@ export default function ServiceOrders() {
                 <div className="form-group">
                   <label className="form-label">Repuestos ($)</label>
                   <input type="number" className="form-input" value={form.partsCost} readOnly
-                    style={{ background: "#f8fafc", color: "#64748b" }} />
+                    style={{ background: "#0a0a0a", color: "#666" }} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Total ($)</label>
                   <input type="number" className="form-input" value={form.totalCost} readOnly
-                    style={{ background: "#e0f4fb", fontWeight: 700, color: "#2596be" }} />
+                    style={{ background: "#1a1a00", fontWeight: 700, color: "#CAF404" }} />
                 </div>
               </div>
 
@@ -470,25 +470,25 @@ export default function ServiceOrders() {
             <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <h2 className="modal-title">🔧 Orden #{viewingOrder.id.slice(0, 8).toUpperCase()}</h2>
-                <button onClick={() => setViewingOrder(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
+                <button onClick={() => setViewingOrder(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
               </div>
 
               <div className="grid-2" style={{ marginBottom: 16 }}>
                 <div>
                   <div className="section-title">Cliente y Vehículo</div>
-                  <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div>👤 <strong>{client?.fullName}</strong> — {client?.phone}</div>
-                    <div>🏍️ <strong>{moto?.brand} {moto?.model}</strong> ({moto?.year}) — {moto?.plate}</div>
+                  <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6, color: "#ccc" }}>
+                    <div>👤 <strong style={{ color: "#fff" }}>{client?.fullName}</strong> — {client?.phone}</div>
+                    <div>🏍️ <strong style={{ color: "#fff" }}>{moto?.brand} {moto?.model}</strong> ({moto?.year}) — <span style={{ color: "#CAF404" }}>{moto?.plate}</span></div>
                     <div>📅 {new Date(viewingOrder.date + "T00:00:00").toLocaleDateString("es-AR")}</div>
                   </div>
                 </div>
                 <div>
                   <div className="section-title">Servicio</div>
-                  <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div>📋 Requerido: <strong>{viewingOrder.requiredService}</strong></div>
-                    <div>🔧 Realizado: <strong>{viewingOrder.performedService}</strong></div>
+                  <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6, color: "#ccc" }}>
+                    <div>📋 Requerido: <strong style={{ color: "#fff" }}>{viewingOrder.requiredService}</strong></div>
+                    <div>🔧 Realizado: <strong style={{ color: "#fff" }}>{viewingOrder.performedService}</strong></div>
                     <div>Estado: <span className={`badge ${statusColors[viewingOrder.status]}`}>{viewingOrder.status}</span></div>
-                    {viewingOrder.warranty && <div>🛡️ Garantía: <strong>{viewingOrder.warranty}</strong></div>}
+                    {viewingOrder.warranty && <div>🛡️ Garantía: <strong style={{ color: "#CAF404" }}>{viewingOrder.warranty}</strong></div>}
                   </div>
                 </div>
               </div>
@@ -507,7 +507,7 @@ export default function ServiceOrders() {
                             <td>{p.description}</td>
                             <td>{p.quantity}</td>
                             <td>${p.unitPrice.toLocaleString("es-AR")}</td>
-                            <td style={{ fontWeight: 600 }}>${(p.quantity * p.unitPrice).toLocaleString("es-AR")}</td>
+                            <td style={{ fontWeight: 600, color: "#CAF404" }}>${(p.quantity * p.unitPrice).toLocaleString("es-AR")}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -518,14 +518,14 @@ export default function ServiceOrders() {
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, marginBottom: 16 }}>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 13, color: "#64748b" }}>Mano de obra: ${viewingOrder.laborCost.toLocaleString("es-AR")}</div>
-                  <div style={{ fontSize: 13, color: "#64748b" }}>Repuestos: ${viewingOrder.partsCost.toLocaleString("es-AR")}</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#2596be" }}>Total: ${viewingOrder.totalCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 13, color: "#666" }}>Mano de obra: ${viewingOrder.laborCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 13, color: "#666" }}>Repuestos: ${viewingOrder.partsCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "#CAF404" }}>Total: ${viewingOrder.totalCost.toLocaleString("es-AR")}</div>
                 </div>
               </div>
 
               {viewingOrder.notes && (
-                <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+                <div style={{ padding: "10px 12px", background: "#111", borderRadius: 8, fontSize: 13, marginBottom: 16, color: "#ccc", border: "1px solid #2a2a2a" }}>
                   📝 {viewingOrder.notes}
                 </div>
               )}

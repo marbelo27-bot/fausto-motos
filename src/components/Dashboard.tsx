@@ -30,12 +30,12 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
     .slice(0, 5);
 
   const stats = [
-    { label: "Clientes", value: clients.length, icon: "👥", color: "#2596be", section: "clients" },
-    { label: "Motos registradas", value: motorcycles.length, icon: "🏍️", color: "#7c3aed", section: "motorcycles" },
-    { label: "Recepciones", value: receptions.length, icon: "📋", color: "#0891b2", section: "reception" },
-    { label: "Órdenes activas", value: pendingOrders, icon: "🔧", color: "#d97706", section: "serviceOrders" },
-    { label: "Órdenes completadas", value: completedOrders, icon: "✅", color: "#16a34a", section: "serviceOrders" },
-    { label: "Ingresos totales", value: `$${totalRevenue.toLocaleString("es-AR")}`, icon: "💰", color: "#dc2626", section: "payments" },
+    { label: "Clientes", value: clients.length, icon: "👥", color: "#CAF404", section: "clients" },
+    { label: "Motos registradas", value: motorcycles.length, icon: "🏍️", color: "#0F0", section: "motorcycles" },
+    { label: "Recepciones", value: receptions.length, icon: "📋", color: "#11A900", section: "reception" },
+    { label: "Órdenes activas", value: pendingOrders, icon: "🔧", color: "#CAF404", section: "serviceOrders" },
+    { label: "Órdenes completadas", value: completedOrders, icon: "✅", color: "#11A900", section: "serviceOrders" },
+    { label: "Ingresos totales", value: `$${totalRevenue.toLocaleString("es-AR")}`, icon: "💰", color: "#0F0", section: "payments" },
   ];
 
   const statusColors: Record<string, string> = {
@@ -50,7 +50,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
       <div className="page-header">
         <div>
           <h1 className="page-title">Dashboard</h1>
-          <p style={{ color: "#64748b", fontSize: 14, marginTop: 4 }}>
+          <p style={{ color: "#666", fontSize: 14, marginTop: 4 }}>
             {new Date().toLocaleDateString("es-AR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
           </p>
         </div>
@@ -66,11 +66,13 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
             onClick={() => onNavigate(stat.section)}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-              (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+              (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 16px ${stat.color}30`;
+              (e.currentTarget as HTMLElement).style.borderColor = `${stat.color}50`;
             }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
               (e.currentTarget as HTMLElement).style.boxShadow = "";
+              (e.currentTarget as HTMLElement).style.borderColor = "";
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -95,13 +97,13 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         {/* Recent Service Orders */}
         <div className="card">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <h3 style={{ fontWeight: 700, fontSize: 15 }}>Últimas Órdenes de Servicio</h3>
+            <h3 style={{ fontWeight: 700, fontSize: 15, color: "#fff" }}>Últimas Órdenes de Servicio</h3>
             <button className="btn-secondary" style={{ fontSize: 12, padding: "4px 10px" }} onClick={() => onNavigate("serviceOrders")}>
               Ver todas
             </button>
           </div>
           {recentOrders.length === 0 ? (
-            <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "20px 0" }}>
+            <p style={{ color: "#555", fontSize: 14, textAlign: "center", padding: "20px 0" }}>
               No hay órdenes registradas
             </p>
           ) : (
@@ -112,12 +114,12 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                 return (
                   <div key={order.id} style={{
                     padding: "10px 12px", borderRadius: 8,
-                    background: "#f8fafc", border: "1px solid #e2e8f0",
+                    background: "#111", border: "1px solid #2a2a2a",
                     display: "flex", alignItems: "center", justifyContent: "space-between"
                   }}>
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
-                      <div style={{ color: "#64748b", fontSize: 12 }}>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
+                      <div style={{ color: "#666", fontSize: 12 }}>
                         {moto ? `${moto.brand} ${moto.model}` : "—"} · {order.performedService}
                       </div>
                     </div>
@@ -125,7 +127,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                       <span className={`badge ${statusColors[order.status] || "badge-gray"}`}>
                         {order.status}
                       </span>
-                      <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                      <span style={{ fontSize: 11, color: "#555" }}>
                         {new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}
                       </span>
                     </div>
@@ -139,13 +141,13 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         {/* Recent Payments */}
         <div className="card">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <h3 style={{ fontWeight: 700, fontSize: 15 }}>Últimos Pagos</h3>
+            <h3 style={{ fontWeight: 700, fontSize: 15, color: "#fff" }}>Últimos Pagos</h3>
             <button className="btn-secondary" style={{ fontSize: 12, padding: "4px 10px" }} onClick={() => onNavigate("payments")}>
               Ver todos
             </button>
           </div>
           {recentPayments.length === 0 ? (
-            <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "20px 0" }}>
+            <p style={{ color: "#555", fontSize: 14, textAlign: "center", padding: "20px 0" }}>
               No hay pagos registrados
             </p>
           ) : (
@@ -155,20 +157,20 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                 return (
                   <div key={payment.id} style={{
                     padding: "10px 12px", borderRadius: 8,
-                    background: "#f8fafc", border: "1px solid #e2e8f0",
+                    background: "#111", border: "1px solid #2a2a2a",
                     display: "flex", alignItems: "center", justifyContent: "space-between"
                   }}>
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: 13 }}>{client?.fullName || "—"}</div>
-                      <div style={{ color: "#64748b", fontSize: 12 }}>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
+                      <div style={{ color: "#666", fontSize: 12 }}>
                         {payment.type} · {payment.method}
                       </div>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-                      <span style={{ fontWeight: 700, color: "#16a34a", fontSize: 14 }}>
+                      <span style={{ fontWeight: 700, color: "#11A900", fontSize: 14 }}>
                         ${payment.amount.toLocaleString("es-AR")}
                       </span>
-                      <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                      <span style={{ fontSize: 11, color: "#555" }}>
                         {new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}
                       </span>
                     </div>
@@ -182,7 +184,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
 
       {/* Quick Actions */}
       <div className="card" style={{ marginTop: 24 }}>
-        <h3 style={{ fontWeight: 700, fontSize: 15, marginBottom: 16 }}>Acciones Rápidas</h3>
+        <h3 style={{ fontWeight: 700, fontSize: 15, marginBottom: 16, color: "#fff" }}>Acciones Rápidas</h3>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {[
             { label: "Nuevo Cliente", icon: "👤", section: "clients" },
@@ -206,8 +208,8 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
       <div className="card" style={{ marginTop: 24 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <h3 style={{ fontWeight: 700, fontSize: 15 }}>📊 Resumen de Ganancias</h3>
-            <p style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>
+            <h3 style={{ fontWeight: 700, fontSize: 15, color: "#fff" }}>📊 Resumen de Ganancias</h3>
+            <p style={{ color: "#666", fontSize: 12, marginTop: 2 }}>
               Basado en órdenes de servicio registradas
             </p>
           </div>
@@ -218,7 +220,8 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
 
         {/* Total earnings highlight */}
         <div style={{
-          background: "linear-gradient(135deg, #1e3a5f 0%, #2596be 100%)",
+          background: "linear-gradient(135deg, #000 0%, #1a2200 100%)",
+          border: "1px solid #CAF40440",
           borderRadius: 12,
           padding: "20px 24px",
           marginBottom: 20,
@@ -227,10 +230,10 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
           justifyContent: "space-between",
         }}>
           <div>
-            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+            <div style={{ color: "#CAF40480", fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
               INGRESOS TOTALES (Mano de obra + Repuestos)
             </div>
-            <div style={{ color: "#fff", fontSize: 28, fontWeight: 800, letterSpacing: "-0.5px" }}>
+            <div style={{ color: "#CAF404", fontSize: 28, fontWeight: 800, letterSpacing: "-0.5px" }}>
               ${totalEarnings.toLocaleString("es-AR")}
             </div>
           </div>
@@ -241,48 +244,48 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
           {/* Labor */}
           <div style={{
-            background: "#f0fdf4",
-            border: "1px solid #bbf7d0",
+            background: "#0a1a00",
+            border: "1px solid #11A90040",
             borderRadius: 10,
             padding: "16px 18px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{
                 width: 32, height: 32, borderRadius: 8,
-                background: "#16a34a20",
+                background: "#11A90020",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 16,
               }}>🔧</div>
-              <span style={{ fontWeight: 600, fontSize: 13, color: "#15803d" }}>Mano de Obra</span>
+              <span style={{ fontWeight: 600, fontSize: 13, color: "#11A900" }}>Mano de Obra</span>
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: "#11A900" }}>
               ${totalLaborIncome.toLocaleString("es-AR")}
             </div>
-            <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
               {laborPct}% del total
             </div>
           </div>
 
           {/* Parts */}
           <div style={{
-            background: "#eff6ff",
-            border: "1px solid #bfdbfe",
+            background: "#1a1a00",
+            border: "1px solid #CAF40440",
             borderRadius: 10,
             padding: "16px 18px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{
                 width: 32, height: 32, borderRadius: 8,
-                background: "#2563eb20",
+                background: "#CAF40420",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 16,
               }}>⚙️</div>
-              <span style={{ fontWeight: 600, fontSize: 13, color: "#1d4ed8" }}>Repuestos</span>
+              <span style={{ fontWeight: 600, fontSize: 13, color: "#CAF404" }}>Repuestos</span>
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: "#2563eb" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: "#CAF404" }}>
               ${totalPartsIncome.toLocaleString("es-AR")}
             </div>
-            <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
               {partsPct}% del total
             </div>
           </div>
@@ -291,20 +294,20 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         {/* Visual bar */}
         {totalEarnings > 0 && (
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginBottom: 6 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#666", marginBottom: 6 }}>
               <span>🔧 Mano de obra ({laborPct}%)</span>
               <span>⚙️ Repuestos ({partsPct}%)</span>
             </div>
-            <div style={{ height: 10, borderRadius: 99, background: "#e2e8f0", overflow: "hidden", display: "flex" }}>
+            <div style={{ height: 10, borderRadius: 99, background: "#222", overflow: "hidden", display: "flex" }}>
               <div style={{
                 width: `${laborPct}%`,
-                background: "#16a34a",
+                background: "#11A900",
                 borderRadius: "99px 0 0 99px",
                 transition: "width 0.5s ease",
               }} />
               <div style={{
                 width: `${partsPct}%`,
-                background: "#2563eb",
+                background: "#CAF404",
                 borderRadius: "0 99px 99px 0",
                 transition: "width 0.5s ease",
               }} />
@@ -313,7 +316,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         )}
 
         {totalEarnings === 0 && (
-          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
+          <p style={{ color: "#555", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
             Aún no hay órdenes de servicio con costos registrados.
           </p>
         )}
@@ -323,8 +326,8 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
       <div className="card" style={{ marginTop: 24 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <h3 style={{ fontWeight: 700, fontSize: 15 }}>📦 Margen de Repuestos (Inventario)</h3>
-            <p style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>
+            <h3 style={{ fontWeight: 700, fontSize: 15, color: "#fff" }}>📦 Margen de Repuestos (Inventario)</h3>
+            <p style={{ color: "#666", fontSize: 12, marginTop: 2 }}>
               Diferencia entre precio de costo y precio de venta del stock actual
             </p>
           </div>
@@ -334,7 +337,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         </div>
 
         {parts.length === 0 ? (
-          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
+          <p style={{ color: "#555", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
             Aún no hay repuestos registrados en el inventario.
           </p>
         ) : (
@@ -343,74 +346,74 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 20 }}>
               {/* Cost price */}
               <div style={{
-                background: "#fef2f2",
-                border: "1px solid #fecaca",
+                background: "#1a0000",
+                border: "1px solid #ff444430",
                 borderRadius: 10,
                 padding: "16px 18px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: 8,
-                    background: "#dc262620",
+                    background: "#ff444420",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 16,
                   }}>🏷️</div>
-                  <span style={{ fontWeight: 600, fontSize: 12, color: "#b91c1c" }}>Costo Total</span>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: "#ff4444" }}>Costo Total</span>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: "#dc2626" }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#ff4444" }}>
                   ${totalInventoryCost.toLocaleString("es-AR")}
                 </div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 4 }}>
                   Precio de compra × stock
                 </div>
               </div>
 
               {/* Sale price */}
               <div style={{
-                background: "#f0fdf4",
-                border: "1px solid #bbf7d0",
+                background: "#0a1a00",
+                border: "1px solid #11A90040",
                 borderRadius: 10,
                 padding: "16px 18px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: 8,
-                    background: "#16a34a20",
+                    background: "#11A90020",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 16,
                   }}>💲</div>
-                  <span style={{ fontWeight: 600, fontSize: 12, color: "#15803d" }}>Venta Total</span>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: "#11A900" }}>Venta Total</span>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: "#16a34a" }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#11A900" }}>
                   ${totalInventorySale.toLocaleString("es-AR")}
                 </div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 4 }}>
                   Precio de venta × stock
                 </div>
               </div>
 
               {/* Margin */}
               <div style={{
-                background: marginPct >= 0 ? "#fefce8" : "#fef2f2",
-                border: `1px solid ${marginPct >= 0 ? "#fde68a" : "#fecaca"}`,
+                background: marginPct >= 0 ? "#1a1a00" : "#1a0000",
+                border: `1px solid ${marginPct >= 0 ? "#CAF40440" : "#ff444430"}`,
                 borderRadius: 10,
                 padding: "16px 18px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: 8,
-                    background: marginPct >= 0 ? "#ca8a0420" : "#dc262620",
+                    background: marginPct >= 0 ? "#CAF40420" : "#ff444420",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 16,
                   }}>📈</div>
-                  <span style={{ fontWeight: 600, fontSize: 12, color: marginPct >= 0 ? "#92400e" : "#b91c1c" }}>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: marginPct >= 0 ? "#CAF404" : "#ff4444" }}>
                     Ganancia Potencial
                   </span>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: marginPct >= 0 ? "#d97706" : "#dc2626" }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: marginPct >= 0 ? "#CAF404" : "#ff4444" }}>
                   ${totalInventoryMargin.toLocaleString("es-AR")}
                 </div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 4 }}>
                   Margen: {marginPct}%
                 </div>
               </div>
@@ -419,20 +422,20 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
             {/* Visual margin bar */}
             {totalInventorySale > 0 && (
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginBottom: 6 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#666", marginBottom: 6 }}>
                   <span>🏷️ Costo ({100 - marginPct}%)</span>
                   <span>📈 Ganancia ({marginPct}%)</span>
                 </div>
-                <div style={{ height: 10, borderRadius: 99, background: "#e2e8f0", overflow: "hidden", display: "flex" }}>
+                <div style={{ height: 10, borderRadius: 99, background: "#222", overflow: "hidden", display: "flex" }}>
                   <div style={{
                     width: `${100 - marginPct}%`,
-                    background: "#dc2626",
+                    background: "#ff4444",
                     borderRadius: "99px 0 0 99px",
                     transition: "width 0.5s ease",
                   }} />
                   <div style={{
                     width: `${marginPct}%`,
-                    background: "#d97706",
+                    background: "#CAF404",
                     borderRadius: "0 99px 99px 0",
                     transition: "width 0.5s ease",
                   }} />

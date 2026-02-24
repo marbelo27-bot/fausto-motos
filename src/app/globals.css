@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #2596be;
-  --primary-dark: #1a7a9e;
-  --primary-light: #e0f4fb;
-  --accent: #f5a623;
-  --dark: #1a1a2e;
+  --primary: #CAF404;
+  --primary-dark: #a8cc00;
+  --primary-light: #f0ff80;
+  --accent: #0F0;
+  --secondary: #11A900;
+  --dark: #000;
   --sidebar-width: 240px;
 }
 
@@ -15,19 +16,20 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #f0f4f8;
-  color: #1a1a2e;
+  background-color: #111;
+  color: #fff;
 }
 
 .sidebar {
   width: var(--sidebar-width);
   min-height: 100vh;
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
   position: fixed;
   left: 0;
   top: 0;
   z-index: 50;
   overflow-y: auto;
+  border-right: 1px solid #CAF40430;
 }
 
 .main-content {
@@ -41,7 +43,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  color: #94a3b8;
+  color: #888;
   cursor: pointer;
   border-radius: 8px;
   margin: 2px 8px;
@@ -52,33 +54,33 @@ body {
 }
 
 .nav-item:hover {
-  background: rgba(37, 150, 190, 0.2);
-  color: #2596be;
+  background: rgba(202, 244, 4, 0.15);
+  color: #CAF404;
 }
 
 .nav-item.active {
-  background: rgba(37, 150, 190, 0.25);
-  color: #2596be;
-  border-left: 3px solid #2596be;
+  background: rgba(202, 244, 4, 0.2);
+  color: #CAF404;
+  border-left: 3px solid #CAF404;
 }
 
 .card {
-  background: white;
+  background: #1a1a1a;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  border: 1px solid #2a2a2a;
 }
 
 .btn-primary {
-  background: #2596be;
-  color: white;
+  background: #CAF404;
+  color: #000;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -86,13 +88,13 @@ body {
 }
 
 .btn-primary:hover {
-  background: #1a7a9e;
+  background: #a8cc00;
 }
 
 .btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: #222;
+  color: #ccc;
+  border: 1px solid #333;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -105,13 +107,15 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #e2e8f0;
+  background: #2a2a2a;
+  color: #CAF404;
+  border-color: #CAF40450;
 }
 
 .btn-danger {
-  background: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background: #2a0000;
+  color: #ff4444;
+  border: 1px solid #440000;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -121,13 +125,13 @@ body {
 }
 
 .btn-danger:hover {
-  background: #fecaca;
+  background: #3a0000;
 }
 
 .btn-success {
-  background: #dcfce7;
-  color: #16a34a;
-  border: 1px solid #bbf7d0;
+  background: #001a00;
+  color: #11A900;
+  border: 1px solid #003300;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -137,7 +141,7 @@ body {
 }
 
 .btn-success:hover {
-  background: #bbf7d0;
+  background: #002200;
 }
 
 .form-group {
@@ -150,50 +154,50 @@ body {
 .form-label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: #aaa;
 }
 
 .form-input {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #333;
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: #fff;
+  background: #111;
   transition: border-color 0.2s;
   width: 100%;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #CAF404;
+  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
 }
 
 .form-select {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #333;
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: #fff;
+  background: #111;
   width: 100%;
   cursor: pointer;
 }
 
 .form-select:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #CAF404;
+  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
 }
 
 .form-textarea {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #333;
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: #fff;
+  background: #111;
   width: 100%;
   resize: vertical;
   min-height: 80px;
@@ -201,14 +205,14 @@ body {
 
 .form-textarea:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #CAF404;
+  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.8);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -217,14 +221,15 @@ body {
 }
 
 .modal {
-  background: white;
+  background: #1a1a1a;
   border-radius: 16px;
   padding: 24px;
   width: 100%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  border: 1px solid #2a2a2a;
 }
 
 .modal-lg {
@@ -237,19 +242,19 @@ body {
   justify-content: space-between;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid #CAF40430;
 }
 
 .modal-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #CAF404;
 }
 
 .table-container {
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #2a2a2a;
 }
 
 table {
@@ -258,7 +263,7 @@ table {
 }
 
 thead {
-  background: #f8fafc;
+  background: #111;
 }
 
 th {
@@ -266,17 +271,17 @@ th {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #CAF404;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #2a2a2a;
 }
 
 td {
   padding: 10px 14px;
   font-size: 14px;
-  color: #374151;
-  border-bottom: 1px solid #f1f5f9;
+  color: #ccc;
+  border-bottom: 1px solid #222;
 }
 
 tr:last-child td {
@@ -284,7 +289,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background: #f8fafc;
+  background: #1f1f1f;
 }
 
 .badge {
@@ -297,47 +302,47 @@ tr:hover td {
 }
 
 .badge-blue {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: #001a33;
+  color: #4db8ff;
 }
 
 .badge-green {
-  background: #dcfce7;
-  color: #16a34a;
+  background: #001a00;
+  color: #11A900;
 }
 
 .badge-yellow {
-  background: #fef9c3;
-  color: #ca8a04;
+  background: #1a1500;
+  color: #CAF404;
 }
 
 .badge-red {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #1a0000;
+  color: #ff4444;
 }
 
 .badge-gray {
-  background: #f1f5f9;
-  color: #64748b;
+  background: #1a1a1a;
+  color: #888;
 }
 
 .stat-card {
-  background: white;
+  background: #1a1a1a;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #CAF404;
 }
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #888;
   margin-top: 4px;
 }
 
@@ -351,38 +356,39 @@ tr:hover td {
 .page-title {
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #CAF404;
 }
 
 .search-input {
   padding: 8px 12px 8px 36px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #333;
   border-radius: 8px;
   font-size: 14px;
   width: 280px;
-  background: white;
+  background: #111;
+  color: #fff;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #CAF404;
+  box-shadow: 0 0 0 3px rgba(202, 244, 4, 0.1);
 }
 
 .range-slider {
   width: 100%;
-  accent-color: #2596be;
+  accent-color: #CAF404;
 }
 
 .section-title {
   font-size: 14px;
   font-weight: 700;
-  color: #2596be;
+  color: #CAF404;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 12px;
   padding-bottom: 6px;
-  border-bottom: 2px solid #e0f4fb;
+  border-bottom: 2px solid #CAF40430;
 }
 
 .grid-2 {

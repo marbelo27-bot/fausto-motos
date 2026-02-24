@@ -74,17 +74,17 @@ export default function Parts() {
       {/* Stats */}
       <div className="grid-3" style={{ marginBottom: 16 }}>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#2596be" }}>{parts.length}</div>
+          <div className="stat-value" style={{ color: "#CAF404" }}>{parts.length}</div>
           <div className="stat-label">Repuestos en catálogo</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#16a34a" }}>
+          <div className="stat-value" style={{ color: "#11A900" }}>
             ${parts.reduce((sum, p) => sum + p.salePrice * p.stock, 0).toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Valor stock (venta)</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#d97706" }}>
+          <div className="stat-value" style={{ color: "#ff4444" }}>
             {parts.filter(p => p.stock === 0).length}
           </div>
           <div className="stat-label">Sin stock</div>
@@ -94,7 +94,7 @@ export default function Parts() {
       {/* Search */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
+          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#555" }}>🔍</span>
           <input
             className="search-input"
             placeholder="Buscar repuesto..."
@@ -122,16 +122,16 @@ export default function Parts() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", color: "#94a3b8", padding: "32px" }}>
+                  <td colSpan={6} style={{ textAlign: "center", color: "#555", padding: "32px" }}>
                     No hay repuestos registrados
                   </td>
                 </tr>
               ) : (
                 filtered.map(part => (
                   <tr key={part.id}>
-                    <td style={{ fontWeight: 500 }}>{part.description}</td>
-                    <td>${part.costPrice.toLocaleString("es-AR")}</td>
-                    <td style={{ fontWeight: 600, color: "#2596be" }}>${part.salePrice.toLocaleString("es-AR")}</td>
+                    <td style={{ fontWeight: 500, color: "#fff" }}>{part.description}</td>
+                    <td style={{ color: "#ff4444" }}>${part.costPrice.toLocaleString("es-AR")}</td>
+                    <td style={{ fontWeight: 600, color: "#CAF404" }}>${part.salePrice.toLocaleString("es-AR")}</td>
                     <td>
                       <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>
                         {margin(part)}%
@@ -162,7 +162,7 @@ export default function Parts() {
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">{editingId ? "Editar Repuesto" : "Nuevo Repuesto"}</h2>
-              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
+              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -211,8 +211,8 @@ export default function Parts() {
               </div>
 
               {form.costPrice > 0 && form.salePrice > 0 && (
-                <div style={{ padding: "10px 12px", background: "#f0f9ff", borderRadius: 8, marginBottom: 16, fontSize: 13 }}>
-                  💡 Margen de ganancia: <strong style={{ color: "#2596be" }}>
+                <div style={{ padding: "10px 12px", background: "#1a1a00", border: "1px solid #CAF40430", borderRadius: 8, marginBottom: 16, fontSize: 13, color: "#ccc" }}>
+                  💡 Margen de ganancia: <strong style={{ color: "#CAF404" }}>
                     {Math.round(((form.salePrice - form.costPrice) / form.costPrice) * 100)}%
                   </strong>
                   {" "}(${(form.salePrice - form.costPrice).toLocaleString("es-AR")} por unidad)
