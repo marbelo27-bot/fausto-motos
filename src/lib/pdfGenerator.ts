@@ -188,7 +188,8 @@ export async function generateReceptionPDF(
 
   // Footer
   addFooter(doc);
-  doc.save(`recepcion-${reception.id.slice(0, 8)}.pdf`);
+  const clientNameR = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
+  doc.save(`recepcion-${clientNameR}-${reception.id.slice(0, 8)}.pdf`);
 }
 
 export async function generateServiceOrderPDF(
@@ -293,7 +294,8 @@ export async function generateServiceOrderPDF(
   }
 
   addFooter(doc);
-  doc.save(`orden-servicio-${order.id.slice(0, 8)}.pdf`);
+  const clientNameO = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
+  doc.save(`orden-servicio-${clientNameO}-${order.id.slice(0, 8)}.pdf`);
 }
 
 export async function generatePaymentPDF(
@@ -354,7 +356,8 @@ export async function generatePaymentPDF(
   doc.text("Firma del taller", 160, y + 20, { align: "center" });
 
   addFooter(doc);
-  doc.save(`pago-${payment.id.slice(0, 8)}.pdf`);
+  const clientNameP = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
+  doc.save(`pago-${clientNameP}-${payment.id.slice(0, 8)}.pdf`);
 }
 
 function addFooter(doc: jsPDF) {
