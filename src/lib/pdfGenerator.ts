@@ -2,43 +2,74 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { Client, Motorcycle, Reception, ServiceOrder, Payment } from "./types";
+import { getLogoDataUrl } from "./logoData";
 
-const PRIMARY = "#2596be";
-const ACCENT = "#f5a623";
+const PRIMARY = "#000000";
+const ACCENT = "#39FF14";
 const DARK = "#1a1a2e";
 const LIGHT_BG = "#f0f9ff";
 
-function addHeader(doc: jsPDF, title: string, subtitle?: string) {
-  // Header background
-  doc.setFillColor(PRIMARY);
-  doc.rect(0, 0, 210, 28, "F");
+// Header height in mm
+const HEADER_H = 32;
 
-  // Title text
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(18);
-  doc.setFont("helvetica", "bold");
-  doc.text("FAUSTO MOTOS", 14, 12);
+async function addHeader(doc: jsPDF, title: string, subtitle?: string): Promise<number> {
+  // Black header background
+  doc.setFillColor(0, 0, 0);
+  doc.rect(0, 0, 210, HEADER_H, "F");
 
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "normal");
-  doc.text(title, 14, 21);
-
-  if (subtitle) {
-    doc.setFontSize(9);
-    doc.text(subtitle, 14, 26);
+  // --- Logo on the left ---
+  const logoDataUrl = await getLogoDataUrl();
+  if (logoDataUrl) {
+    // 60px at 96dpi ≈ 15.875mm; keep aspect ratio (assume ~2.5:1 width:height)
+    const logoH = 22; // mm
+    const logoW = logoH * 2.5; // mm — adjust if logo has different ratio
+    const logoY = (HEADER_H - logoH) / 2;
+    try {
+      doc.addImage(logoDataUrl, "PNG", 10, logoY, logoW, logoH);
+    } catch {
+      // If logo fails, fall back to text
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text("FAUSTO MOTOS", 14, HEADER_H / 2 + 3);
+    }
+  } else {
+    // No logo available — show text fallback
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("FAUSTO MOTOS", 14, HEADER_H / 2 + 3);
   }
 
-  // Date on right (below logo area)
+  // --- Title, order number, date on the right ---
+  doc.setTextColor(255, 255, 255);
+
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.text(title, 200, 10, { align: "right" });
+
+  if (subtitle) {
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(subtitle, 200, 18, { align: "right" });
+  }
+
   doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
   doc.text(
     `Fecha: ${new Date().toLocaleDateString("es-AR")}`,
-    196,
-    26,
+    200,
+    subtitle ? 26 : 20,
     { align: "right" }
   );
 
+  // --- Neon green accent line below header ---
+  doc.setDrawColor(57, 255, 20); // #39FF14
+  doc.setLineWidth(0.8);
+  doc.line(0, HEADER_H, 210, HEADER_H);
+
   doc.setTextColor(DARK);
-  return 35;
+  return HEADER_H + 5;
 }
 
 function addClientInfo(
@@ -47,18 +78,18 @@ function addClientInfo(
   client: Client,
   motorcycle?: Motorcycle
 ): number {
-  doc.setFillColor(LIGHT_BG);
+  doc.setFillColor(30, 41, 59); // #1e293b dark bg
   doc.rect(10, y, 190, motorcycle ? 22 : 14, "F");
-  doc.setDrawColor(PRIMARY);
+  doc.setDrawColor(57, 255, 20); // #39FF14 accent border
   doc.rect(10, y, 190, motorcycle ? 22 : 14, "S");
 
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(PRIMARY);
+  doc.setTextColor(57, 255, 20); // #39FF14
   doc.text("DATOS DEL CLIENTE", 14, y + 6);
 
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(DARK);
+  doc.setTextColor(255, 255, 255);
   doc.text(`Cliente: ${client.fullName}`, 14, y + 12);
   doc.text(`Tel: ${client.phone}`, 110, y + 12);
 
@@ -79,14 +110,14 @@ export async function generateReceptionPDF(
   motorcycle: Motorcycle
 ) {
   const doc = new jsPDF();
-  let y = addHeader(doc, "ORDEN DE RECEPCIÓN", `N° ${reception.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "ORDEN DE RECEPCIÓN", `N° ${reception.id.slice(0, 8).toUpperCase()}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
   // Reception details
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(PRIMARY);
+  doc.setTextColor(57, 255, 20);
   doc.text("ESTADO DEL VEHÍCULO AL INGRESO", 14, y + 6);
   y += 10;
 
@@ -106,8 +137,9 @@ export async function generateReceptionPDF(
     head: [["Ítem", "Estado"]],
     body: details,
     theme: "grid",
-    headStyles: { fillColor: PRIMARY, textColor: 255, fontStyle: "bold" },
-    alternateRowStyles: { fillColor: [240, 249, 255] },
+    headStyles: { fillColor: [0, 0, 0], textColor: [57, 255, 20], fontStyle: "bold" },
+    alternateRowStyles: { fillColor: [30, 41, 59] },
+    bodyStyles: { textColor: [220, 220, 220] },
     styles: { fontSize: 9 },
     margin: { left: 14, right: 14 },
   });
@@ -132,10 +164,10 @@ export async function generateReceptionPDF(
   if (reception.notes) {
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(PRIMARY);
+    doc.setTextColor(57, 255, 20);
     doc.text("OBSERVACIONES:", 14, y + 5);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(DARK);
+    doc.setTextColor(220, 220, 220);
     const lines = doc.splitTextToSize(reception.notes, 180);
     doc.text(lines, 14, y + 11);
     y += 11 + lines.length * 5;
@@ -149,7 +181,7 @@ export async function generateReceptionPDF(
     }
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(PRIMARY);
+    doc.setTextColor(57, 255, 20);
     doc.text("REGISTRO FOTOGRÁFICO", 14, y + 6);
     y += 12;
 
@@ -172,7 +204,7 @@ export async function generateReceptionPDF(
         doc.addImage(img.dataUrl, "JPEG", imgX, imgY, imgW, imgH);
         if (img.caption) {
           doc.setFontSize(7);
-          doc.setTextColor(DARK);
+          doc.setTextColor(200, 200, 200);
           doc.text(img.caption, imgX, imgY + imgH + 4, { maxWidth: imgW });
         }
       } catch {
@@ -198,14 +230,14 @@ export async function generateServiceOrderPDF(
   motorcycle: Motorcycle
 ) {
   const doc = new jsPDF();
-  let y = addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
   // Service info
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(PRIMARY);
+  doc.setTextColor(57, 255, 20);
   doc.text("DETALLE DEL SERVICIO", 14, y + 6);
   y += 10;
 
@@ -219,8 +251,9 @@ export async function generateServiceOrderPDF(
       ["Garantía", order.warranty || "Sin garantía"],
     ],
     theme: "grid",
-    styles: { fontSize: 9 },
-    columnStyles: { 0: { fontStyle: "bold", fillColor: [240, 249, 255] } },
+    styles: { fontSize: 9, textColor: [220, 220, 220] },
+    columnStyles: { 0: { fontStyle: "bold", fillColor: [30, 41, 59], textColor: [57, 255, 20] } },
+    bodyStyles: { fillColor: [20, 20, 20] },
     margin: { left: 14, right: 14 },
   });
 
@@ -230,7 +263,7 @@ export async function generateServiceOrderPDF(
   if (order.parts && order.parts.length > 0) {
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(PRIMARY);
+    doc.setTextColor(57, 255, 20);
     doc.text("REPUESTOS UTILIZADOS", 14, y + 5);
     y += 8;
 
@@ -244,8 +277,9 @@ export async function generateServiceOrderPDF(
         `$${(p.quantity * p.unitPrice).toLocaleString("es-AR")}`,
       ]),
       theme: "grid",
-      headStyles: { fillColor: PRIMARY, textColor: 255, fontStyle: "bold" },
-      alternateRowStyles: { fillColor: [240, 249, 255] },
+      headStyles: { fillColor: [0, 0, 0], textColor: [57, 255, 20], fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [30, 41, 59] },
+      bodyStyles: { textColor: [220, 220, 220] },
       styles: { fontSize: 9 },
       margin: { left: 14, right: 14 },
     });
@@ -264,7 +298,7 @@ export async function generateServiceOrderPDF(
     startY: y,
     body: totalsData,
     theme: "plain",
-    styles: { fontSize: 10 },
+    styles: { fontSize: 10, textColor: [220, 220, 220] },
     columnStyles: {
       0: { fontStyle: "bold", halign: "right" },
       1: { halign: "right" },
@@ -273,8 +307,8 @@ export async function generateServiceOrderPDF(
       if (data.row.index === 2) {
         data.cell.styles.fontSize = 12;
         data.cell.styles.fontStyle = "bold";
-        data.cell.styles.fillColor = PRIMARY;
-        data.cell.styles.textColor = [255, 255, 255];
+        data.cell.styles.fillColor = [0, 0, 0];
+        data.cell.styles.textColor = [57, 255, 20];
       }
     },
     margin: { left: 100, right: 14 },
@@ -285,10 +319,10 @@ export async function generateServiceOrderPDF(
   if (order.notes) {
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(PRIMARY);
+    doc.setTextColor(57, 255, 20);
     doc.text("OBSERVACIONES:", 14, y + 5);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(DARK);
+    doc.setTextColor(220, 220, 220);
     const lines = doc.splitTextToSize(order.notes, 180);
     doc.text(lines, 14, y + 11);
   }
@@ -304,14 +338,14 @@ export async function generatePaymentPDF(
   serviceOrder?: ServiceOrder
 ) {
   const doc = new jsPDF();
-  let y = addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`);
 
   y = addClientInfo(doc, y, client);
 
   // Payment details
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(PRIMARY);
+  doc.setTextColor(57, 255, 20);
   doc.text("DETALLE DEL PAGO", 14, y + 6);
   y += 10;
 
@@ -327,17 +361,21 @@ export async function generatePaymentPDF(
     startY: y,
     body: paymentData,
     theme: "grid",
-    styles: { fontSize: 10 },
-    columnStyles: { 0: { fontStyle: "bold", fillColor: [240, 249, 255] } },
+    styles: { fontSize: 10, textColor: [220, 220, 220] },
+    columnStyles: { 0: { fontStyle: "bold", fillColor: [30, 41, 59], textColor: [57, 255, 20] } },
+    bodyStyles: { fillColor: [20, 20, 20] },
     margin: { left: 14, right: 14 },
   });
 
   y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
 
   // Amount box
-  doc.setFillColor(PRIMARY);
+  doc.setFillColor(0, 0, 0);
   doc.rect(60, y, 90, 20, "F");
-  doc.setTextColor(255, 255, 255);
+  doc.setDrawColor(57, 255, 20);
+  doc.setLineWidth(0.5);
+  doc.rect(60, y, 90, 20, "S");
+  doc.setTextColor(57, 255, 20);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
   doc.text("MONTO ABONADO", 105, y + 8, { align: "center" });
@@ -348,6 +386,7 @@ export async function generatePaymentPDF(
 
   // Signature lines
   doc.setTextColor(DARK);
+  doc.setDrawColor(100, 100, 100);
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.line(20, y + 15, 80, y + 15);
@@ -364,9 +403,13 @@ function addFooter(doc: jsPDF) {
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFillColor(PRIMARY);
+    doc.setFillColor(0, 0, 0);
     doc.rect(0, 285, 210, 12, "F");
-    doc.setTextColor(255, 255, 255);
+    // Neon green top border on footer
+    doc.setDrawColor(57, 255, 20);
+    doc.setLineWidth(0.5);
+    doc.line(0, 285, 210, 285);
+    doc.setTextColor(200, 200, 200);
     doc.setFontSize(7);
     doc.setFont("helvetica", "normal");
     doc.text("Fausto Motos - Sistema de Gestión", 14, 292);
