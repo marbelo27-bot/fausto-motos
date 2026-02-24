@@ -2,7 +2,7 @@
 
 ## Current State
 
-**App Status**: ✅ Fully functional motorcycle workshop management system
+**App Status**: ✅ Fully functional motorcycle workshop management system with earnings dashboard
 
 The app is a complete workshop management system for Argentine motorcycle shops, built with Next.js 16, TypeScript, Tailwind CSS 4, Zustand for state management, and jsPDF for PDF generation.
 
@@ -64,6 +64,7 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | Initial | Template created with base setup |
 | 2025-02 | Full motorcycle workshop management system built |
 | 2026-02 | Logo integration: public/logo.svg, logoData.ts, Sidebar + PDF headers |
+| 2026-02 | Added detailed earnings breakdown section to Dashboard: total earnings (labor + parts), individual cards for mano de obra and repuestos with percentages, and a visual proportional bar chart |
 | 2026-02 | Renamed to FAUSTO MOTOS, removed logo from PDFs, fixed date bug in ServiceOrders |
 | 2026-02 | Fixed date bug in all form components: use local date + getEmptyForm() factory functions in Reception, Payments, ServiceOrders |
 | 2026-02 | Fixed date display bug: new Date("YYYY-MM-DD") parses as UTC midnight, showing wrong day in UTC-3. Fixed by appending "T00:00:00" in all toLocaleDateString() calls across ServiceOrders, Reception, Payments, Dashboard, Clients, pdfGenerator (re-applied comprehensively) |
