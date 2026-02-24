@@ -1,10 +1,10 @@
-# Active Context: Next.js Starter Template
+# Active Context: Motorcycle Workshop Management System
 
 ## Current State
 
-**Template Status**: ✅ Ready for development
+**App Status**: ✅ Fully functional motorcycle workshop management system
 
-The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. It's ready for AI-assisted expansion to build any type of application.
+The app is a complete workshop management system for Argentine motorcycle shops, built with Next.js 16, TypeScript, Tailwind CSS 4, Zustand for state management, and jsPDF for PDF generation.
 
 ## Recently Completed
 
@@ -14,74 +14,47 @@ The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. I
 - [x] ESLint configuration
 - [x] Memory bank documentation
 - [x] Recipe system for common features
+- [x] **Full motorcycle workshop management app**
+  - [x] Dashboard with stats and quick actions
+  - [x] Clients module (CRUD, full profile, history view)
+  - [x] Motorcycles module (24 Argentine brands, 500+ models)
+  - [x] Reception module (condition sliders, image upload)
+  - [x] Service Orders module (parts, labor, warranty, status)
+  - [x] Parts/Repuestos module (inventory, cost/sale price)
+  - [x] Payments module (anticipo/total/saldo, multiple methods)
+  - [x] PDF generation (reception, service order, payment receipt)
+  - [x] Zustand store with localStorage persistence
 
 ## Current Structure
 
 | File/Directory | Purpose | Status |
 |----------------|---------|--------|
-| `src/app/page.tsx` | Home page | ✅ Ready |
+| `src/app/page.tsx` | Main app with section routing | ✅ Ready |
 | `src/app/layout.tsx` | Root layout | ✅ Ready |
-| `src/app/globals.css` | Global styles | ✅ Ready |
+| `src/app/globals.css` | Global styles + custom CSS classes | ✅ Ready |
+| `src/components/Sidebar.tsx` | Navigation sidebar | ✅ Ready |
+| `src/components/Dashboard.tsx` | Stats dashboard | ✅ Ready |
+| `src/components/Clients.tsx` | Client management | ✅ Ready |
+| `src/components/Motorcycles.tsx` | Motorcycle management | ✅ Ready |
+| `src/components/Reception.tsx` | Vehicle reception | ✅ Ready |
+| `src/components/ServiceOrders.tsx` | Service order management | ✅ Ready |
+| `src/components/Parts.tsx` | Parts inventory | ✅ Ready |
+| `src/components/Payments.tsx` | Payment management | ✅ Ready |
+| `src/lib/types.ts` | TypeScript interfaces | ✅ Ready |
+| `src/lib/store.ts` | Zustand store with persistence | ✅ Ready |
+| `src/lib/motorcycleData.ts` | Argentina motorcycle brands/models | ✅ Ready |
+| `src/lib/pdfGenerator.ts` | PDF generation (jsPDF) | ✅ Ready |
 | `.kilocode/` | AI context & recipes | ✅ Ready |
 
-## Current Focus
+## Dependencies Added
 
-The template is ready. Next steps depend on user requirements:
-
-1. What type of application to build
-2. What features are needed
-3. Design/branding preferences
-
-## Quick Start Guide
-
-### To add a new page:
-
-Create a file at `src/app/[route]/page.tsx`:
-```tsx
-export default function NewPage() {
-  return <div>New page content</div>;
-}
-```
-
-### To add components:
-
-Create `src/components/` directory and add components:
-```tsx
-// src/components/ui/Button.tsx
-export function Button({ children }: { children: React.ReactNode }) {
-  return <button className="px-4 py-2 bg-blue-600 text-white rounded">{children}</button>;
-}
-```
-
-### To add a database:
-
-Follow `.kilocode/recipes/add-database.md`
-
-### To add API routes:
-
-Create `src/app/api/[route]/route.ts`:
-```tsx
-import { NextResponse } from "next/server";
-
-export async function GET() {
-  return NextResponse.json({ message: "Hello" });
-}
-```
-
-## Available Recipes
-
-| Recipe | File | Use Case |
-|--------|------|----------|
-| Add Database | `.kilocode/recipes/add-database.md` | Data persistence with Drizzle + SQLite |
-
-## Pending Improvements
-
-- [ ] Add more recipes (auth, email, etc.)
-- [ ] Add example components
-- [ ] Add testing setup recipe
+- `jspdf` + `jspdf-autotable` — PDF generation
+- `zustand` — State management with localStorage persistence
+- `uuid` + `@types/uuid` — Unique ID generation
 
 ## Session History
 
 | Date | Changes |
 |------|---------|
 | Initial | Template created with base setup |
+| 2025-02 | Full motorcycle workshop management system built |
