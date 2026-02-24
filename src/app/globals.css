@@ -163,7 +163,7 @@ body {
   border-radius: 8px;
   font-size: 14px;
   color: #fff;
-  background: #111;
+  background: #222;
   transition: border-color 0.2s;
   width: 100%;
 }
@@ -180,9 +180,14 @@ body {
   border-radius: 8px;
   font-size: 14px;
   color: #fff;
-  background: #111;
+  background: #1a1a1a;
   width: 100%;
   cursor: pointer;
+}
+
+.form-select option {
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .form-select:focus {
@@ -197,7 +202,7 @@ body {
   border-radius: 8px;
   font-size: 14px;
   color: #fff;
-  background: #111;
+  background: #222;
   width: 100%;
   resize: vertical;
   min-height: 80px;
@@ -260,9 +265,14 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
+  background: #1a1a1a;
 }
 
 thead {
+  background: #111;
+}
+
+thead tr {
   background: #111;
 }
 
@@ -275,13 +285,19 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid #2a2a2a;
+  background: #111;
+}
+
+tbody tr {
+  background: #1a1a1a;
 }
 
 td {
   padding: 10px 14px;
   font-size: 14px;
-  color: #ccc;
-  border-bottom: 1px solid #222;
+  color: #ddd;
+  border-bottom: 1px solid #2a2a2a;
+  background: #1a1a1a;
 }
 
 tr:last-child td {
@@ -289,7 +305,8 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background: #1f1f1f;
+  background: #242424;
+  color: #fff;
 }
 
 .badge {
@@ -365,7 +382,7 @@ tr:hover td {
   border-radius: 8px;
   font-size: 14px;
   width: 280px;
-  background: #111;
+  background: #222;
   color: #fff;
 }
 
