@@ -135,11 +135,11 @@ export default function Reception() {
     setForm(prev => ({ ...prev, images: prev.images.filter(i => i.id !== imgId) }));
   };
 
-  const handleGeneratePDF = (reception: ReceptionType) => {
+  const handleGeneratePDF = async (reception: ReceptionType) => {
     const client = clients.find(c => c.id === reception.clientId);
     const moto = motorcycles.find(m => m.id === reception.motorcycleId);
     if (client && moto) {
-      generateReceptionPDF(reception, client, moto);
+      await generateReceptionPDF(reception, client, moto);
     }
   };
 

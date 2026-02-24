@@ -158,11 +158,11 @@ export default function ServiceOrders() {
     }
   };
 
-  const handleGeneratePDF = (order: ServiceOrder) => {
+  const handleGeneratePDF = async (order: ServiceOrder) => {
     const client = clients.find(c => c.id === order.clientId);
     const moto = motorcycles.find(m => m.id === order.motorcycleId);
     if (client && moto) {
-      generateServiceOrderPDF(order, client, moto);
+      await generateServiceOrderPDF(order, client, moto);
     }
   };
 

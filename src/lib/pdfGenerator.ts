@@ -2,18 +2,31 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { Client, Motorcycle, Reception, ServiceOrder, Payment } from "./types";
+import { getLogoDataUrl } from "./logoData";
 
 const PRIMARY = "#2596be";
 const ACCENT = "#f5a623";
 const DARK = "#1a1a2e";
 const LIGHT_BG = "#f0f9ff";
 
-function addHeader(doc: jsPDF, title: string, subtitle?: string) {
+function addHeader(doc: jsPDF, title: string, subtitle?: string, logoDataUrl?: string | null) {
   // Header background
   doc.setFillColor(PRIMARY);
   doc.rect(0, 0, 210, 28, "F");
 
-  // Title
+  // Logo (if available) — placed on the right side of the header
+  if (logoDataUrl) {
+    try {
+      // Draw white background behind logo for visibility
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(148, 2, 58, 24, 3, 3, "F");
+      doc.addImage(logoDataUrl, "PNG", 150, 3, 54, 22);
+    } catch {
+      // If logo fails, fall back to text only
+    }
+  }
+
+  // Title text
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
@@ -28,12 +41,12 @@ function addHeader(doc: jsPDF, title: string, subtitle?: string) {
     doc.text(subtitle, 14, 26);
   }
 
-  // Date on right
+  // Date on right (below logo area)
   doc.setFontSize(9);
   doc.text(
     `Fecha: ${new Date().toLocaleDateString("es-AR")}`,
     196,
-    21,
+    26,
     { align: "right" }
   );
 
@@ -73,13 +86,14 @@ function addClientInfo(
   return y + (motorcycle ? 22 : 14) + 5;
 }
 
-export function generateReceptionPDF(
+export async function generateReceptionPDF(
   reception: Reception,
   client: Client,
   motorcycle: Motorcycle
 ) {
+  const logoDataUrl = await getLogoDataUrl();
   const doc = new jsPDF();
-  let y = addHeader(doc, "ORDEN DE RECEPCIÓN", `N° ${reception.id.slice(0, 8).toUpperCase()}`);
+  let y = addHeader(doc, "ORDEN DE RECEPCIÓN", `N° ${reception.id.slice(0, 8).toUpperCase()}`, logoDataUrl);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -191,13 +205,14 @@ export function generateReceptionPDF(
   doc.save(`recepcion-${reception.id.slice(0, 8)}.pdf`);
 }
 
-export function generateServiceOrderPDF(
+export async function generateServiceOrderPDF(
   order: ServiceOrder,
   client: Client,
   motorcycle: Motorcycle
 ) {
+  const logoDataUrl = await getLogoDataUrl();
   const doc = new jsPDF();
-  let y = addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`);
+  let y = addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`, logoDataUrl);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -296,13 +311,14 @@ export function generateServiceOrderPDF(
   doc.save(`orden-servicio-${order.id.slice(0, 8)}.pdf`);
 }
 
-export function generatePaymentPDF(
+export async function generatePaymentPDF(
   payment: Payment,
   client: Client,
   serviceOrder?: ServiceOrder
 ) {
+  const logoDataUrl = await getLogoDataUrl();
   const doc = new jsPDF();
-  let y = addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`);
+  let y = addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`, logoDataUrl);
 
   y = addClientInfo(doc, y, client);
 

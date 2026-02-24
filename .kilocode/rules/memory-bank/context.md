@@ -24,6 +24,11 @@ The app is a complete workshop management system for Argentine motorcycle shops,
   - [x] Payments module (anticipo/total/saldo, multiple methods)
   - [x] PDF generation (reception, service order, payment receipt)
   - [x] Zustand store with localStorage persistence
+- [x] **Logo integration**
+  - [x] `public/logo.svg` — placeholder SVG logo (replace with actual logo)
+  - [x] `src/lib/logoData.ts` — async logo loader for PDF use (canvas-based PNG conversion)
+  - [x] Sidebar shows logo via `next/image` with fallback to emoji icon
+  - [x] All PDF headers include logo (top-right corner, white background)
 
 ## Current Structure
 
@@ -58,3 +63,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 |------|---------|
 | Initial | Template created with base setup |
 | 2025-02 | Full motorcycle workshop management system built |
+| 2026-02 | Logo integration: public/logo.svg, logoData.ts, Sidebar + PDF headers |

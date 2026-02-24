@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+import { useState } from "react";
 
 interface SidebarProps {
   activeSection: string;
@@ -16,24 +18,40 @@ const navItems = [
 ];
 
 export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
+  const [logoError, setLogoError] = useState(false);
+
   return (
     <div className="sidebar">
       {/* Logo */}
       <div style={{ padding: "20px 16px 16px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div style={{
-            width: 40, height: 40, borderRadius: 10,
-            background: "linear-gradient(135deg, #2596be, #1a7a9e)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 20
-          }}>🏍️</div>
-          <div>
-            <div style={{ color: "white", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>
-              Taller de Motos
-            </div>
-            <div style={{ color: "#64748b", fontSize: 11 }}>Sistema de Gestión</div>
+        {!logoError ? (
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 56 }}>
+            <Image
+              src="/logo.svg"
+              alt="Logo del Taller"
+              width={160}
+              height={56}
+              style={{ objectFit: "contain", maxWidth: "100%" }}
+              onError={() => setLogoError(true)}
+              priority
+            />
           </div>
-        </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: "linear-gradient(135deg, #2596be, #1a7a9e)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 20
+            }}>🏍️</div>
+            <div>
+              <div style={{ color: "white", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>
+                Taller de Motos
+              </div>
+              <div style={{ color: "#64748b", fontSize: 11 }}>Sistema de Gestión</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}

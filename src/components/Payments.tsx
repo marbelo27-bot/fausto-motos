@@ -97,11 +97,11 @@ export default function Payments() {
     }
   };
 
-  const handleGeneratePDF = (payment: Payment) => {
+  const handleGeneratePDF = async (payment: Payment) => {
     const client = clients.find(c => c.id === payment.clientId);
     const order = payment.serviceOrderId ? serviceOrders.find(o => o.id === payment.serviceOrderId) : undefined;
     if (client) {
-      generatePaymentPDF(payment, client, order);
+      await generatePaymentPDF(payment, client, order);
     }
   };
 
