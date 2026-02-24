@@ -224,7 +224,7 @@ export default function ServiceOrders() {
               return (
                 <div key={order.id} style={{
                   padding: "10px 12px", borderRadius: 8,
-                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  background: "#1e2a4a", border: "1px solid #2d3f6b",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
@@ -401,7 +401,7 @@ export default function ServiceOrders() {
                 <div className="form-group">
                   <label className="form-label">Repuestos ($)</label>
                   <input type="number" className="form-input" value={form.partsCost} readOnly
-                    style={{ background: "#f8fafc", color: "#64748b" }} />
+                    style={{ background: "#1e2a4a", color: "#64748b" }} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Total ($)</label>
@@ -511,7 +511,7 @@ export default function ServiceOrders() {
               </div>
 
               {viewingOrder.notes && (
-                <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+                <div style={{ padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
                   📝 {viewingOrder.notes}
                 </div>
               )}

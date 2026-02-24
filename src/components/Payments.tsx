@@ -182,7 +182,7 @@ export default function Payments() {
               return (
                 <div key={payment.id} style={{
                   padding: "10px 12px", borderRadius: 8,
-                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  background: "#1e2a4a", border: "1px solid #2d3f6b",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>

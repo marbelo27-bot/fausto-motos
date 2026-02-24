@@ -103,7 +103,7 @@ export default function Clients() {
               return (
                 <div key={client.id} style={{
                   padding: "10px 12px", borderRadius: 8,
-                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  background: "#1e2a4a", border: "1px solid #2d3f6b",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
@@ -237,7 +237,7 @@ export default function Clients() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {motorcycles.filter(m => m.clientId === viewingClient.id).map(m => (
-                    <div key={m.id} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13 }}>
+                    <div key={m.id} style={{ padding: "8px 12px", background: "#1e2a4a", borderRadius: 8, border: "1px solid #2d3f6b", fontSize: 13 }}>
                       🏍️ <strong>{m.brand} {m.model}</strong> — {m.year} — Dom: <strong>{m.plate}</strong>
                     </div>
                   ))}
@@ -253,7 +253,7 @@ export default function Clients() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {serviceOrders.filter(o => o.clientId === viewingClient.id).map(o => (
-                    <div key={o.id} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+                    <div key={o.id} style={{ padding: "8px 12px", background: "#1e2a4a", borderRadius: 8, border: "1px solid #2d3f6b", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
                       <span>🔧 {o.performedService} — {new Date(o.date + "T00:00:00").toLocaleDateString("es-AR")}</span>
                       <span style={{ fontWeight: 600, color: "#2596be" }}>${o.totalCost.toLocaleString("es-AR")}</span>
                     </div>
@@ -270,7 +270,7 @@ export default function Clients() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {payments.filter(p => p.clientId === viewingClient.id).map(p => (
-                    <div key={p.id} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+                    <div key={p.id} style={{ padding: "8px 12px", background: "#1e2a4a", borderRadius: 8, border: "1px solid #2d3f6b", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
                       <span>💰 {p.type} ({p.method}) — {new Date(p.date + "T00:00:00").toLocaleDateString("es-AR")}</span>
                       <span style={{ fontWeight: 600, color: "#16a34a" }}>${p.amount.toLocaleString("es-AR")}</span>
                     </div>

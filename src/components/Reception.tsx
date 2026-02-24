@@ -187,7 +187,7 @@ export default function Reception() {
               return (
                 <div key={r.id} style={{
                   padding: "10px 12px", borderRadius: 8,
-                  background: "#f8fafc", border: "1px solid #e2e8f0",
+                  background: "#1e2a4a", border: "1px solid #2d3f6b",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
@@ -355,7 +355,7 @@ export default function Reception() {
                     {form.images.map(img => (
                       <div key={img.id} style={{ position: "relative", width: 100, height: 80 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #e2e8f0" }} />
+                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #2d3f6b" }} />
                         <button
                           type="button"
                           onClick={() => removeImage(img.id)}
@@ -430,7 +430,7 @@ export default function Reception() {
               </div>
 
               {viewingReception.notes && (
-                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#f8fafc", borderRadius: 8, fontSize: 13 }}>
+                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13 }}>
                   📝 {viewingReception.notes}
                 </div>
               )}
@@ -442,7 +442,7 @@ export default function Reception() {
                     {viewingReception.images.map(img => (
                       <div key={img.id} style={{ width: 120, height: 90 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #e2e8f0" }} />
+                        <img src={img.dataUrl} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6, border: "1px solid #2d3f6b" }} />
                       </div>
                     ))}
                   </div>
