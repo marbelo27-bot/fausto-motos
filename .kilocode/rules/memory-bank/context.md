@@ -70,3 +70,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Fixed date display bug: new Date("YYYY-MM-DD") parses as UTC midnight, showing wrong day in UTC-3. Fixed by appending "T00:00:00" in all toLocaleDateString() calls across ServiceOrders, Reception, Payments, Dashboard, Clients, pdfGenerator (re-applied comprehensively) |
 | 2026-02 | Added Parts Inventory Margin section to Dashboard: total cost price, total sale price, profit difference, and margin percentage with visual bar chart |
 | 2026-02 | Applied full dark color theme: #CAF404 (lime), #11A900 (green), #FFF, #000, #0F0 — updated globals.css, all components, Sidebar, Dashboard, and pdfGenerator (black header with lime accent) |
+| 2026-02 | Fixed dark theme contrast: explicit background on tbody tr, td, table; improved td text color to #ddd; form inputs/selects/textareas use #222 background; select options styled dark; hover row uses #242424 |
