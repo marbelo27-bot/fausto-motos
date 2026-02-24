@@ -181,14 +181,14 @@ export default function Payments() {
               const order = payment.serviceOrderId ? serviceOrders.find(o => o.id === payment.serviceOrderId) : null;
               return (
                 <div key={payment.id} style={{
-                  padding: "10px 12px", borderRadius: 8,
-                  background: "#1e2a4a", border: "1px solid #2d3f6b",
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "#1e293b", border: "1px solid #334155",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
-                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       {methodIcons[payment.method]} {payment.method}
                       {order ? ` · #${order.id.slice(0, 8).toUpperCase()}` : ""}
                     </div>
@@ -197,10 +197,10 @@ export default function Payments() {
                     <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>
                       {payment.type}
                     </span>
-                    <span style={{ fontWeight: "bold", color: "#fff", fontSize: 14 }}>
+                    <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 14 }}>
                       ${payment.amount.toLocaleString("es-AR")}
                     </span>
-                    <span style={{ fontSize: 11, color: "#fff", fontWeight: "bold" }}>
+                    <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 500 }}>
                       {new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")}
                     </span>
                   </div>

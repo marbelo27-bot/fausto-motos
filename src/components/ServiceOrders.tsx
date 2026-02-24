@@ -223,14 +223,14 @@ export default function ServiceOrders() {
               const moto = motorcycles.find(m => m.id === order.motorcycleId);
               return (
                 <div key={order.id} style={{
-                  padding: "10px 12px", borderRadius: 8,
-                  background: "#1e2a4a", border: "1px solid #2d3f6b",
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "#1e293b", border: "1px solid #334155",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
-                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {order.performedService}
                     </div>
                   </div>
@@ -238,10 +238,10 @@ export default function ServiceOrders() {
                     <span className={`badge ${statusColors[order.status] || "badge-gray"}`}>
                       {order.status}
                     </span>
-                    <span style={{ fontWeight: "bold", color: "#fff", fontSize: 13 }}>
+                    <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 13 }}>
                       ${order.totalCost.toLocaleString("es-AR")}
                     </span>
-                    <span style={{ fontSize: 11, color: "#fff", fontWeight: "bold" }}>
+                    <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 500 }}>
                       {new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")}
                     </span>
                   </div>
@@ -504,14 +504,14 @@ export default function ServiceOrders() {
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, marginBottom: 16 }}>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 13, color: "#fff", fontWeight: "bold" }}>Mano de obra: ${viewingOrder.laborCost.toLocaleString("es-AR")}</div>
-                  <div style={{ fontSize: 13, color: "#fff", fontWeight: "bold" }}>Repuestos: ${viewingOrder.partsCost.toLocaleString("es-AR")}</div>
-                  <div style={{ fontSize: 18, fontWeight: "bold", color: "#fff" }}>Total: ${viewingOrder.totalCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 13, color: "#94a3b8", fontWeight: 500 }}>Mano de obra: ${viewingOrder.laborCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 13, color: "#94a3b8", fontWeight: 500 }}>Repuestos: ${viewingOrder.partsCost.toLocaleString("es-AR")}</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: "#22c55e" }}>Total: ${viewingOrder.totalCost.toLocaleString("es-AR")}</div>
                 </div>
               </div>
 
               {viewingOrder.notes && (
-                <div style={{ padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13, marginBottom: 16, color: "#fff", fontWeight: "bold" }}>
+                <div style={{ padding: "12px 16px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, marginBottom: 16, color: "#94a3b8", fontWeight: 500 }}>
                   📝 {viewingOrder.notes}
                 </div>
               )}

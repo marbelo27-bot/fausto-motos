@@ -116,20 +116,20 @@ export default function Motorcycles() {
               const client = clients.find(c => c.id === moto.clientId);
               return (
                 <div key={moto.id} style={{
-                  padding: "10px 12px", borderRadius: 8,
-                  background: "#1e2a4a", border: "1px solid #2d3f6b",
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "#1e293b", border: "1px solid #334155",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{moto.brand} {moto.model}</div>
-                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{moto.brand} {moto.model}</div>
+                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       👤 {client?.fullName || "—"}{client?.phone ? ` · ${client.phone}` : ""}
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                     <span className="badge badge-blue" style={{ fontSize: 12, padding: "3px 10px" }}>{moto.plate}</span>
-                    <span style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>{moto.year}</span>
+                    <span style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>{moto.year}</span>
                   </div>
                   <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                     <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(moto)}>✏️</button>

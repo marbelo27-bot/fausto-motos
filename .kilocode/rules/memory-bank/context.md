@@ -74,3 +74,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Replaced table-based lists in all 6 section pages (Clients, Motorcycles, Reception, ServiceOrders, Parts, Payments) with Dashboard-style card rows: background #f8fafc, border #e2e8f0, flex layout matching "Últimas Órdenes" in Dashboard |
 | 2026-02 | Changed card background color in all 6 section pages to dark blue (#1e2a4a) with matching dark blue border (#2d3f6b) |
 | 2026-02 | Set card text to bold white (#fff, fontWeight: bold) in all 6 section pages (Clients, Motorcycles, Reception, ServiceOrders, Parts, Payments) — primary, secondary, and detail-view card text |
+| 2026-02 | Redesigned cards in all 6 section pages to match Dashboard aesthetic: container #1e293b bg / #334155 border / 12px radius; primary text #ffffff fw700; secondary text #94a3b8 fw500; prices/amounts #22c55e fw800 |

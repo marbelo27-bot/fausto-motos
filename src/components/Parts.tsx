@@ -115,19 +115,19 @@ export default function Parts() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map(part => (
               <div key={part.id} style={{
-                padding: "10px 12px", borderRadius: 8,
-                background: "#1e2a4a", border: "1px solid #2d3f6b",
+                padding: "12px 16px", borderRadius: 12,
+                background: "#1e293b", border: "1px solid #334155",
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 gap: 12,
               }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{part.description}</div>
-                  <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{part.description}</div>
+                  <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                     Costo: ${part.costPrice.toLocaleString("es-AR")}
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                  <span style={{ fontWeight: "bold", color: "#fff", fontSize: 13 }}>
+                  <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 13 }}>
                     ${part.salePrice.toLocaleString("es-AR")}
                   </span>
                   <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>

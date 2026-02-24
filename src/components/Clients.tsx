@@ -102,24 +102,24 @@ export default function Clients() {
               const stats = getClientStats(client.id);
               return (
                 <div key={client.id} style={{
-                  padding: "10px 12px", borderRadius: 8,
-                  background: "#1e2a4a", border: "1px solid #2d3f6b",
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "#1e293b", border: "1px solid #334155",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client.fullName}</div>
-                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{client.fullName}</div>
+                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       📞 {client.phone}{client.address ? ` · ${client.address}` : ""}
                     </div>
-                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 11, marginTop: 2 }}>
+                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 11, marginTop: 2 }}>
                       Ingreso: {new Date(client.createdAt).toLocaleDateString("es-AR")}
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                     <span className="badge badge-blue" title="Motos">🏍️ {stats.motos}</span>
                     <span className="badge badge-yellow" title="Órdenes">🔧 {stats.orders}</span>
-                    <span style={{ fontWeight: 700, color: "#16a34a", fontSize: 13 }}>
+                    <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 13 }}>
                       ${stats.totalPaid.toLocaleString("es-AR")}
                     </span>
                   </div>
@@ -237,8 +237,8 @@ export default function Clients() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {motorcycles.filter(m => m.clientId === viewingClient.id).map(m => (
-                    <div key={m.id} style={{ padding: "8px 12px", background: "#1e2a4a", borderRadius: 8, border: "1px solid #2d3f6b", fontSize: 13, color: "#fff", fontWeight: "bold" }}>
-                      🏍️ <strong>{m.brand} {m.model}</strong> — {m.year} — Dom: <strong>{m.plate}</strong>
+                    <div key={m.id} style={{ padding: "8px 12px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, color: "#ffffff", fontWeight: 700 }}>
+                      🏍️ <strong>{m.brand} {m.model}</strong> — <span style={{ color: "#94a3b8", fontWeight: 500 }}>{m.year} — Dom: {m.plate}</span>
                     </div>
                   ))}
                 </div>
@@ -253,9 +253,9 @@ export default function Clients() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {serviceOrders.filter(o => o.clientId === viewingClient.id).map(o => (
-                    <div key={o.id} style={{ padding: "8px 12px", background: "#1e2a4a", borderRadius: 8, border: "1px solid #2d3f6b", fontSize: 13, display: "flex", justifyContent: "space-between", color: "#fff", fontWeight: "bold" }}>
-                      <span>🔧 {o.performedService} — {new Date(o.date + "T00:00:00").toLocaleDateString("es-AR")}</span>
-                      <span style={{ fontWeight: "bold", color: "#fff" }}>${o.totalCost.toLocaleString("es-AR")}</span>
+                    <div key={o.id} style={{ padding: "8px 12px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "#ffffff", fontWeight: 700 }}>🔧 {o.performedService}</span>
+                      <span style={{ color: "#94a3b8", fontWeight: 500 }}>{new Date(o.date + "T00:00:00").toLocaleDateString("es-AR")} — <span style={{ color: "#22c55e", fontWeight: 800 }}>${o.totalCost.toLocaleString("es-AR")}</span></span>
                     </div>
                   ))}
                 </div>
@@ -270,9 +270,9 @@ export default function Clients() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {payments.filter(p => p.clientId === viewingClient.id).map(p => (
-                    <div key={p.id} style={{ padding: "8px 12px", background: "#1e2a4a", borderRadius: 8, border: "1px solid #2d3f6b", fontSize: 13, display: "flex", justifyContent: "space-between", color: "#fff", fontWeight: "bold" }}>
-                      <span>💰 {p.type} ({p.method}) — {new Date(p.date + "T00:00:00").toLocaleDateString("es-AR")}</span>
-                      <span style={{ fontWeight: "bold", color: "#fff" }}>${p.amount.toLocaleString("es-AR")}</span>
+                    <div key={p.id} style={{ padding: "8px 12px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "#ffffff", fontWeight: 700 }}>💰 {p.type} ({p.method})</span>
+                      <span style={{ color: "#94a3b8", fontWeight: 500 }}>{new Date(p.date + "T00:00:00").toLocaleDateString("es-AR")} — <span style={{ color: "#22c55e", fontWeight: 800 }}>${p.amount.toLocaleString("es-AR")}</span></span>
                     </div>
                   ))}
                 </div>

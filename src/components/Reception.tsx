@@ -186,14 +186,14 @@ export default function Reception() {
               const moto = motorcycles.find(m => m.id === r.motorcycleId);
               return (
                 <div key={r.id} style={{
-                  padding: "10px 12px", borderRadius: 8,
-                  background: "#1e2a4a", border: "1px solid #2d3f6b",
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "#1e293b", border: "1px solid #334155",
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>{client?.fullName || "—"}</div>
-                    <div style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{client?.fullName || "—"}</div>
+                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {r.km.toLocaleString("es-AR")} km
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export default function Reception() {
                       {r.bodyCondition}
                     </span>
                     {r.images.length > 0 && <span className="badge badge-blue">📷 {r.images.length}</span>}
-                    <span style={{ fontSize: 11, color: "#fff", fontWeight: "bold" }}>
+                    <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 500 }}>
                       {new Date(r.date + "T00:00:00").toLocaleDateString("es-AR")}
                     </span>
                   </div>
@@ -430,7 +430,7 @@ export default function Reception() {
               </div>
 
               {viewingReception.notes && (
-                <div style={{ marginBottom: 16, padding: "10px 12px", background: "#1e2a4a", borderRadius: 8, fontSize: 13, color: "#fff", fontWeight: "bold" }}>
+                <div style={{ marginBottom: 16, padding: "12px 16px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, color: "#94a3b8", fontWeight: 500 }}>
                   📝 {viewingReception.notes}
                 </div>
               )}
