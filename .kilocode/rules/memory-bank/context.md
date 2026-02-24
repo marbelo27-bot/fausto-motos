@@ -64,3 +64,5 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | Initial | Template created with base setup |
 | 2025-02 | Full motorcycle workshop management system built |
 | 2026-02 | Logo integration: public/logo.svg, logoData.ts, Sidebar + PDF headers |
+| 2026-02 | Renamed to FAUSTO MOTOS, removed logo from PDFs, fixed date bug in ServiceOrders |
+| 2026-02 | Fixed date bug in all form components: use local date + getEmptyForm() factory functions in Reception, Payments, ServiceOrders |
