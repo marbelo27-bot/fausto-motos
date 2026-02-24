@@ -2,7 +2,7 @@
 import { useStore } from "@/lib/store";
 
 export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => void }) {
-  const { clients, motorcycles, receptions, serviceOrders, payments } = useStore();
+  const { clients, motorcycles, receptions, serviceOrders, payments, parts } = useStore();
 
   const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
   const pendingOrders = serviceOrders.filter(o => o.status === "pendiente" || o.status === "en proceso").length;
@@ -14,6 +14,12 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
   const totalEarnings = totalLaborIncome + totalPartsIncome;
   const laborPct = totalEarnings > 0 ? Math.round((totalLaborIncome / totalEarnings) * 100) : 0;
   const partsPct = totalEarnings > 0 ? Math.round((totalPartsIncome / totalEarnings) * 100) : 0;
+
+  // Parts inventory margin
+  const totalInventoryCost = parts.reduce((sum, p) => sum + p.costPrice * p.stock, 0);
+  const totalInventorySale = parts.reduce((sum, p) => sum + p.salePrice * p.stock, 0);
+  const totalInventoryMargin = totalInventorySale - totalInventoryCost;
+  const marginPct = totalInventorySale > 0 ? Math.round((totalInventoryMargin / totalInventorySale) * 100) : 0;
 
   const recentOrders = [...serviceOrders]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -310,6 +316,130 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
           <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
             Aún no hay órdenes de servicio con costos registrados.
           </p>
+        )}
+      </div>
+
+      {/* Parts Inventory Margin */}
+      <div className="card" style={{ marginTop: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+          <div>
+            <h3 style={{ fontWeight: 700, fontSize: 15 }}>📦 Margen de Repuestos (Inventario)</h3>
+            <p style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>
+              Diferencia entre precio de costo y precio de venta del stock actual
+            </p>
+          </div>
+          <button className="btn-secondary" style={{ fontSize: 12, padding: "4px 10px" }} onClick={() => onNavigate("parts")}>
+            Ver repuestos
+          </button>
+        </div>
+
+        {parts.length === 0 ? (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
+            Aún no hay repuestos registrados en el inventario.
+          </p>
+        ) : (
+          <>
+            {/* Three metric cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 20 }}>
+              {/* Cost price */}
+              <div style={{
+                background: "#fef2f2",
+                border: "1px solid #fecaca",
+                borderRadius: 10,
+                padding: "16px 18px",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    background: "#dc262620",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 16,
+                  }}>🏷️</div>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: "#b91c1c" }}>Costo Total</span>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#dc2626" }}>
+                  ${totalInventoryCost.toLocaleString("es-AR")}
+                </div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                  Precio de compra × stock
+                </div>
+              </div>
+
+              {/* Sale price */}
+              <div style={{
+                background: "#f0fdf4",
+                border: "1px solid #bbf7d0",
+                borderRadius: 10,
+                padding: "16px 18px",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    background: "#16a34a20",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 16,
+                  }}>💲</div>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: "#15803d" }}>Venta Total</span>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#16a34a" }}>
+                  ${totalInventorySale.toLocaleString("es-AR")}
+                </div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                  Precio de venta × stock
+                </div>
+              </div>
+
+              {/* Margin */}
+              <div style={{
+                background: marginPct >= 0 ? "#fefce8" : "#fef2f2",
+                border: `1px solid ${marginPct >= 0 ? "#fde68a" : "#fecaca"}`,
+                borderRadius: 10,
+                padding: "16px 18px",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    background: marginPct >= 0 ? "#ca8a0420" : "#dc262620",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 16,
+                  }}>📈</div>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: marginPct >= 0 ? "#92400e" : "#b91c1c" }}>
+                    Ganancia Potencial
+                  </span>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: marginPct >= 0 ? "#d97706" : "#dc2626" }}>
+                  ${totalInventoryMargin.toLocaleString("es-AR")}
+                </div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                  Margen: {marginPct}%
+                </div>
+              </div>
+            </div>
+
+            {/* Visual margin bar */}
+            {totalInventorySale > 0 && (
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginBottom: 6 }}>
+                  <span>🏷️ Costo ({100 - marginPct}%)</span>
+                  <span>📈 Ganancia ({marginPct}%)</span>
+                </div>
+                <div style={{ height: 10, borderRadius: 99, background: "#e2e8f0", overflow: "hidden", display: "flex" }}>
+                  <div style={{
+                    width: `${100 - marginPct}%`,
+                    background: "#dc2626",
+                    borderRadius: "99px 0 0 99px",
+                    transition: "width 0.5s ease",
+                  }} />
+                  <div style={{
+                    width: `${marginPct}%`,
+                    background: "#d97706",
+                    borderRadius: "0 99px 99px 0",
+                    transition: "width 0.5s ease",
+                  }} />
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

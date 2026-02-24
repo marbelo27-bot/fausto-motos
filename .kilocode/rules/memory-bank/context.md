@@ -68,3 +68,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Renamed to FAUSTO MOTOS, removed logo from PDFs, fixed date bug in ServiceOrders |
 | 2026-02 | Fixed date bug in all form components: use local date + getEmptyForm() factory functions in Reception, Payments, ServiceOrders |
 | 2026-02 | Fixed date display bug: new Date("YYYY-MM-DD") parses as UTC midnight, showing wrong day in UTC-3. Fixed by appending "T00:00:00" in all toLocaleDateString() calls across ServiceOrders, Reception, Payments, Dashboard, Clients, pdfGenerator (re-applied comprehensively) |
+| 2026-02 | Added Parts Inventory Margin section to Dashboard: total cost price, total sale price, profit difference, and margin percentage with visual bar chart |
