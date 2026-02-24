@@ -8,6 +8,13 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
   const pendingOrders = serviceOrders.filter(o => o.status === "pendiente" || o.status === "en proceso").length;
   const completedOrders = serviceOrders.filter(o => o.status === "completado" || o.status === "entregado").length;
 
+  // Earnings breakdown from service orders
+  const totalLaborIncome = serviceOrders.reduce((sum, o) => sum + (o.laborCost || 0), 0);
+  const totalPartsIncome = serviceOrders.reduce((sum, o) => sum + (o.partsCost || 0), 0);
+  const totalEarnings = totalLaborIncome + totalPartsIncome;
+  const laborPct = totalEarnings > 0 ? Math.round((totalLaborIncome / totalEarnings) * 100) : 0;
+  const partsPct = totalEarnings > 0 ? Math.round((totalPartsIncome / totalEarnings) * 100) : 0;
+
   const recentOrders = [...serviceOrders]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
@@ -187,6 +194,123 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Earnings Breakdown */}
+      <div className="card" style={{ marginTop: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+          <div>
+            <h3 style={{ fontWeight: 700, fontSize: 15 }}>📊 Resumen de Ganancias</h3>
+            <p style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>
+              Basado en órdenes de servicio registradas
+            </p>
+          </div>
+          <button className="btn-secondary" style={{ fontSize: 12, padding: "4px 10px" }} onClick={() => onNavigate("serviceOrders")}>
+            Ver órdenes
+          </button>
+        </div>
+
+        {/* Total earnings highlight */}
+        <div style={{
+          background: "linear-gradient(135deg, #1e3a5f 0%, #2596be 100%)",
+          borderRadius: 12,
+          padding: "20px 24px",
+          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+              INGRESOS TOTALES (Mano de obra + Repuestos)
+            </div>
+            <div style={{ color: "#fff", fontSize: 28, fontWeight: 800, letterSpacing: "-0.5px" }}>
+              ${totalEarnings.toLocaleString("es-AR")}
+            </div>
+          </div>
+          <div style={{ fontSize: 36 }}>💵</div>
+        </div>
+
+        {/* Breakdown cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+          {/* Labor */}
+          <div style={{
+            background: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            borderRadius: 10,
+            padding: "16px 18px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8,
+                background: "#16a34a20",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 16,
+              }}>🔧</div>
+              <span style={{ fontWeight: 600, fontSize: 13, color: "#15803d" }}>Mano de Obra</span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>
+              ${totalLaborIncome.toLocaleString("es-AR")}
+            </div>
+            <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
+              {laborPct}% del total
+            </div>
+          </div>
+
+          {/* Parts */}
+          <div style={{
+            background: "#eff6ff",
+            border: "1px solid #bfdbfe",
+            borderRadius: 10,
+            padding: "16px 18px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8,
+                background: "#2563eb20",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 16,
+              }}>⚙️</div>
+              <span style={{ fontWeight: 600, fontSize: 13, color: "#1d4ed8" }}>Repuestos</span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: "#2563eb" }}>
+              ${totalPartsIncome.toLocaleString("es-AR")}
+            </div>
+            <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
+              {partsPct}% del total
+            </div>
+          </div>
+        </div>
+
+        {/* Visual bar */}
+        {totalEarnings > 0 && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginBottom: 6 }}>
+              <span>🔧 Mano de obra ({laborPct}%)</span>
+              <span>⚙️ Repuestos ({partsPct}%)</span>
+            </div>
+            <div style={{ height: 10, borderRadius: 99, background: "#e2e8f0", overflow: "hidden", display: "flex" }}>
+              <div style={{
+                width: `${laborPct}%`,
+                background: "#16a34a",
+                borderRadius: "99px 0 0 99px",
+                transition: "width 0.5s ease",
+              }} />
+              <div style={{
+                width: `${partsPct}%`,
+                background: "#2563eb",
+                borderRadius: "0 99px 99px 0",
+                transition: "width 0.5s ease",
+              }} />
+            </div>
+          </div>
+        )}
+
+        {totalEarnings === 0 && (
+          <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "8px 0" }}>
+            Aún no hay órdenes de servicio con costos registrados.
+          </p>
+        )}
       </div>
     </div>
   );
