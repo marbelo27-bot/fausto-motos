@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #2596be;
-  --primary-dark: #1a7a9e;
-  --primary-light: #e0f4fb;
-  --accent: #f5a623;
-  --dark: #1a1a2e;
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #1e3a5f;
+  --accent: #f59e0b;
+  --dark: #0f172a;
   --sidebar-width: 240px;
 }
 
@@ -15,14 +15,15 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #f0f4f8;
-  color: #1a1a2e;
+  background-color: #0f172a;
+  color: #e2e8f0;
 }
 
 .sidebar {
   width: var(--sidebar-width);
   min-height: 100vh;
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  border-right: 1px solid #1e293b;
   position: fixed;
   left: 0;
   top: 0;
@@ -52,26 +53,26 @@ body {
 }
 
 .nav-item:hover {
-  background: rgba(37, 150, 190, 0.2);
-  color: #2596be;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
 }
 
 .nav-item.active {
-  background: rgba(37, 150, 190, 0.25);
-  color: #2596be;
-  border-left: 3px solid #2596be;
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border-left: 3px solid #3b82f6;
 }
 
 .card {
-  background: white;
+  background: #1e293b;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  border: 1px solid #334155;
 }
 
 .btn-primary {
-  background: #2596be;
+  background: #3b82f6;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -86,13 +87,13 @@ body {
 }
 
 .btn-primary:hover {
-  background: #1a7a9e;
+  background: #2563eb;
 }
 
 .btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -105,13 +106,14 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #e2e8f0;
+  background: #334155;
+  color: #e2e8f0;
 }
 
 .btn-danger {
-  background: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(220, 38, 38, 0.3);
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -121,13 +123,13 @@ body {
 }
 
 .btn-danger:hover {
-  background: #fecaca;
+  background: rgba(220, 38, 38, 0.25);
 }
 
 .btn-success {
-  background: #dcfce7;
-  color: #16a34a;
-  border: 1px solid #bbf7d0;
+  background: rgba(22, 163, 74, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -137,7 +139,7 @@ body {
 }
 
 .btn-success:hover {
-  background: #bbf7d0;
+  background: rgba(22, 163, 74, 0.25);
 }
 
 .form-group {
@@ -150,50 +152,55 @@ body {
 .form-label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: #94a3b8;
 }
 
 .form-input {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #334155;
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: #e2e8f0;
+  background: #0f172a;
   transition: border-color 0.2s;
   width: 100%;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .form-select {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #334155;
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: #e2e8f0;
+  background: #0f172a;
   width: 100%;
   cursor: pointer;
 }
 
 .form-select:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.form-select option {
+  background: #1e293b;
+  color: #e2e8f0;
 }
 
 .form-textarea {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #334155;
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: #e2e8f0;
+  background: #0f172a;
   width: 100%;
   resize: vertical;
   min-height: 80px;
@@ -201,14 +208,14 @@ body {
 
 .form-textarea:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.7);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -217,14 +224,15 @@ body {
 }
 
 .modal {
-  background: white;
+  background: #1e293b;
+  border: 1px solid #334155;
   border-radius: 16px;
   padding: 24px;
   width: 100%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
 .modal-lg {
@@ -237,29 +245,29 @@ body {
   justify-content: space-between;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid #334155;
 }
 
 .modal-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #f1f5f9;
 }
 
 .table-container {
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #334155;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white !important;
+  background-color: #1e293b !important;
 }
 
 thead {
-  background: #f8fafc !important;
+  background: #0f172a !important;
 }
 
 th {
@@ -270,20 +278,20 @@ th {
   color: #64748b !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid #e2e8f0;
-  background: #f8fafc !important;
+  border-bottom: 1px solid #334155;
+  background: #0f172a !important;
 }
 
 tbody tr {
-  background-color: white !important;
+  background-color: #1e293b !important;
 }
 
 td {
   padding: 10px 14px;
   font-size: 14px;
-  color: #374151 !important;
-  border-bottom: 1px solid #f1f5f9;
-  background-color: white !important;
+  color: #cbd5e1 !important;
+  border-bottom: 1px solid #1e293b;
+  background-color: #1e293b !important;
 }
 
 tr:last-child td {
@@ -291,7 +299,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background: #f0f7ff !important;
+  background: #263548 !important;
 }
 
 .badge {
@@ -304,42 +312,42 @@ tr:hover td {
 }
 
 .badge-blue {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
 }
 
 .badge-green {
-  background: #dcfce7;
-  color: #16a34a;
+  background: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
 }
 
 .badge-yellow {
-  background: #fef9c3;
-  color: #ca8a04;
+  background: rgba(202, 138, 4, 0.2);
+  color: #fbbf24;
 }
 
 .badge-red {
-  background: #fee2e2;
-  color: #dc2626;
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
 }
 
 .badge-gray {
-  background: #f1f5f9;
-  color: #64748b;
+  background: rgba(100, 116, 139, 0.2);
+  color: #94a3b8;
 }
 
 .stat-card {
-  background: white;
+  background: #1e293b;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border: 1px solid #334155;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #f1f5f9;
 }
 
 .stat-label {
@@ -358,38 +366,39 @@ tr:hover td {
 .page-title {
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #f1f5f9;
 }
 
 .search-input {
   padding: 8px 12px 8px 36px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #334155;
   border-radius: 8px;
   font-size: 14px;
   width: 280px;
-  background: white;
+  background: #0f172a;
+  color: #e2e8f0;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #2596be;
-  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .range-slider {
   width: 100%;
-  accent-color: #2596be;
+  accent-color: #3b82f6;
 }
 
 .section-title {
   font-size: 14px;
   font-weight: 700;
-  color: #2596be;
+  color: #60a5fa;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 12px;
   padding-bottom: 6px;
-  border-bottom: 2px solid #e0f4fb;
+  border-bottom: 2px solid #1e3a5f;
 }
 
 .grid-2 {

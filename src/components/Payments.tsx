@@ -121,19 +121,19 @@ export default function Payments() {
       {/* Stats */}
       <div className="grid-4" style={{ marginBottom: 16 }}>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#2596be" }}>
+          <div className="stat-value" style={{ color: "#60a5fa" }}>
             ${payments.reduce((s, p) => s + p.amount, 0).toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Total recaudado</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#d97706" }}>
+          <div className="stat-value" style={{ color: "#fbbf24" }}>
             ${totalByType.anticipo.toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Anticipos</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#16a34a" }}>
+          <div className="stat-value" style={{ color: "#4ade80" }}>
             ${totalByType["pago total"].toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Pagos totales</div>

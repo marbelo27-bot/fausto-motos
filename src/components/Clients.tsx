@@ -222,7 +222,7 @@ export default function Clients() {
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                       <div>🏍️ <strong>{stats.motos}</strong> moto(s) registrada(s)</div>
                       <div>🔧 <strong>{stats.orders}</strong> orden(es) de servicio</div>
-                      <div>💰 Total pagado: <strong style={{ color: "#16a34a" }}>${stats.totalPaid.toLocaleString("es-AR")}</strong></div>
+                      <div>💰 Total pagado: <strong style={{ color: "#4ade80" }}>${stats.totalPaid.toLocaleString("es-AR")}</strong></div>
                     </div>
                   );
                 })()}

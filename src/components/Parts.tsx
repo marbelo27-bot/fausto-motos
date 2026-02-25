@@ -80,17 +80,17 @@ export default function Parts() {
       {/* Stats */}
       <div className="grid-3" style={{ marginBottom: 16 }}>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#2596be" }}>{parts.length}</div>
+          <div className="stat-value" style={{ color: "#60a5fa" }}>{parts.length}</div>
           <div className="stat-label">Repuestos en catálogo</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#16a34a" }}>
+          <div className="stat-value" style={{ color: "#4ade80" }}>
             ${parts.reduce((sum, p) => sum + p.salePrice * p.stock, 0).toLocaleString("es-AR")}
           </div>
           <div className="stat-label">Valor stock (venta)</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: "#d97706" }}>
+          <div className="stat-value" style={{ color: "#fbbf24" }}>
             {parts.filter(p => p.stock === 0).length}
           </div>
           <div className="stat-label">Sin stock</div>
@@ -209,8 +209,8 @@ export default function Parts() {
               </div>
 
               {parseFloat(form.costPrice) > 0 && parseFloat(form.salePrice) > 0 && (
-                <div style={{ padding: "10px 12px", background: "#f0f9ff", borderRadius: 8, marginBottom: 16, fontSize: 13 }}>
-                  💡 Margen de ganancia: <strong style={{ color: "#2596be" }}>
+                <div style={{ padding: "10px 12px", background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 8, marginBottom: 16, fontSize: 13, color: "#cbd5e1" }}>
+                  💡 Margen de ganancia: <strong style={{ color: "#60a5fa" }}>
                     {Math.round(((parseFloat(form.salePrice) - parseFloat(form.costPrice)) / parseFloat(form.costPrice)) * 100)}%
                   </strong>
                   {" "}(${(parseFloat(form.salePrice) - parseFloat(form.costPrice)).toLocaleString("es-AR")} por unidad)

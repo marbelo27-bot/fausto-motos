@@ -538,7 +538,7 @@ export default function ServiceOrders() {
                 <div className="form-group">
                   <label className="form-label">Total ($)</label>
                   <input type="number" className="form-input" value={form.totalCost} readOnly
-                    style={{ background: "#e0f4fb", fontWeight: 700, color: "#2596be" }} />
+                    style={{ background: "rgba(59,130,246,0.1)", fontWeight: 700, color: "#60a5fa" }} />
                 </div>
               </div>
 

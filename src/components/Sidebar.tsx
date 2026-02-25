@@ -41,7 +41,7 @@ export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{
               width: 40, height: 40, borderRadius: 10,
-              background: "linear-gradient(135deg, #2596be, #1a7a9e)",
+              background: "linear-gradient(135deg, #3b82f6, #2563eb)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 20
             }}>🏍️</div>

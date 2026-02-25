@@ -44,14 +44,14 @@ const getEmptyForm = (): ReceptionFormData => {
 };
 
 function PercentBar({ value, label }: { value: number; label: string }) {
-  const color = value >= 75 ? "#16a34a" : value >= 50 ? "#2596be" : value >= 25 ? "#d97706" : "#dc2626";
+  const color = value >= 75 ? "#4ade80" : value >= 50 ? "#60a5fa" : value >= 25 ? "#fbbf24" : "#f87171";
   return (
     <div style={{ marginBottom: 4 }}>
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 3 }}>
         <span>{label}</span>
         <span style={{ fontWeight: 600, color }}>{value}%</span>
       </div>
-      <div style={{ height: 8, background: "#e2e8f0", borderRadius: 4, overflow: "hidden" }}>
+      <div style={{ height: 8, background: "#0f172a", borderRadius: 4, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${value}%`, background: color, borderRadius: 4, transition: "width 0.3s" }} />
       </div>
     </div>
@@ -327,11 +327,11 @@ export default function Reception() {
 
               <div style={{ display: "flex", gap: 24, marginBottom: 16 }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14 }}>
-                  <input type="checkbox" checked={form.helmet} onChange={e => setForm({ ...form, helmet: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#2596be" }} />
+                  <input type="checkbox" checked={form.helmet} onChange={e => setForm({ ...form, helmet: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#3b82f6" }} />
                   🪖 Casco
                 </label>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14 }}>
-                  <input type="checkbox" checked={form.documentation} onChange={e => setForm({ ...form, documentation: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#2596be" }} />
+                  <input type="checkbox" checked={form.documentation} onChange={e => setForm({ ...form, documentation: e.target.checked })} style={{ width: 16, height: 16, accentColor: "#3b82f6" }} />
                   📄 Documentación
                 </label>
               </div>
