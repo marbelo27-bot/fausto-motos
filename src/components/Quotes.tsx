@@ -195,7 +195,7 @@ export default function Quotes() {
     const client = clients.find((c) => c.id === selectedQuote.clientId);
     const moto = motorcycles.find((m) => m.id === selectedQuote.motorcycleId);
     return (
-      <div style={{ padding: "24px 28px", maxWidth: 860, margin: "0 auto" }}>
+      <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <button
             onClick={() => setView("list")}
@@ -249,42 +249,84 @@ export default function Quotes() {
           </div>
         </div>
 
-        {/* Items */}
-        <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px", marginBottom: 20 }}>
-          <div style={sectionTitle}>Detalle de Trabajos y Repuestos</div>
-          {selectedQuote.items.length === 0 ? (
-            <div style={{ color: "#64748b", fontSize: 13 }}>Sin ítems</div>
-          ) : (
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead>
-                <tr style={{ borderBottom: "1px solid #334155" }}>
-                  <th style={{ color: "#CAF404", textAlign: "left", padding: "6px 8px", fontWeight: 700 }}>Tipo</th>
-                  <th style={{ color: "#CAF404", textAlign: "left", padding: "6px 8px", fontWeight: 700 }}>Descripción</th>
-                  <th style={{ color: "#CAF404", textAlign: "right", padding: "6px 8px", fontWeight: 700 }}>Cant.</th>
-                  <th style={{ color: "#CAF404", textAlign: "right", padding: "6px 8px", fontWeight: 700 }}>P. Unit.</th>
-                  <th style={{ color: "#CAF404", textAlign: "right", padding: "6px 8px", fontWeight: 700 }}>Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedQuote.items.map((item) => (
-                  <tr key={item.id} style={{ borderBottom: "1px solid #1e293b" }}>
-                    <td style={{ padding: "7px 8px", color: item.type === "labor" ? "#3b82f6" : "#f59e0b" }}>
-                      {item.type === "labor" ? "🔧 Mano de obra" : "⚙️ Repuesto"}
-                    </td>
-                    <td style={{ padding: "7px 8px", color: "#fff" }}>{item.description}</td>
-                    <td style={{ padding: "7px 8px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
-                    <td style={{ padding: "7px 8px", color: "#94a3b8", textAlign: "right" }}>
-                      ${item.unitPrice.toLocaleString("es-AR")}
-                    </td>
-                    <td style={{ padding: "7px 8px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>
-                      ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        {/* Items — split into two sections side by side */}
+        {selectedQuote.items.length === 0 ? (
+          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px", marginBottom: 20, color: "#64748b", fontSize: 13 }}>
+            Sin ítems
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            {/* Mano de obra */}
+            <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ ...sectionTitle, color: "#3b82f6" }}>🔧 Mano de Obra</div>
+              {selectedQuote.items.filter((i) => i.type === "labor").length === 0 ? (
+                <div style={{ color: "#64748b", fontSize: 13 }}>Sin trabajos</div>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid #334155" }}>
+                      <th style={{ color: "#3b82f6", textAlign: "left", padding: "5px 6px", fontWeight: 700 }}>Descripción</th>
+                      <th style={{ color: "#3b82f6", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Cant.</th>
+                      <th style={{ color: "#3b82f6", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>P. Unit.</th>
+                      <th style={{ color: "#3b82f6", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedQuote.items.filter((i) => i.type === "labor").map((item) => (
+                      <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
+                        <td style={{ padding: "7px 6px", color: "#fff" }}>{item.description}</td>
+                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
+                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
+                        <td style={{ padding: "7px 6px", color: "#3b82f6", fontWeight: 700, textAlign: "right" }}>${(item.quantity * item.unitPrice).toLocaleString("es-AR")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ borderTop: "1px solid #334155" }}>
+                      <td colSpan={3} style={{ padding: "7px 6px", color: "#94a3b8", fontSize: 12, textAlign: "right", fontWeight: 600 }}>Total M.O.</td>
+                      <td style={{ padding: "7px 6px", color: "#3b82f6", fontWeight: 800, textAlign: "right" }}>${selectedQuote.laborTotal.toLocaleString("es-AR")}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              )}
+            </div>
+
+            {/* Repuestos */}
+            <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ ...sectionTitle, color: "#f59e0b" }}>⚙️ Repuestos</div>
+              {selectedQuote.items.filter((i) => i.type === "part").length === 0 ? (
+                <div style={{ color: "#64748b", fontSize: 13 }}>Sin repuestos</div>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid #334155" }}>
+                      <th style={{ color: "#f59e0b", textAlign: "left", padding: "5px 6px", fontWeight: 700 }}>Descripción</th>
+                      <th style={{ color: "#f59e0b", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Cant.</th>
+                      <th style={{ color: "#f59e0b", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>P. Unit.</th>
+                      <th style={{ color: "#f59e0b", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedQuote.items.filter((i) => i.type === "part").map((item) => (
+                      <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
+                        <td style={{ padding: "7px 6px", color: "#fff" }}>{item.description}</td>
+                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
+                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
+                        <td style={{ padding: "7px 6px", color: "#f59e0b", fontWeight: 700, textAlign: "right" }}>${(item.quantity * item.unitPrice).toLocaleString("es-AR")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ borderTop: "1px solid #334155" }}>
+                      <td colSpan={3} style={{ padding: "7px 6px", color: "#94a3b8", fontSize: 12, textAlign: "right", fontWeight: 600 }}>Total Repuestos</td>
+                      <td style={{ padding: "7px 6px", color: "#f59e0b", fontWeight: 800, textAlign: "right" }}>${selectedQuote.partsTotal.toLocaleString("es-AR")}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Totals */}
         <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px", marginBottom: 20 }}>
@@ -347,7 +389,7 @@ export default function Quotes() {
   // ── FORM VIEW ─────────────────────────────────────────────────────────────
   if (view === "form") {
     return (
-      <div style={{ padding: "24px 28px", maxWidth: 860, margin: "0 auto" }}>
+      <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <button
             onClick={() => { setView("list"); setEditingId(null); setForm(getEmptyForm()); }}
@@ -568,7 +610,7 @@ export default function Quotes() {
 
   // ── LIST VIEW ─────────────────────────────────────────────────────────────
   return (
-    <div style={{ padding: "24px 28px", maxWidth: 860, margin: "0 auto" }}>
+    <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
         <h2 style={{ color: "#fff", fontWeight: 700, fontSize: 22, margin: 0 }}>📝 Cotizaciones</h2>
         <button
