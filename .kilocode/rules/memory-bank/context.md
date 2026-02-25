@@ -84,3 +84,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Switched all PDF generators to light color theme: light gray header (#f5f5f5), white/light-blue table rows, dark slate table headers, dark green accents, bold dark text throughout — replaces previous all-black/neon-green dark theme |
 | 2026-02 | Split Quotes form into two separate sections: 🔧 Mano de Obra (blue) and ⚙️ Repuestos (amber), each with independent add-item row and subtotal; removed combined type selector |
 | 2026-02 | Fixed Parts price/stock inputs: changed from type=number with numeric state to type=text with string state, parsed only on submit — fixes "only one digit" entry bug |
+| 2026-02 | Added inline item editing to Quotes form: clicking any item row in Mano de Obra or Repuestos tables switches it to an editable row with inputs (description, quantity, price) and ✔/✕ buttons; added ✏️ Editar button directly on list cards |
