@@ -3,8 +3,36 @@ import { useState } from "react";
 import { useStore } from "@/lib/store";
 import type { Part } from "@/lib/types";
 
+const PART_CATEGORIES = [
+  "Carrocería",
+  "Asiento o tapizado de asiento",
+  "Portaequipaje o maletas",
+  "Protector de motor / Sliders",
+  "Discos de embrague",
+  "Kit de pistón",
+  "Juntas de motor",
+  "Válvulas de admisión y escape",
+  "Cigüeñal y bielas",
+  "Árbol de levas",
+  "Bomba de aceite",
+  "Bomba de agua",
+  "Filtros de aceite",
+  "Filtros de aire",
+  "Filtros de combustible",
+  "Pastillas y discos de freno",
+  "Bujías",
+  "Kit de arrastre (cadena, piñón y corona)",
+  "Neumáticos / Llantas",
+  "Aceite de motor y líquidos",
+  "Batería",
+  "Bombillas y faros",
+  "Cables (acelerador, embrague)",
+  "Retenes y sellos de horquilla",
+];
+
 interface PartFormData {
   description: string;
+  category: string;
   costPrice: string;
   salePrice: string;
   stock: string;
@@ -12,6 +40,7 @@ interface PartFormData {
 
 const emptyForm: PartFormData = {
   description: "",
+  category: PART_CATEGORIES[0],
   costPrice: "",
   salePrice: "",
   stock: "",
@@ -23,15 +52,29 @@ export default function Parts() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<PartFormData>(emptyForm);
   const [search, setSearch] = useState("");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
 
-  const filtered = parts.filter(p =>
-    p.description.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = parts.filter(p => {
+    const matchesSearch = p.description.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = filterCategory === "all" || p.category === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Group parts by category
+  const partsByCategory = filtered.reduce((acc, part) => {
+    const cat = part.category || "Sin categoría";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(part);
+    return acc;
+  }, {} as Record<string, Part[]>);
+
+  const sortedCategories = Object.keys(partsByCategory).sort();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = {
       description: form.description,
+      category: form.category,
       costPrice: parseFloat(form.costPrice) || 0,
       salePrice: parseFloat(form.salePrice) || 0,
       stock: parseInt(form.stock) || 0,
@@ -49,6 +92,7 @@ export default function Parts() {
   const handleEdit = (part: Part) => {
     setForm({
       description: part.description,
+      category: part.category || PART_CATEGORIES[0],
       costPrice: String(part.costPrice),
       salePrice: String(part.salePrice),
       stock: String(part.stock),
@@ -97,55 +141,85 @@ export default function Parts() {
         </div>
       </div>
 
-      {/* Search */}
+      {/* Search & Filter */}
       <div className="card" style={{ marginBottom: 16 }}>
-        <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
-          <input
-            className="search-input"
-            placeholder="Buscar repuesto..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={{ width: "100%", paddingLeft: 36 }}
-          />
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ position: "relative", flex: "1 1 200px", minWidth: 200 }}>
+            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
+            <input
+              className="search-input"
+              placeholder="Buscar repuesto..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{ width: "100%", paddingLeft: 36 }}
+            />
+          </div>
+          <select
+            className="form-input"
+            value={filterCategory}
+            onChange={e => setFilterCategory(e.target.value)}
+            style={{ flex: "1 1 200px", minWidth: 200, cursor: "pointer" }}
+          >
+            <option value="all">Todas las categorías</option>
+            {PART_CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* List */}
+      {/* List - Grouped by Category */}
       <div className="card">
         {filtered.length === 0 ? (
           <p style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", padding: "32px 0" }}>
             No hay repuestos registrados
           </p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {filtered.map(part => (
-              <div key={part.id} style={{
-                padding: "12px 16px", borderRadius: 12,
-                background: "#1e293b", border: "1px solid #334155",
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                gap: 12,
-              }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{part.description}</div>
-                  <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
-                    Costo: ${part.costPrice.toLocaleString("es-AR")}
-                  </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {sortedCategories.map(category => (
+              <div key={category}>
+                <div style={{ 
+                  padding: "8px 12px", 
+                  background: "rgba(59, 130, 246, 0.15)", 
+                  borderRadius: 8, 
+                  marginBottom: 8,
+                  fontWeight: 600,
+                  fontSize: 13,
+                  color: "#60a5fa"
+                }}>
+                  📦 {category} ({partsByCategory[category].length})
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                  <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 13 }}>
-                    ${part.salePrice.toLocaleString("es-AR")}
-                  </span>
-                  <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>
-                    {margin(part)}%
-                  </span>
-                  <span className={`badge ${part.stock > 5 ? "badge-green" : part.stock > 0 ? "badge-yellow" : "badge-red"}`}>
-                    Stock: {part.stock}
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-                  <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(part)}>✏️</button>
-                  <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(part.id)}>🗑️</button>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {partsByCategory[category].map(part => (
+                    <div key={part.id} style={{
+                      padding: "12px 16px", borderRadius: 12,
+                      background: "#1e293b", border: "1px solid #334155",
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      gap: 12,
+                    }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{part.description}</div>
+                        <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
+                          Costo: ${part.costPrice.toLocaleString("es-AR")}
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                        <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 13 }}>
+                          ${part.salePrice.toLocaleString("es-AR")}
+                        </span>
+                        <span className={`badge ${margin(part) >= 30 ? "badge-green" : margin(part) >= 10 ? "badge-yellow" : "badge-red"}`}>
+                          {margin(part)}%
+                        </span>
+                        <span className={`badge ${part.stock > 5 ? "badge-green" : part.stock > 0 ? "badge-yellow" : "badge-red"}`}>
+                          Stock: {part.stock}
+                        </span>
+                      </div>
+                      <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                        <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleEdit(part)}>✏️</button>
+                        <button className="btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => handleDelete(part.id)}>🗑️</button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -171,6 +245,19 @@ export default function Parts() {
                   required
                   placeholder="Ej: Filtro de aceite Honda CG 150"
                 />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Categoría *</label>
+                <select
+                  className="form-input"
+                  value={form.category}
+                  onChange={e => setForm({ ...form, category: e.target.value })}
+                  required
+                >
+                  {PART_CATEGORIES.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
               </div>
               <div className="grid-3">
                 <div className="form-group">

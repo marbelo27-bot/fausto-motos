@@ -43,6 +43,7 @@ export interface Reception {
 export interface Part {
   id: string;
   description: string;
+  category: string;
   costPrice: number;
   salePrice: number;
   stock: number;

@@ -4,8 +4,36 @@ import { useStore } from "@/lib/store";
 import { generateServiceOrderPDF } from "@/lib/pdfGenerator";
 import type { ServiceOrder, ServiceOrderPart } from "@/lib/types";
 
+const PART_CATEGORIES = [
+  "Carrocería",
+  "Asiento o tapizado de asiento",
+  "Portaequipaje o maletas",
+  "Protector de motor / Sliders",
+  "Discos de embrague",
+  "Kit de pistón",
+  "Juntas de motor",
+  "Válvulas de admisión y escape",
+  "Cigüeñal y bielas",
+  "Árbol de levas",
+  "Bomba de aceite",
+  "Bomba de agua",
+  "Filtros de aceite",
+  "Filtros de aire",
+  "Filtros de combustible",
+  "Pastillas y discos de freno",
+  "Bujías",
+  "Kit de arrastre (cadena, piñón y corona)",
+  "Neumáticos / Llantas",
+  "Aceite de motor y líquidos",
+  "Batería",
+  "Bombillas y faros",
+  "Cables (acelerador, embrague)",
+  "Retenes y sellos de horquilla",
+];
+
 interface NewPartForm {
   description: string;
+  category: string;
   costPrice: string;
   salePrice: string;
   stock: string;
@@ -72,7 +100,7 @@ export default function ServiceOrders() {
   const [filterStatus, setFilterStatus] = useState("all");
   // New part inline form
   const [showNewPartForm, setShowNewPartForm] = useState(false);
-  const [newPartForm, setNewPartForm] = useState<NewPartForm>({ description: "", costPrice: "", salePrice: "", stock: "1" });
+  const [newPartForm, setNewPartForm] = useState<NewPartForm>({ description: "", category: PART_CATEGORIES[0], costPrice: "", salePrice: "", stock: "1" });
   // Inline price editing in parts table
   const [editingPartIdx, setEditingPartIdx] = useState<number | null>(null);
   const [editingPartPrice, setEditingPartPrice] = useState("");
@@ -138,7 +166,7 @@ export default function ServiceOrders() {
     const costPrice = parseFloat(newPartForm.costPrice) || 0;
     const salePrice = parseFloat(newPartForm.salePrice) || 0;
     const stock = parseInt(newPartForm.stock) || 0;
-    const created = addPart({ description: desc, costPrice, salePrice, stock });
+    const created = addPart({ description: desc, category: newPartForm.category, costPrice, salePrice, stock });
     // Auto-add to order
     const updatedParts: ServiceOrderPart[] = [...form.parts, {
       partId: created.id,
@@ -148,7 +176,7 @@ export default function ServiceOrders() {
     }];
     const { partsCost, totalCost } = recalcTotals(updatedParts, form.laborCost);
     setForm({ ...form, parts: updatedParts, partsCost, totalCost });
-    setNewPartForm({ description: "", costPrice: "", salePrice: "", stock: "1" });
+    setNewPartForm({ description: "", category: PART_CATEGORIES[0], costPrice: "", salePrice: "", stock: "1" });
     setShowNewPartForm(false);
     setPartQty(1);
   };
@@ -435,19 +463,30 @@ export default function ServiceOrders() {
                         value={newPartForm.description}
                         onChange={e => setNewPartForm({ ...newPartForm, description: e.target.value })} />
                     </div>
-                    <div style={{ width: 110 }}>
-                      <label className="form-label">Precio costo ($)</label>
+                    <div style={{ flex: 1, minWidth: 140 }}>
+                      <label className="form-label">Categoría</label>
+                      <select className="form-input"
+                        value={newPartForm.category}
+                        onChange={e => setNewPartForm({ ...newPartForm, category: e.target.value })}
+                      >
+                        {PART_CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ width: 100 }}>
+                      <label className="form-label">Costo ($)</label>
                       <input className="form-input" type="text" inputMode="decimal" placeholder="0"
                         value={newPartForm.costPrice}
                         onChange={e => setNewPartForm({ ...newPartForm, costPrice: e.target.value })} />
                     </div>
-                    <div style={{ width: 110 }}>
-                      <label className="form-label">Precio venta ($)</label>
+                    <div style={{ width: 100 }}>
+                      <label className="form-label">Venta ($)</label>
                       <input className="form-input" type="text" inputMode="decimal" placeholder="0"
                         value={newPartForm.salePrice}
                         onChange={e => setNewPartForm({ ...newPartForm, salePrice: e.target.value })} />
                     </div>
-                    <div style={{ width: 80 }}>
+                    <div style={{ width: 70 }}>
                       <label className="form-label">Stock</label>
                       <input className="form-input" type="text" inputMode="numeric" placeholder="1"
                         value={newPartForm.stock}
@@ -455,7 +494,7 @@ export default function ServiceOrders() {
                     </div>
                     <button type="button" className="btn-primary" onClick={handleSaveNewPart}
                       style={{ background: "#22c55e", color: "#000", fontWeight: 700 }}>
-                      ✔ Guardar y agregar
+                      ✔ Guardar
                     </button>
                     <button type="button" className="btn-secondary" onClick={() => setShowNewPartForm(false)}>
                       ✕
