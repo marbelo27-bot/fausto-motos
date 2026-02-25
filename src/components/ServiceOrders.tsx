@@ -4,6 +4,13 @@ import { useStore } from "@/lib/store";
 import { generateServiceOrderPDF } from "@/lib/pdfGenerator";
 import type { ServiceOrder, ServiceOrderPart } from "@/lib/types";
 
+interface NewPartForm {
+  description: string;
+  costPrice: string;
+  salePrice: string;
+  stock: string;
+}
+
 interface OrderFormData {
   clientId: string;
   motorcycleId: string;
@@ -50,7 +57,7 @@ const statusColors: Record<string, string> = {
 export default function ServiceOrders() {
   const {
     clients, motorcycles, receptions, serviceOrders, parts, serviceTypes,
-    addServiceOrder, updateServiceOrder, deleteServiceOrder, addServiceType
+    addServiceOrder, updateServiceOrder, deleteServiceOrder, addServiceType, addPart
   } = useStore();
 
   const [showForm, setShowForm] = useState(false);
@@ -63,6 +70,12 @@ export default function ServiceOrders() {
   const [selectedPartId, setSelectedPartId] = useState("");
   const [partQty, setPartQty] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
+  // New part inline form
+  const [showNewPartForm, setShowNewPartForm] = useState(false);
+  const [newPartForm, setNewPartForm] = useState<NewPartForm>({ description: "", costPrice: "", salePrice: "", stock: "1" });
+  // Inline price editing in parts table
+  const [editingPartIdx, setEditingPartIdx] = useState<number | null>(null);
+  const [editingPartPrice, setEditingPartPrice] = useState("");
 
   const clientMotorcycles = form.clientId
     ? motorcycles.filter(m => m.clientId === form.clientId)
@@ -117,6 +130,38 @@ export default function ServiceOrders() {
     const updatedParts = form.parts.filter(p => p.partId !== partId);
     const { partsCost, totalCost } = recalcTotals(updatedParts, form.laborCost);
     setForm({ ...form, parts: updatedParts, partsCost, totalCost });
+  };
+
+  const handleSaveNewPart = () => {
+    const desc = newPartForm.description.trim();
+    if (!desc) return;
+    const costPrice = parseFloat(newPartForm.costPrice) || 0;
+    const salePrice = parseFloat(newPartForm.salePrice) || 0;
+    const stock = parseInt(newPartForm.stock) || 0;
+    const created = addPart({ description: desc, costPrice, salePrice, stock });
+    // Auto-add to order
+    const updatedParts: ServiceOrderPart[] = [...form.parts, {
+      partId: created.id,
+      description: created.description,
+      quantity: partQty,
+      unitPrice: created.salePrice,
+    }];
+    const { partsCost, totalCost } = recalcTotals(updatedParts, form.laborCost);
+    setForm({ ...form, parts: updatedParts, partsCost, totalCost });
+    setNewPartForm({ description: "", costPrice: "", salePrice: "", stock: "1" });
+    setShowNewPartForm(false);
+    setPartQty(1);
+  };
+
+  const handleSavePartPrice = (idx: number) => {
+    const price = parseFloat(editingPartPrice);
+    if (isNaN(price) || price < 0) { setEditingPartIdx(null); return; }
+    const updatedParts = form.parts.map((p, i) =>
+      i === idx ? { ...p, unitPrice: price } : p
+    );
+    const { partsCost, totalCost } = recalcTotals(updatedParts, form.laborCost);
+    setForm({ ...form, parts: updatedParts, partsCost, totalCost });
+    setEditingPartIdx(null);
   };
 
   const updateLaborCost = (value: number) => {
@@ -354,9 +399,9 @@ export default function ServiceOrders() {
 
               {/* Parts */}
               <div className="section-title">Repuestos Utilizados</div>
-              <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "flex-end" }}>
+              <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-end" }}>
                 <div style={{ flex: 1 }}>
-                  <label className="form-label">Repuesto</label>
+                  <label className="form-label">Repuesto del inventario</label>
                   <select className="form-select" value={selectedPartId} onChange={e => setSelectedPartId(e.target.value)}>
                     <option value="">Seleccionar repuesto...</option>
                     {parts.map(p => <option key={p.id} value={p.id}>{p.description} — ${p.salePrice.toLocaleString("es-AR")}</option>)}
@@ -367,7 +412,57 @@ export default function ServiceOrders() {
                   <input type="number" className="form-input" value={partQty} onChange={e => setPartQty(parseInt(e.target.value) || 1)} min={1} />
                 </div>
                 <button type="button" className="btn-primary" onClick={addPartToOrder}>+ Agregar</button>
+                <button type="button" className="btn-secondary" style={{ whiteSpace: "nowrap", padding: "8px 10px" }}
+                  title="Cargar nuevo repuesto al inventario"
+                  onClick={() => { setShowNewPartForm(v => !v); }}>
+                  ➕ Nuevo
+                </button>
               </div>
+
+              {/* Inline new part form */}
+              {showNewPartForm && (
+                <div style={{
+                  background: "#0f2a1a", border: "1px solid #22c55e", borderRadius: 10,
+                  padding: "14px 16px", marginBottom: 12,
+                }}>
+                  <div style={{ fontWeight: 700, color: "#22c55e", fontSize: 13, marginBottom: 10 }}>
+                    ➕ Nuevo repuesto al inventario
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-end" }}>
+                    <div style={{ flex: 2, minWidth: 160 }}>
+                      <label className="form-label">Descripción *</label>
+                      <input className="form-input" placeholder="Ej: Filtro de aceite"
+                        value={newPartForm.description}
+                        onChange={e => setNewPartForm({ ...newPartForm, description: e.target.value })} />
+                    </div>
+                    <div style={{ width: 110 }}>
+                      <label className="form-label">Precio costo ($)</label>
+                      <input className="form-input" type="text" inputMode="decimal" placeholder="0"
+                        value={newPartForm.costPrice}
+                        onChange={e => setNewPartForm({ ...newPartForm, costPrice: e.target.value })} />
+                    </div>
+                    <div style={{ width: 110 }}>
+                      <label className="form-label">Precio venta ($)</label>
+                      <input className="form-input" type="text" inputMode="decimal" placeholder="0"
+                        value={newPartForm.salePrice}
+                        onChange={e => setNewPartForm({ ...newPartForm, salePrice: e.target.value })} />
+                    </div>
+                    <div style={{ width: 80 }}>
+                      <label className="form-label">Stock</label>
+                      <input className="form-input" type="text" inputMode="numeric" placeholder="1"
+                        value={newPartForm.stock}
+                        onChange={e => setNewPartForm({ ...newPartForm, stock: e.target.value })} />
+                    </div>
+                    <button type="button" className="btn-primary" onClick={handleSaveNewPart}
+                      style={{ background: "#22c55e", color: "#000", fontWeight: 700 }}>
+                      ✔ Guardar y agregar
+                    </button>
+                    <button type="button" className="btn-secondary" onClick={() => setShowNewPartForm(false)}>
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {form.parts.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
@@ -383,11 +478,37 @@ export default function ServiceOrders() {
                         </tr>
                       </thead>
                       <tbody>
-                        {form.parts.map(p => (
-                          <tr key={p.partId}>
+                        {form.parts.map((p, idx) => (
+                          <tr key={p.partId || idx}>
                             <td>{p.description}</td>
                             <td>{p.quantity}</td>
-                            <td>${p.unitPrice.toLocaleString("es-AR")}</td>
+                            <td>
+                              {editingPartIdx === idx ? (
+                                <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                                  <input
+                                    type="text" inputMode="decimal"
+                                    className="form-input"
+                                    style={{ width: 90, padding: "2px 6px", fontSize: 12 }}
+                                    value={editingPartPrice}
+                                    onChange={e => setEditingPartPrice(e.target.value)}
+                                    onKeyDown={e => { if (e.key === "Enter") handleSavePartPrice(idx); if (e.key === "Escape") setEditingPartIdx(null); }}
+                                    autoFocus
+                                  />
+                                  <button type="button" className="btn-primary" style={{ padding: "2px 6px", fontSize: 11 }}
+                                    onClick={() => handleSavePartPrice(idx)}>✔</button>
+                                  <button type="button" className="btn-secondary" style={{ padding: "2px 6px", fontSize: 11 }}
+                                    onClick={() => setEditingPartIdx(null)}>✕</button>
+                                </div>
+                              ) : (
+                                <span
+                                  style={{ cursor: "pointer", borderBottom: "1px dashed #94a3b8" }}
+                                  title="Clic para editar precio"
+                                  onClick={() => { setEditingPartIdx(idx); setEditingPartPrice(String(p.unitPrice)); }}
+                                >
+                                  ${p.unitPrice.toLocaleString("es-AR")}
+                                </span>
+                              )}
+                            </td>
                             <td style={{ fontWeight: 600 }}>${(p.quantity * p.unitPrice).toLocaleString("es-AR")}</td>
                             <td>
                               <button type="button" className="btn-danger" style={{ padding: "2px 6px", fontSize: 11 }}
