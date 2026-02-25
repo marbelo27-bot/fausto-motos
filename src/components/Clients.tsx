@@ -254,7 +254,7 @@ export default function Clients() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {serviceOrders.filter(o => o.clientId === viewingClient.id).map(o => (
                     <div key={o.id} style={{ padding: "8px 12px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "#ffffff", fontWeight: 700 }}>🔧 {o.performedService}</span>
+                      <span style={{ color: "#ffffff", fontWeight: 700 }}>🔧 {o.performedServices.join(", ")}</span>
                       <span style={{ color: "#94a3b8", fontWeight: 500 }}>{new Date(o.date + "T00:00:00").toLocaleDateString("es-AR")} — <span style={{ color: "#22c55e", fontWeight: 800 }}>${o.totalCost.toLocaleString("es-AR")}</span></span>
                     </div>
                   ))}

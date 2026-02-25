@@ -233,7 +233,7 @@ export default function Quotes() {
       quoteId: q.id,
       date: today,
       requiredService: "Orden generada desde cotización #" + q.id.slice(0, 8),
-      performedService: "Orden generada desde cotización #" + q.id.slice(0, 8),
+      performedServices: ["Orden generada desde cotización #" + q.id.slice(0, 8)],
       parts: partItems.map((i) => ({
         partId: "",
         description: i.description,

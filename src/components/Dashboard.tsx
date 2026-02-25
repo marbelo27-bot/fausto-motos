@@ -125,7 +125,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                     <div>
                       <div style={{ fontWeight: 600, fontSize: 13, color: "#e2e8f0" }}>{client?.fullName || "—"}</div>
                       <div style={{ color: "#64748b", fontSize: 12 }}>
-                        {moto ? `${moto.brand} ${moto.model}` : "—"} · {order.performedService}
+                        {moto ? `${moto.brand} ${moto.model}` : "—"} · {order.performedServices.join(", ")}
                       </div>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>

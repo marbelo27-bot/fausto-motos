@@ -26,7 +26,7 @@ interface OrderFormData {
   receptionId: string;
   date: string;
   requiredService: string;
-  performedService: string;
+  performedServices: string[];
   parts: ServiceOrderPart[];
   laborCost: number;
   partsCost: number;
@@ -45,7 +45,7 @@ const getEmptyForm = (): OrderFormData => {
     receptionId: "",
     date: today,
     requiredService: "",
-    performedService: "",
+    performedServices: [],
     parts: [],
     laborCost: 0,
     partsCost: 0,
@@ -80,6 +80,8 @@ export default function ServiceOrders() {
   const [selectedPartCategory, setSelectedPartCategory] = useState<string>("all");
   const [partQty, setPartQty] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
+  // Multiple services support
+  const [selectedService, setSelectedService] = useState("");
   // New part inline form
   const [showNewPartForm, setShowNewPartForm] = useState(false);
   const [newPartForm, setNewPartForm] = useState<NewPartForm>({ description: "", category: "", costPrice: "", salePrice: "", stock: "1" });
@@ -106,10 +108,11 @@ export default function ServiceOrders() {
   const filtered = serviceOrders.filter(o => {
     const client = clients.find(c => c.id === o.clientId);
     const moto = motorcycles.find(m => m.id === o.motorcycleId);
+    const servicesText = o.performedServices.join(" ").toLowerCase();
     const matchSearch = (
       client?.fullName.toLowerCase().includes(search.toLowerCase()) ||
       moto?.plate.toLowerCase().includes(search.toLowerCase()) ||
-      o.performedService.toLowerCase().includes(search.toLowerCase())
+      servicesText.includes(search.toLowerCase())
     );
     const matchStatus = filterStatus === "all" || o.status === filterStatus;
     return matchSearch && matchStatus;
@@ -189,6 +192,10 @@ export default function ServiceOrders() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.performedServices.length === 0) {
+      alert("Agregá al menos un servicio realizado");
+      return;
+    }
     if (editingId) {
       updateServiceOrder(editingId, form);
     } else {
@@ -206,7 +213,7 @@ export default function ServiceOrders() {
       receptionId: order.receptionId || "",
       date: order.date,
       requiredService: order.requiredService,
-      performedService: order.performedService,
+      performedServices: order.performedServices,
       parts: order.parts,
       laborCost: order.laborCost,
       partsCost: order.partsCost,
@@ -239,6 +246,20 @@ export default function ServiceOrders() {
       setNewServiceType("");
       setShowAddServiceType(false);
     }
+  };
+
+  // Add service to performedServices array
+  const addServiceToOrder = () => {
+    if (!selectedService) return;
+    if (!form.performedServices.includes(selectedService)) {
+      setForm({ ...form, performedServices: [...form.performedServices, selectedService] });
+    }
+    setSelectedService("");
+  };
+
+  // Remove service from performedServices array
+  const removeServiceFromOrder = (serviceToRemove: string) => {
+    setForm({ ...form, performedServices: form.performedServices.filter(s => s !== serviceToRemove) });
   };
 
   return (
@@ -294,7 +315,7 @@ export default function ServiceOrders() {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{client?.fullName || "—"}</div>
                     <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
-                      {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {order.performedService}
+                      {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {order.performedServices.join(", ")}
                     </div>
                     {order.quoteId && (
                       <div style={{ marginTop: 4 }}>
@@ -382,37 +403,93 @@ export default function ServiceOrders() {
               </div>
 
               {/* Services */}
-              <div className="section-title">Servicios</div>
-              <div className="grid-2">
-                <div className="form-group">
-                  <label className="form-label">Servicio requerido *</label>
-                  <input className="form-input" value={form.requiredService}
-                    onChange={e => setForm({ ...form, requiredService: e.target.value })} required
-                    placeholder="¿Qué solicitó el cliente?" />
+              <div className="section-title">Servicios Realizados</div>
+              <div className="form-group">
+                <label className="form-label">Servicio requerido *</label>
+                <input className="form-input" value={form.requiredService}
+                  onChange={e => setForm({ ...form, requiredService: e.target.value })} required
+                  placeholder="¿Qué solicitó el cliente?" />
+              </div>
+              
+              {/* Multiple services selector */}
+              <div className="form-group">
+                <label className="form-label">Servicios realizados *</label>
+                <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                  <select className="form-select" value={selectedService}
+                    onChange={e => setSelectedService(e.target.value)} style={{ flex: 1 }}>
+                    <option value="">Seleccionar servicio...</option>
+                    {serviceTypes.map(st => <option key={st.id} value={st.name}>{st.name}</option>)}
+                  </select>
+                  <button type="button" className="btn-primary" onClick={addServiceToOrder} disabled={!selectedService}>
+                    + Agregar
+                  </button>
+                  <button type="button" className="btn-secondary" style={{ padding: "8px 10px" }}
+                    onClick={() => setShowAddServiceType(!showAddServiceType)} title="Agregar nuevo tipo de servicio">
+                    +
+                  </button>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Servicio realizado *</label>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <select className="form-select" value={form.performedService}
-                      onChange={e => setForm({ ...form, performedService: e.target.value })} required>
-                      <option value="">Seleccionar servicio...</option>
-                      {serviceTypes.map(st => <option key={st.id} value={st.name}>{st.name}</option>)}
-                    </select>
-                    <button type="button" className="btn-secondary" style={{ whiteSpace: "nowrap", padding: "8px 10px" }}
-                      onClick={() => setShowAddServiceType(!showAddServiceType)}>
-                      +
+                
+                {/* List of added services */}
+                {form.performedServices.length > 0 && (
+                  <div style={{ 
+                    display: "flex", 
+                    flexWrap: "wrap", 
+                    gap: 8, 
+                    padding: "12px",
+                    background: "#1e293b", 
+                    borderRadius: 10,
+                    border: "1px solid #334155"
+                  }}>
+                    {form.performedServices.map((service, idx) => (
+                      <div key={idx} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        background: "#3b82f6",
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: 20,
+                        fontSize: 13,
+                        fontWeight: 500,
+                      }}>
+                        <span>🔧 {service}</span>
+                        <button 
+                          type="button"
+                          onClick={() => removeServiceFromOrder(service)}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "white",
+                            cursor: "pointer",
+                            padding: 0,
+                            fontSize: 14,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                          title="Quitar servicio"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {form.performedServices.length === 0 && (
+                  <p style={{ color: "#f87171", fontSize: 13, marginTop: 4 }}>
+                    Agregá al menos un servicio realizado
+                  </p>
+                )}
+                
+                {showAddServiceType && (
+                  <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                    <input className="form-input" placeholder="Nuevo tipo de servicio..."
+                      value={newServiceType} onChange={e => setNewServiceType(e.target.value)} />
+                    <button type="button" className="btn-primary" style={{ whiteSpace: "nowrap" }} onClick={handleAddServiceType}>
+                      Agregar
                     </button>
                   </div>
-                  {showAddServiceType && (
-                    <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-                      <input className="form-input" placeholder="Nuevo tipo de servicio..."
-                        value={newServiceType} onChange={e => setNewServiceType(e.target.value)} />
-                      <button type="button" className="btn-primary" style={{ whiteSpace: "nowrap" }} onClick={handleAddServiceType}>
-                        Agregar
-                      </button>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* Parts */}
@@ -649,7 +726,7 @@ export default function ServiceOrders() {
                   <div className="section-title">Servicio</div>
                   <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
                     <div>📋 Requerido: <strong>{viewingOrder.requiredService}</strong></div>
-                    <div>🔧 Realizado: <strong>{viewingOrder.performedService}</strong></div>
+                    <div>🔧 Realizado: <strong>{viewingOrder.performedServices.join(", ")}</strong></div>
                     <div>Estado: <span className={`badge ${statusColors[viewingOrder.status]}`}>{viewingOrder.status}</span></div>
                     {viewingOrder.warranty && <div>🛡️ Garantía: <strong>{viewingOrder.warranty}</strong></div>}
                     {viewingOrder.quoteId && (

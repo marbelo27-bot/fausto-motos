@@ -245,7 +245,7 @@ export default function Payments() {
                     <option value="">Sin orden asociada</option>
                     {clientOrders.map(o => (
                       <option key={o.id} value={o.id}>
-                        #{o.id} — {o.performedService} — ${o.totalCost.toLocaleString("es-AR")}
+                        #{o.id} — {o.performedServices.join(", ")} — ${o.totalCost.toLocaleString("es-AR")}
                       </option>
                     ))}
                   </select>

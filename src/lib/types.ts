@@ -71,7 +71,7 @@ export interface ServiceOrder {
   quoteId?: string;
   date: string;
   requiredService: string;
-  performedService: string;
+  performedServices: string[];
   parts: ServiceOrderPart[];
   laborCost: number;
   partsCost: number;

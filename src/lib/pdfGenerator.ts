@@ -269,7 +269,7 @@ export async function generateServiceOrderPDF(
     body: [
       ["Fecha", new Date(order.date + "T00:00:00").toLocaleDateString("es-AR")],
       ["Servicio requerido", order.requiredService],
-      ["Servicio realizado", order.performedService],
+      ["Servicios realizados", order.performedServices.join(", ")],
       ["Estado", order.status.toUpperCase()],
       ["Garantía", order.warranty || "Sin garantía"],
     ],
