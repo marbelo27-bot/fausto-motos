@@ -466,7 +466,7 @@ export default function ServiceOrders() {
           <div className="modal-overlay" onClick={() => setViewingOrder(null)}>
             <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
-                <h2 className="modal-title">🔧 Orden #{viewingOrder.id.slice(0, 8).toUpperCase()}</h2>
+                <h2 className="modal-title">🔧 Orden #{viewingOrder.id}</h2>
                 <button onClick={() => setViewingOrder(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
               </div>
 

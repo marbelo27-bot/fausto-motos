@@ -190,7 +190,7 @@ export default function Payments() {
                     <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{client?.fullName || "—"}</div>
                     <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       {methodIcons[payment.method]} {payment.method}
-                      {order ? ` · #${order.id.slice(0, 8).toUpperCase()}` : ""}
+                      {order ? ` · #${order.id}` : ""}
                     </div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
@@ -245,7 +245,7 @@ export default function Payments() {
                     <option value="">Sin orden asociada</option>
                     {clientOrders.map(o => (
                       <option key={o.id} value={o.id}>
-                        #{o.id.slice(0, 8).toUpperCase()} — {o.performedService} — ${o.totalCost.toLocaleString("es-AR")}
+                        #{o.id} — {o.performedService} — ${o.totalCost.toLocaleString("es-AR")}
                       </option>
                     ))}
                   </select>

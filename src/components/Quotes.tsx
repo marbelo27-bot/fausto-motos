@@ -373,7 +373,7 @@ export default function Quotes() {
               borderRadius: 20, padding: "4px 14px", fontSize: 13, fontWeight: 700,
               color: "#22c55e", marginBottom: 12,
             }}>
-              ✅ Convertida a Orden #{selectedQuote.convertedToOrderId.slice(0, 8).toUpperCase()}
+              ✅ Convertida a Orden #{selectedQuote.convertedToOrderId}
             </div>
           )}
 

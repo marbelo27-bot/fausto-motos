@@ -253,7 +253,7 @@ export async function generateServiceOrderPDF(
   motorcycle: Motorcycle
 ) {
   const doc = new jsPDF();
-  let y = await addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "ORDEN DE SERVICIO", `N° ${order.id}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -354,7 +354,7 @@ export async function generateServiceOrderPDF(
 
   addFooter(doc);
   const clientNameO = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
-  doc.save(`orden-servicio-${clientNameO}-${order.id.slice(0, 8)}.pdf`);
+  doc.save(`orden-servicio-${clientNameO}-${order.id}.pdf`);
 }
 
 export async function generatePaymentPDF(
@@ -378,7 +378,7 @@ export async function generatePaymentPDF(
     ["Fecha", new Date(payment.date + "T00:00:00").toLocaleDateString("es-AR")],
     ["Tipo de pago", payment.type.toUpperCase()],
     ["Forma de pago", payment.method.toUpperCase()],
-    ...(serviceOrder ? [["Orden de servicio", `N° ${serviceOrder.id.slice(0, 8).toUpperCase()}`]] : []),
+    ...(serviceOrder ? [["Orden de servicio", `N° ${serviceOrder.id}`]] : []),
     ...(payment.notes ? [["Notas", payment.notes]] : []),
   ];
 
