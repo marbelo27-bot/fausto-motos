@@ -49,6 +49,7 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | `src/lib/store.ts` | Zustand store with persistence | ✅ Ready |
 | `src/lib/motorcycleData.ts` | Argentina motorcycle brands/models | ✅ Ready |
 | `src/lib/pdfGenerator.ts` | PDF generation (jsPDF) | ✅ Ready |
+| `src/components/Quotes.tsx` | Quote management (CRUD + PDF) | ✅ Ready |
 | `.kilocode/` | AI context & recipes | ✅ Ready |
 
 ## Dependencies Added
@@ -78,3 +79,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Redesigned PDF headers: black (#000) background, logo on left (22mm height, 2.5:1 ratio), title/order number/date on right in white, neon green (#39FF14) accent line below header. Updated all table styles (dark bg, green headers), client info box (dark bg + green border), footer (black + green top line). Applied to all 3 PDF generators (reception, service order, payment). |
 | 2026-02 | Updated PDF header to match HTML mockup: logoData.ts now loads /LOGO1_PNG_CALCO.png first (fallback: /logo.png → /logo.svg); header height increased to 38mm; logo wider (24mm × 84mm, 3.5:1 ratio); title 18pt bold white, N° 14pt bold white, date 10pt #CCCCCC; green accent line thickened to 1.4mm (≈4px). |
 | 2026-02 | Changed primary PDF logo to /logo-taller.png (public/logo-taller.png uploaded by user); fallback chain: logo-taller.png → LOGO1_PNG_CALCO.png → logo.png → logo.svg |
+| 2026-02 | Added Cotizaciones (Quotes) module: Quote + QuoteItem types, Zustand CRUD, Quotes.tsx (list/form/detail views), generateQuotePDF(), Sidebar nav item, page.tsx routing |

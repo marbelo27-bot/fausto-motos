@@ -8,8 +8,9 @@ import Reception from "@/components/Reception";
 import ServiceOrders from "@/components/ServiceOrders";
 import Parts from "@/components/Parts";
 import Payments from "@/components/Payments";
+import Quotes from "@/components/Quotes";
 
-type Section = "dashboard" | "clients" | "motorcycles" | "reception" | "serviceOrders" | "parts" | "payments";
+type Section = "dashboard" | "clients" | "motorcycles" | "reception" | "serviceOrders" | "parts" | "payments" | "quotes";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>("dashboard");
@@ -30,6 +31,8 @@ export default function Home() {
         return <Parts />;
       case "payments":
         return <Payments />;
+      case "quotes":
+        return <Quotes />;
       default:
         return <Dashboard onNavigate={(s) => setActiveSection(s as Section)} />;
     }

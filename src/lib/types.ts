@@ -87,3 +87,25 @@ export interface ServiceType {
   id: string;
   name: string;
 }
+
+export interface QuoteItem {
+  id: string;
+  type: "labor" | "part";
+  description: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface Quote {
+  id: string;
+  clientId: string;
+  motorcycleId: string;
+  date: string;
+  validUntil: string;
+  items: QuoteItem[];
+  laborTotal: number;
+  partsTotal: number;
+  total: number;
+  notes: string;
+  status: "borrador" | "enviada" | "aceptada" | "rechazada";
+}

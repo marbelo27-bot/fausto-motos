@@ -10,6 +10,7 @@ import type {
   Part,
   Payment,
   ServiceType,
+  Quote,
 } from "./types";
 
 interface AppState {
@@ -20,6 +21,7 @@ interface AppState {
   parts: Part[];
   payments: Payment[];
   serviceTypes: ServiceType[];
+  quotes: Quote[];
 
   // Clients
   addClient: (data: Omit<Client, "id" | "createdAt">) => Client;
@@ -54,6 +56,11 @@ interface AppState {
   // Service Types
   addServiceType: (name: string) => ServiceType;
   deleteServiceType: (id: string) => void;
+
+  // Quotes
+  addQuote: (data: Omit<Quote, "id">) => Quote;
+  updateQuote: (id: string, data: Partial<Quote>) => void;
+  deleteQuote: (id: string) => void;
 }
 
 const defaultServiceTypes: ServiceType[] = [
@@ -86,6 +93,7 @@ export const useStore = create<AppState>()(
       parts: [],
       payments: [],
       serviceTypes: defaultServiceTypes,
+      quotes: [],
 
       addClient: (data) => {
         const client: Client = {
@@ -186,6 +194,18 @@ export const useStore = create<AppState>()(
         set((s) => ({
           serviceTypes: s.serviceTypes.filter((st) => st.id !== id),
         })),
+
+      addQuote: (data) => {
+        const quote: Quote = { ...data, id: uuidv4() };
+        set((s) => ({ quotes: [...s.quotes, quote] }));
+        return quote;
+      },
+      updateQuote: (id, data) =>
+        set((s) => ({
+          quotes: s.quotes.map((q) => (q.id === id ? { ...q, ...data } : q)),
+        })),
+      deleteQuote: (id) =>
+        set((s) => ({ quotes: s.quotes.filter((q) => q.id !== id) })),
     }),
     {
       name: "moto-workshop-storage",

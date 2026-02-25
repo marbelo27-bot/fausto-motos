@@ -1,7 +1,7 @@
 "use client";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import type { Client, Motorcycle, Reception, ServiceOrder, Payment } from "./types";
+import type { Client, Motorcycle, Reception, ServiceOrder, Payment, Quote } from "./types";
 import { getLogoDataUrl } from "./logoData";
 
 const PRIMARY = "#000000";
@@ -400,6 +400,159 @@ export async function generatePaymentPDF(
   addFooter(doc);
   const clientNameP = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
   doc.save(`pago-${clientNameP}-${payment.id.slice(0, 8)}.pdf`);
+}
+
+export async function generateQuotePDF(
+  quote: Quote,
+  client: Client,
+  motorcycle: Motorcycle
+) {
+  const doc = new jsPDF();
+  const statusLabels: Record<Quote["status"], string> = {
+    borrador: "BORRADOR",
+    enviada: "ENVIADA",
+    aceptada: "ACEPTADA",
+    rechazada: "RECHAZADA",
+  };
+
+  let y = await addHeader(doc, "COTIZACIÓN", `N° ${quote.id.slice(0, 8).toUpperCase()}`);
+
+  y = addClientInfo(doc, y, client, motorcycle);
+
+  // Dates row
+  autoTable(doc, {
+    startY: y,
+    body: [
+      ["Fecha de cotización", new Date(quote.date + "T00:00:00").toLocaleDateString("es-AR"),
+       "Válida hasta", new Date(quote.validUntil + "T00:00:00").toLocaleDateString("es-AR"),
+       "Estado", statusLabels[quote.status]],
+    ],
+    theme: "grid",
+    styles: { fontSize: 9, textColor: [220, 220, 220] },
+    columnStyles: {
+      0: { fontStyle: "bold", fillColor: [30, 41, 59], textColor: [57, 255, 20] },
+      2: { fontStyle: "bold", fillColor: [30, 41, 59], textColor: [57, 255, 20] },
+      4: { fontStyle: "bold", fillColor: [30, 41, 59], textColor: [57, 255, 20] },
+    },
+    bodyStyles: { fillColor: [20, 20, 20] },
+    margin: { left: 14, right: 14 },
+  });
+
+  y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 6;
+
+  // Labor items
+  const laborItems = quote.items.filter((i) => i.type === "labor");
+  if (laborItems.length > 0) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(57, 255, 20);
+    doc.text("TRABAJOS / MANO DE OBRA", 14, y + 5);
+    y += 8;
+
+    autoTable(doc, {
+      startY: y,
+      head: [["Descripción", "Cantidad", "Precio Unit.", "Subtotal"]],
+      body: laborItems.map((i) => [
+        i.description,
+        i.quantity.toString(),
+        `$${i.unitPrice.toLocaleString("es-AR")}`,
+        `$${(i.quantity * i.unitPrice).toLocaleString("es-AR")}`,
+      ]),
+      theme: "grid",
+      headStyles: { fillColor: [0, 0, 0], textColor: [57, 255, 20], fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [30, 41, 59] },
+      bodyStyles: { textColor: [220, 220, 220] },
+      styles: { fontSize: 9 },
+      margin: { left: 14, right: 14 },
+    });
+
+    y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 5;
+  }
+
+  // Parts items
+  const partItems = quote.items.filter((i) => i.type === "part");
+  if (partItems.length > 0) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(57, 255, 20);
+    doc.text("REPUESTOS", 14, y + 5);
+    y += 8;
+
+    autoTable(doc, {
+      startY: y,
+      head: [["Descripción", "Cantidad", "Precio Unit.", "Subtotal"]],
+      body: partItems.map((i) => [
+        i.description,
+        i.quantity.toString(),
+        `$${i.unitPrice.toLocaleString("es-AR")}`,
+        `$${(i.quantity * i.unitPrice).toLocaleString("es-AR")}`,
+      ]),
+      theme: "grid",
+      headStyles: { fillColor: [0, 0, 0], textColor: [57, 255, 20], fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [30, 41, 59] },
+      bodyStyles: { textColor: [220, 220, 220] },
+      styles: { fontSize: 9 },
+      margin: { left: 14, right: 14 },
+    });
+
+    y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 5;
+  }
+
+  // Totals
+  const totalsData: [string, string][] = [];
+  if (laborItems.length > 0) totalsData.push(["Mano de obra", `$${quote.laborTotal.toLocaleString("es-AR")}`]);
+  if (partItems.length > 0) totalsData.push(["Repuestos", `$${quote.partsTotal.toLocaleString("es-AR")}`]);
+  totalsData.push(["TOTAL", `$${quote.total.toLocaleString("es-AR")}`]);
+
+  autoTable(doc, {
+    startY: y,
+    body: totalsData,
+    theme: "plain",
+    styles: { fontSize: 10, textColor: [220, 220, 220] },
+    columnStyles: {
+      0: { fontStyle: "bold", halign: "right" },
+      1: { halign: "right" },
+    },
+    didParseCell: (data) => {
+      if (data.row.index === totalsData.length - 1) {
+        data.cell.styles.fontSize = 12;
+        data.cell.styles.fontStyle = "bold";
+        data.cell.styles.fillColor = [0, 0, 0];
+        data.cell.styles.textColor = [57, 255, 20];
+      }
+    },
+    margin: { left: 100, right: 14 },
+  });
+
+  y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8;
+
+  if (quote.notes) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(57, 255, 20);
+    doc.text("OBSERVACIONES:", 14, y + 5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(220, 220, 220);
+    const lines = doc.splitTextToSize(quote.notes, 180);
+    doc.text(lines, 14, y + 11);
+    y += 11 + lines.length * 5;
+  }
+
+  // Validity note
+  y += 5;
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(150, 150, 150);
+  doc.text(
+    `Esta cotización es válida hasta el ${new Date(quote.validUntil + "T00:00:00").toLocaleDateString("es-AR")}. Los precios pueden variar según disponibilidad de repuestos.`,
+    14,
+    y,
+    { maxWidth: 182 }
+  );
+
+  addFooter(doc);
+  const clientNameQ = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
+  doc.save(`cotizacion-${clientNameQ}-${quote.id.slice(0, 8)}.pdf`);
 }
 
 function addFooter(doc: jsPDF) {

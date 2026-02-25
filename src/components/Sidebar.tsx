@@ -13,6 +13,7 @@ const navItems = [
   { id: "motorcycles", label: "Motos", icon: "🏍️" },
   { id: "reception", label: "Recepción", icon: "📋" },
   { id: "serviceOrders", label: "Órdenes de Servicio", icon: "🔧" },
+  { id: "quotes", label: "Cotizaciones", icon: "📝" },
   { id: "parts", label: "Repuestos", icon: "⚙️" },
   { id: "payments", label: "Pagos", icon: "💰" },
 ];
