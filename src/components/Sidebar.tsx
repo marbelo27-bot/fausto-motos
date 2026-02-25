@@ -47,7 +47,7 @@ export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
             }}>🏍️</div>
             <div>
               <div style={{ color: "white", fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>
-                Taller de Motos
+                FAUSTO MOTOS
               </div>
               <div style={{ color: "#64748b", fontSize: 11 }}>Sistema de Gestión</div>
             </div>

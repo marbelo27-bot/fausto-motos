@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Taller de Motos - Sistema de Gestión",
+  title: "FAUSTO MOTOS - Sistema de Gestión",
   description: "Sistema de gestión integral para taller de motocicletas",
 };
 
