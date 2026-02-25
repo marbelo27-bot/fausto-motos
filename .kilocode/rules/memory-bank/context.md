@@ -80,3 +80,5 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Updated PDF header to match HTML mockup: logoData.ts now loads /LOGO1_PNG_CALCO.png first (fallback: /logo.png → /logo.svg); header height increased to 38mm; logo wider (24mm × 84mm, 3.5:1 ratio); title 18pt bold white, N° 14pt bold white, date 10pt #CCCCCC; green accent line thickened to 1.4mm (≈4px). |
 | 2026-02 | Changed primary PDF logo to /logo-taller.png (public/logo-taller.png uploaded by user); fallback chain: logo-taller.png → LOGO1_PNG_CALCO.png → logo.png → logo.svg |
 | 2026-02 | Added Cotizaciones (Quotes) module: Quote + QuoteItem types, Zustand CRUD, Quotes.tsx (list/form/detail views), generateQuotePDF(), Sidebar nav item, page.tsx routing |
+| 2026-02 | Redesigned Quotes detail view as modal overlay matching ServiceOrders style (modal-overlay, modal-lg, section-title, table-container, btn-* CSS classes) |
+| 2026-02 | Switched all PDF generators to light color theme: light gray header (#f5f5f5), white/light-blue table rows, dark slate table headers, dark green accents, bold dark text throughout — replaces previous all-black/neon-green dark theme |
