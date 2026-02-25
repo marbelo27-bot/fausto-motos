@@ -1,7 +1,7 @@
 "use client";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import type { Client, Motorcycle, Reception, ServiceOrder, Payment, Quote } from "./types";
+import type { Client, Motorcycle, Reception, ServiceOrder, Payment, Quote, Turno } from "./types";
 import { getLogoDataUrl } from "./logoData";
 
 // ── Light theme palette ──────────────────────────────────────────────────────
@@ -422,6 +422,72 @@ export async function generatePaymentPDF(
   addFooter(doc);
   const clientNameP = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
   doc.save(`pago-${clientNameP}-${payment.id.slice(0, 8)}.pdf`);
+}
+
+export async function generateTurnoPDF(
+  turno: Turno,
+  client: Client,
+  motorcycle: Motorcycle
+) {
+  const doc = new jsPDF();
+  let y = await addHeader(doc, "TURNO DE TRABAJO", `N° ${turno.id.slice(0, 8).toUpperCase()}`);
+
+  y = addClientInfo(doc, y, client, motorcycle);
+
+  // Turno details
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...SECTION_COLOR);
+  doc.text("DETALLE DEL TURNO", 14, y + 6);
+  y += 10;
+
+  const details = [
+    ["Fecha", new Date(turno.date + "T00:00:00").toLocaleDateString("es-AR")],
+    ["Hora", turno.time],
+    ["Servicio", turno.service],
+    ["Estado", turno.status.toUpperCase()],
+  ];
+
+  if (turno.notes) {
+    details.push(["Notas", turno.notes]);
+  }
+
+  autoTable(doc, {
+    startY: y,
+    head: [["Ítem", "Detalle"]],
+    body: details,
+    theme: "grid",
+    headStyles: { fillColor: TH_BG, textColor: TH_TEXT, fontStyle: "bold" },
+    alternateRowStyles: { fillColor: ROW_ALT },
+    bodyStyles: { textColor: ROW_BODY_TEXT },
+    styles: { fontSize: 10 },
+    margin: { left: 14, right: 14 },
+  });
+
+  y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
+
+  // Footer signature line
+  doc.setDrawColor(...ROW_BODY_TEXT);
+  doc.setLineWidth(0.3);
+  doc.line(10, y, 90, y);
+  doc.setFontSize(8);
+  doc.setTextColor(...FOOTER_TEXT);
+  doc.text("Firma del Cliente", 50, y + 5, { align: "center" });
+
+  doc.line(120, y, 200, y);
+  doc.text("Firma del Taller", 160, y + 5, { align: "center" });
+
+  // Footer
+  doc.setFillColor(...FOOTER_BG);
+  doc.rect(0, 277, 210, 20, "F");
+  doc.setDrawColor(...ACCENT_LINE);
+  doc.setLineWidth(1);
+  doc.line(0, 277, 210, 277);
+  doc.setFontSize(8);
+  doc.setTextColor(...FOOTER_TEXT);
+  doc.text("FAUSTO MOTOS - Taller de Motocicletas", 105, 283, { align: "center" });
+
+  doc.save(`Turno-${turno.date}-${turno.time.replace(":", "")}.pdf`);
 }
 
 export async function generateQuotePDF(

@@ -111,3 +111,15 @@ export interface Quote {
   status: "borrador" | "enviada" | "aceptada" | "rechazada";
   convertedToOrderId?: string;
 }
+
+export interface Turno {
+  id: string;
+  clientId: string;
+  motorcycleId: string;
+  date: string;
+  time: string;
+  service: string;
+  notes: string;
+  status: 'programado' | 'confirmado' | 'completado' | 'cancelado';
+  createdAt: string;
+}

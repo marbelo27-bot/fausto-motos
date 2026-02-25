@@ -11,6 +11,7 @@ import type {
   Payment,
   ServiceType,
   Quote,
+  Turno,
 } from "./types";
 
 interface AppState {
@@ -22,6 +23,7 @@ interface AppState {
   payments: Payment[];
   serviceTypes: ServiceType[];
   quotes: Quote[];
+  turnos: Turno[];
 
   // Clients
   addClient: (data: Omit<Client, "id" | "createdAt">) => Client;
@@ -61,6 +63,11 @@ interface AppState {
   addQuote: (data: Omit<Quote, "id">) => Quote;
   updateQuote: (id: string, data: Partial<Quote>) => void;
   deleteQuote: (id: string) => void;
+
+  // Turnos
+  addTurno: (data: Omit<Turno, "id" | "createdAt">) => Turno;
+  updateTurno: (id: string, data: Partial<Turno>) => void;
+  deleteTurno: (id: string) => void;
 }
 
 const defaultServiceTypes: ServiceType[] = [
@@ -94,6 +101,7 @@ export const useStore = create<AppState>()(
       payments: [],
       serviceTypes: defaultServiceTypes,
       quotes: [],
+      turnos: [],
 
       addClient: (data) => {
         const client: Client = {
@@ -211,6 +219,22 @@ export const useStore = create<AppState>()(
         })),
       deleteQuote: (id) =>
         set((s) => ({ quotes: s.quotes.filter((q) => q.id !== id) })),
+
+      addTurno: (data) => {
+        const turno: Turno = {
+          ...data,
+          id: uuidv4(),
+          createdAt: new Date().toISOString(),
+        };
+        set((s) => ({ turnos: [...s.turnos, turno] }));
+        return turno;
+      },
+      updateTurno: (id, data) =>
+        set((s) => ({
+          turnos: s.turnos.map((t) => (t.id === id ? { ...t, ...data } : t)),
+        })),
+      deleteTurno: (id) =>
+        set((s) => ({ turnos: s.turnos.filter((t) => t.id !== id) })),
     }),
     {
       name: "moto-workshop-storage",

@@ -5,12 +5,13 @@ import Dashboard from "@/components/Dashboard";
 import Clients from "@/components/Clients";
 import Motorcycles from "@/components/Motorcycles";
 import Reception from "@/components/Reception";
+import Turnos from "@/components/Turnos";
 import ServiceOrders from "@/components/ServiceOrders";
 import Parts from "@/components/Parts";
 import Payments from "@/components/Payments";
 import Quotes from "@/components/Quotes";
 
-type Section = "dashboard" | "clients" | "motorcycles" | "reception" | "serviceOrders" | "parts" | "payments" | "quotes";
+type Section = "dashboard" | "clients" | "motorcycles" | "reception" | "turnos" | "serviceOrders" | "parts" | "payments" | "quotes";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>("dashboard");
@@ -25,6 +26,8 @@ export default function Home() {
         return <Motorcycles />;
       case "reception":
         return <Reception />;
+      case "turnos":
+        return <Turnos />;
       case "serviceOrders":
         return <ServiceOrders />;
       case "parts":

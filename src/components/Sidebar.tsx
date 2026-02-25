@@ -12,6 +12,7 @@ const navItems = [
   { id: "clients", label: "Clientes", icon: "👥" },
   { id: "motorcycles", label: "Motos", icon: "🏍️" },
   { id: "reception", label: "Recepción", icon: "📋" },
+  { id: "turnos", label: "Turnos", icon: "📅" },
   { id: "serviceOrders", label: "Órdenes de Servicio", icon: "🔧" },
   { id: "quotes", label: "Cotizaciones", icon: "📝" },
   { id: "parts", label: "Repuestos", icon: "⚙️" },
