@@ -1,8 +1,15 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 
 export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => void }) {
   const { clients, motorcycles, receptions, serviceOrders, payments, parts } = useStore();
+  const [currentDate, setCurrentDate] = useState<string>("");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrentDate(new Date().toLocaleDateString("es-AR", { weekday: "long", year: "numeric", month: "long", day: "numeric" }));
+  }, []);
 
   const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
   const pendingOrders = serviceOrders.filter(o => o.status === "pendiente" || o.status === "en proceso").length;
@@ -51,7 +58,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         <div>
           <h1 className="page-title">Dashboard</h1>
           <p style={{ color: "#64748b", fontSize: 14, marginTop: 4 }}>
-            {new Date().toLocaleDateString("es-AR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            {currentDate}
           </p>
         </div>
       </div>
