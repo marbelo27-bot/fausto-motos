@@ -5,16 +5,16 @@ import type { Part } from "@/lib/types";
 
 interface PartFormData {
   description: string;
-  costPrice: number;
-  salePrice: number;
-  stock: number;
+  costPrice: string;
+  salePrice: string;
+  stock: string;
 }
 
 const emptyForm: PartFormData = {
   description: "",
-  costPrice: 0,
-  salePrice: 0,
-  stock: 0,
+  costPrice: "",
+  salePrice: "",
+  stock: "",
 };
 
 export default function Parts() {
@@ -30,10 +30,16 @@ export default function Parts() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const parsed = {
+      description: form.description,
+      costPrice: parseFloat(form.costPrice) || 0,
+      salePrice: parseFloat(form.salePrice) || 0,
+      stock: parseInt(form.stock) || 0,
+    };
     if (editingId) {
-      updatePart(editingId, form);
+      updatePart(editingId, parsed);
     } else {
-      addPart(form);
+      addPart(parsed);
     }
     setShowForm(false);
     setEditingId(null);
@@ -43,9 +49,9 @@ export default function Parts() {
   const handleEdit = (part: Part) => {
     setForm({
       description: part.description,
-      costPrice: part.costPrice,
-      salePrice: part.salePrice,
-      stock: part.stock,
+      costPrice: String(part.costPrice),
+      salePrice: String(part.salePrice),
+      stock: String(part.stock),
     });
     setEditingId(part.id);
     setShowForm(true);
@@ -170,43 +176,44 @@ export default function Parts() {
                 <div className="form-group">
                   <label className="form-label">Costo de compra ($)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     className="form-input"
                     value={form.costPrice}
-                    onChange={e => setForm({ ...form, costPrice: parseFloat(e.target.value) || 0 })}
-                    min={0}
-                    step={0.01}
+                    onChange={e => setForm({ ...form, costPrice: e.target.value })}
+                    placeholder="0"
                   />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Precio de venta ($)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     className="form-input"
                     value={form.salePrice}
-                    onChange={e => setForm({ ...form, salePrice: parseFloat(e.target.value) || 0 })}
-                    min={0}
-                    step={0.01}
+                    onChange={e => setForm({ ...form, salePrice: e.target.value })}
+                    placeholder="0"
                   />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Stock</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     className="form-input"
                     value={form.stock}
-                    onChange={e => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
-                    min={0}
+                    onChange={e => setForm({ ...form, stock: e.target.value })}
+                    placeholder="0"
                   />
                 </div>
               </div>
 
-              {form.costPrice > 0 && form.salePrice > 0 && (
+              {parseFloat(form.costPrice) > 0 && parseFloat(form.salePrice) > 0 && (
                 <div style={{ padding: "10px 12px", background: "#f0f9ff", borderRadius: 8, marginBottom: 16, fontSize: 13 }}>
                   💡 Margen de ganancia: <strong style={{ color: "#2596be" }}>
-                    {Math.round(((form.salePrice - form.costPrice) / form.costPrice) * 100)}%
+                    {Math.round(((parseFloat(form.salePrice) - parseFloat(form.costPrice)) / parseFloat(form.costPrice)) * 100)}%
                   </strong>
-                  {" "}(${(form.salePrice - form.costPrice).toLocaleString("es-AR")} por unidad)
+                  {" "}(${(parseFloat(form.salePrice) - parseFloat(form.costPrice)).toLocaleString("es-AR")} por unidad)
                 </div>
               )}
 

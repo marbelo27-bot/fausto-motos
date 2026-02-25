@@ -51,10 +51,20 @@ function getEmptyForm() {
   };
 }
 
-function getEmptyItem(): QuoteItem {
+function getEmptyLaborItem(): QuoteItem {
   return {
     id: uuidv4(),
     type: "labor",
+    description: "",
+    quantity: 1,
+    unitPrice: 0,
+  };
+}
+
+function getEmptyPartItem(): QuoteItem {
+  return {
+    id: uuidv4(),
+    type: "part",
     description: "",
     quantity: 1,
     unitPrice: 0,
@@ -106,7 +116,8 @@ export default function Quotes() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [form, setForm] = useState(getEmptyForm());
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [newItem, setNewItem] = useState<QuoteItem>(getEmptyItem());
+  const [newLaborItem, setNewLaborItem] = useState<QuoteItem>(getEmptyLaborItem());
+  const [newPartItem, setNewPartItem] = useState<QuoteItem>(getEmptyPartItem());
   const [search, setSearch] = useState("");
 
   const selectedQuote = quotes.find((q) => q.id === selectedId) ?? null;
@@ -123,12 +134,20 @@ export default function Quotes() {
     return { laborTotal, partsTotal, total: laborTotal + partsTotal };
   }
 
-  function handleAddItem() {
-    if (!newItem.description.trim()) return;
-    const items = [...form.items, { ...newItem, id: uuidv4() }];
+  function handleAddLaborItem() {
+    if (!newLaborItem.description.trim()) return;
+    const items = [...form.items, { ...newLaborItem, id: uuidv4() }];
     const totals = recalcTotals(items);
     setForm({ ...form, items, ...totals });
-    setNewItem(getEmptyItem());
+    setNewLaborItem(getEmptyLaborItem());
+  }
+
+  function handleAddPartItem() {
+    if (!newPartItem.description.trim()) return;
+    const items = [...form.items, { ...newPartItem, id: uuidv4() }];
+    const totals = recalcTotals(items);
+    setForm({ ...form, items, ...totals });
+    setNewPartItem(getEmptyPartItem());
   }
 
   function handleRemoveItem(id: string) {
@@ -377,16 +396,14 @@ export default function Quotes() {
           </div>
         </div>
 
-        {/* Items */}
+        {/* Labor Items */}
         <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "18px", marginBottom: 16 }}>
-          <div style={sectionTitle}>Trabajos y Repuestos</div>
+          <div style={sectionTitle}>🔧 Mano de Obra (Trabajo)</div>
 
-          {/* Existing items */}
-          {form.items.length > 0 && (
+          {form.items.filter(i => i.type === "labor").length > 0 && (
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 14 }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid #334155" }}>
-                  <th style={{ color: "#CAF404", textAlign: "left", padding: "5px 6px" }}>Tipo</th>
                   <th style={{ color: "#CAF404", textAlign: "left", padding: "5px 6px" }}>Descripción</th>
                   <th style={{ color: "#CAF404", textAlign: "right", padding: "5px 6px" }}>Cant.</th>
                   <th style={{ color: "#CAF404", textAlign: "right", padding: "5px 6px" }}>P. Unit.</th>
@@ -395,22 +412,16 @@ export default function Quotes() {
                 </tr>
               </thead>
               <tbody>
-                {form.items.map((item) => (
+                {form.items.filter(i => i.type === "labor").map((item) => (
                   <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
-                    <td style={{ padding: "6px", color: item.type === "labor" ? "#3b82f6" : "#f59e0b", fontSize: 12 }}>
-                      {item.type === "labor" ? "🔧 M.O." : "⚙️ Rep."}
-                    </td>
                     <td style={{ padding: "6px", color: "#fff" }}>{item.description}</td>
                     <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
                     <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
-                    <td style={{ padding: "6px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>
+                    <td style={{ padding: "6px", color: "#3b82f6", fontWeight: 700, textAlign: "right" }}>
                       ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
                     </td>
                     <td style={{ padding: "6px", textAlign: "center" }}>
-                      <button
-                        onClick={() => handleRemoveItem(item.id)}
-                        style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}
-                      >✕</button>
+                      <button onClick={() => handleRemoveItem(item.id)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}>✕</button>
                     </td>
                   </tr>
                 ))}
@@ -418,75 +429,153 @@ export default function Quotes() {
             </table>
           )}
 
-          {/* Add new item row */}
-          <div style={{ display: "grid", gridTemplateColumns: "120px 1fr 70px 110px auto", gap: 8, alignItems: "flex-end" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 70px 130px auto", gap: 8, alignItems: "flex-end" }}>
             <div>
-              <label style={labelStyle}>Tipo</label>
-              <select
-                style={inputStyle}
-                value={newItem.type}
-                onChange={(e) => setNewItem({ ...newItem, type: e.target.value as QuoteItem["type"] })}
-              >
-                <option value="labor">Mano de obra</option>
-                <option value="part">Repuesto</option>
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>Descripción</label>
+              <label style={labelStyle}>Descripción del trabajo</label>
               <input
                 style={inputStyle}
-                placeholder="Ej: Cambio de aceite, Filtro de aire..."
-                value={newItem.description}
-                onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                onKeyDown={(e) => { if (e.key === "Enter") handleAddItem(); }}
+                placeholder="Ej: Cambio de aceite, Afinación..."
+                value={newLaborItem.description}
+                onChange={(e) => setNewLaborItem({ ...newLaborItem, description: e.target.value })}
+                onKeyDown={(e) => { if (e.key === "Enter") handleAddLaborItem(); }}
               />
             </div>
             <div>
               <label style={labelStyle}>Cant.</label>
               <input
-                type="number"
-                min={1}
+                type="text"
+                inputMode="numeric"
                 style={inputStyle}
-                value={newItem.quantity}
-                onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                value={newLaborItem.quantity === 0 ? "" : newLaborItem.quantity}
+                onChange={(e) => setNewLaborItem({ ...newLaborItem, quantity: Number(e.target.value) || 1 })}
               />
             </div>
             <div>
               <label style={labelStyle}>Precio unit. ($)</label>
               <input
-                type="number"
-                min={0}
+                type="text"
+                inputMode="decimal"
                 style={inputStyle}
-                value={newItem.unitPrice}
-                onChange={(e) => setNewItem({ ...newItem, unitPrice: Number(e.target.value) })}
+                placeholder="0"
+                value={newLaborItem.unitPrice === 0 ? "" : newLaborItem.unitPrice}
+                onChange={(e) => setNewLaborItem({ ...newLaborItem, unitPrice: parseFloat(e.target.value) || 0 })}
               />
             </div>
             <div>
               <label style={{ ...labelStyle, visibility: "hidden" }}>.</label>
               <button
-                onClick={handleAddItem}
-                style={{ background: "#CAF404", color: "#000", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap" }}
+                onClick={handleAddLaborItem}
+                style={{ background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap" }}
               >
                 + Agregar
               </button>
             </div>
           </div>
 
-          {/* Totals summary */}
-          {form.items.length > 0 && (
-            <div style={{ marginTop: 16, borderTop: "1px solid #334155", paddingTop: 12, display: "flex", justifyContent: "flex-end", gap: 24 }}>
-              <span style={{ color: "#94a3b8", fontSize: 13 }}>
-                M.O.: <strong style={{ color: "#3b82f6" }}>${form.laborTotal.toLocaleString("es-AR")}</strong>
-              </span>
-              <span style={{ color: "#94a3b8", fontSize: 13 }}>
-                Repuestos: <strong style={{ color: "#f59e0b" }}>${form.partsTotal.toLocaleString("es-AR")}</strong>
-              </span>
-              <span style={{ color: "#fff", fontSize: 15, fontWeight: 800 }}>
-                TOTAL: <strong style={{ color: "#CAF404" }}>${form.total.toLocaleString("es-AR")}</strong>
-              </span>
+          {form.laborTotal > 0 && (
+            <div style={{ marginTop: 10, textAlign: "right", fontSize: 13, color: "#94a3b8" }}>
+              Subtotal M.O.: <strong style={{ color: "#3b82f6" }}>${form.laborTotal.toLocaleString("es-AR")}</strong>
             </div>
           )}
         </div>
+
+        {/* Parts Items */}
+        <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "18px", marginBottom: 16 }}>
+          <div style={sectionTitle}>⚙️ Repuestos</div>
+
+          {form.items.filter(i => i.type === "part").length > 0 && (
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 14 }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid #334155" }}>
+                  <th style={{ color: "#CAF404", textAlign: "left", padding: "5px 6px" }}>Descripción</th>
+                  <th style={{ color: "#CAF404", textAlign: "right", padding: "5px 6px" }}>Cant.</th>
+                  <th style={{ color: "#CAF404", textAlign: "right", padding: "5px 6px" }}>P. Unit.</th>
+                  <th style={{ color: "#CAF404", textAlign: "right", padding: "5px 6px" }}>Subtotal</th>
+                  <th style={{ padding: "5px 6px" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {form.items.filter(i => i.type === "part").map((item) => (
+                  <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
+                    <td style={{ padding: "6px", color: "#fff" }}>{item.description}</td>
+                    <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
+                    <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
+                    <td style={{ padding: "6px", color: "#f59e0b", fontWeight: 700, textAlign: "right" }}>
+                      ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
+                    </td>
+                    <td style={{ padding: "6px", textAlign: "center" }}>
+                      <button onClick={() => handleRemoveItem(item.id)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}>✕</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 70px 130px auto", gap: 8, alignItems: "flex-end" }}>
+            <div>
+              <label style={labelStyle}>Descripción del repuesto</label>
+              <input
+                style={inputStyle}
+                placeholder="Ej: Filtro de aceite, Pastillas de freno..."
+                value={newPartItem.description}
+                onChange={(e) => setNewPartItem({ ...newPartItem, description: e.target.value })}
+                onKeyDown={(e) => { if (e.key === "Enter") handleAddPartItem(); }}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Cant.</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                style={inputStyle}
+                value={newPartItem.quantity === 0 ? "" : newPartItem.quantity}
+                onChange={(e) => setNewPartItem({ ...newPartItem, quantity: Number(e.target.value) || 1 })}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Precio unit. ($)</label>
+              <input
+                type="text"
+                inputMode="decimal"
+                style={inputStyle}
+                placeholder="0"
+                value={newPartItem.unitPrice === 0 ? "" : newPartItem.unitPrice}
+                onChange={(e) => setNewPartItem({ ...newPartItem, unitPrice: parseFloat(e.target.value) || 0 })}
+              />
+            </div>
+            <div>
+              <label style={{ ...labelStyle, visibility: "hidden" }}>.</label>
+              <button
+                onClick={handleAddPartItem}
+                style={{ background: "#f59e0b", color: "#000", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap" }}
+              >
+                + Agregar
+              </button>
+            </div>
+          </div>
+
+          {form.partsTotal > 0 && (
+            <div style={{ marginTop: 10, textAlign: "right", fontSize: 13, color: "#94a3b8" }}>
+              Subtotal Repuestos: <strong style={{ color: "#f59e0b" }}>${form.partsTotal.toLocaleString("es-AR")}</strong>
+            </div>
+          )}
+        </div>
+
+        {/* Grand Total */}
+        {form.items.length > 0 && (
+          <div style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 12, padding: "14px 18px", marginBottom: 16, display: "flex", justifyContent: "flex-end", gap: 24, alignItems: "center" }}>
+            <span style={{ color: "#94a3b8", fontSize: 13 }}>
+              M.O.: <strong style={{ color: "#3b82f6" }}>${form.laborTotal.toLocaleString("es-AR")}</strong>
+            </span>
+            <span style={{ color: "#94a3b8", fontSize: 13 }}>
+              Repuestos: <strong style={{ color: "#f59e0b" }}>${form.partsTotal.toLocaleString("es-AR")}</strong>
+            </span>
+            <span style={{ color: "#fff", fontSize: 16, fontWeight: 800 }}>
+              TOTAL: <strong style={{ color: "#CAF404" }}>${form.total.toLocaleString("es-AR")}</strong>
+            </span>
+          </div>
+        )}
 
         {/* Notes + Status */}
         <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "18px", marginBottom: 20 }}>
