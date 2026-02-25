@@ -33,9 +33,39 @@ export default function Turnos() {
   const [customBrand, setCustomBrand] = useState("");
   const [customModel, setCustomModel] = useState("");
   const [selectedTurno, setSelectedTurno] = useState<Turno | null>(null);
+  // Independent motorcycle creation
+  const [showNewMotoStandalone, setShowNewMotoStandalone] = useState(false);
+  const [newMotoClientId, setNewMotoClientId] = useState("");
+  const [newMotoStandaloneData, setNewMotoStandaloneData] = useState({ brand: "", model: "", plate: "", year: new Date().getFullYear() });
+  const [standaloneCustomBrand, setStandaloneCustomBrand] = useState("");
+  const [standaloneCustomModel, setStandaloneCustomModel] = useState("");
 
   const brands = getBrandNames();
   const models = newMotoData.brand ? getModelsByBrand(newMotoData.brand) : [];
+  
+  // Standalone motorcycle creation
+  const standaloneBrands = getBrandNames();
+  const standaloneModels = newMotoStandaloneData.brand ? getModelsByBrand(newMotoStandaloneData.brand) : [];
+
+  const handleStandaloneMotoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const finalBrand = newMotoStandaloneData.brand === "__custom__" ? standaloneCustomBrand : newMotoStandaloneData.brand;
+    const finalModel = newMotoStandaloneData.model === "__custom__" ? standaloneCustomModel : newMotoStandaloneData.model;
+    if (!newMotoClientId) {
+      alert("Por favor seleccioná un cliente");
+      return;
+    }
+    if (!finalBrand || !finalModel || !newMotoStandaloneData.plate) {
+      alert("Por favor completá marca, modelo y patente");
+      return;
+    }
+    addMotorcycle({ clientId: newMotoClientId, brand: finalBrand, model: finalModel, plate: newMotoStandaloneData.plate, year: newMotoStandaloneData.year });
+    setShowNewMotoStandalone(false);
+    setNewMotoClientId("");
+    setNewMotoStandaloneData({ brand: "", model: "", plate: "", year: new Date().getFullYear() });
+    setStandaloneCustomBrand("");
+    setStandaloneCustomModel("");
+  };
 
   // Sync with store
   useState(() => {
@@ -171,10 +201,129 @@ export default function Turnos() {
     <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">📅 Turnos</h1>
-        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setFormData(getEmptyForm()); }}>
-          ➕ Nuevo Turno
-        </button>
+        <div className="flex gap-2">
+          <button className="btn-secondary" onClick={() => setShowNewMotoStandalone(true)}>
+            🏍️ Nueva Moto
+          </button>
+          <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setFormData(getEmptyForm()); }}>
+            ➕ Nuevo Turno
+          </button>
+        </div>
       </div>
+
+      {/* Standalone New Motorcycle Modal */}
+      {showNewMotoStandalone && (
+        <div className="modal-overlay" onClick={() => setShowNewMotoStandalone(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="section-title">🏍️ Nueva Moto</h2>
+            <form onSubmit={handleStandaloneMotoSubmit} className="form-container">
+              <div className="form-group">
+                <label className="form-label">Cliente *</label>
+                <select
+                  className="form-select"
+                  value={newMotoClientId}
+                  onChange={(e) => setNewMotoClientId(e.target.value)}
+                  required
+                >
+                  <option value="">Seleccionar cliente...</option>
+                  {clientsSorted.map((c) => (
+                    <option key={c.id} value={c.id}>{c.fullName}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Marca *</label>
+                  <select
+                    className="form-select"
+                    value={newMotoStandaloneData.brand}
+                    onChange={(e) => {
+                      setNewMotoStandaloneData({ ...newMotoStandaloneData, brand: e.target.value, model: "" });
+                      setStandaloneCustomBrand("");
+                    }}
+                    required
+                  >
+                    <option value="">Seleccionar marca...</option>
+                    {standaloneBrands.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                    <option value="__custom__">Otra marca...</option>
+                  </select>
+                  {newMotoStandaloneData.brand === "__custom__" && (
+                    <input
+                      className="form-input"
+                      style={{ marginTop: 6 }}
+                      placeholder="Escribir marca..."
+                      value={standaloneCustomBrand}
+                      onChange={(e) => setStandaloneCustomBrand(e.target.value)}
+                      required
+                    />
+                  )}
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Modelo *</label>
+                  <select
+                    className="form-select"
+                    value={newMotoStandaloneData.model}
+                    onChange={(e) => {
+                      setNewMotoStandaloneData({ ...newMotoStandaloneData, model: e.target.value });
+                      setStandaloneCustomModel("");
+                    }}
+                    required
+                    disabled={!newMotoStandaloneData.brand}
+                  >
+                    <option value="">{!newMotoStandaloneData.brand ? "Seleccioná una marca primero" : "Seleccionar modelo..."}</option>
+                    {standaloneModels.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                    <option value="__custom__">Otro modelo...</option>
+                  </select>
+                  {newMotoStandaloneData.model === "__custom__" && (
+                    <input
+                      className="form-input"
+                      style={{ marginTop: 6 }}
+                      placeholder="Escribir modelo..."
+                      value={standaloneCustomModel}
+                      onChange={(e) => setStandaloneCustomModel(e.target.value)}
+                      required
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Patente</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={newMotoStandaloneData.plate}
+                    onChange={(e) => setNewMotoStandaloneData({ ...newMotoStandaloneData, plate: e.target.value })}
+                    placeholder="ABC-123"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Año</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={newMotoStandaloneData.year}
+                    onChange={(e) => setNewMotoStandaloneData({ ...newMotoStandaloneData, year: parseInt(e.target.value) || new Date().getFullYear() })}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button type="submit" className="btn-primary">
+                  Guardar Moto
+                </button>
+                <button type="button" className="btn-secondary" onClick={() => setShowNewMotoStandalone(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {showForm && (
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
