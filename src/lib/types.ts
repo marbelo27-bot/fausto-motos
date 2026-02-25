@@ -60,6 +60,7 @@ export interface ServiceOrder {
   clientId: string;
   motorcycleId: string;
   receptionId?: string;
+  quoteId?: string;
   date: string;
   requiredService: string;
   performedService: string;
@@ -108,4 +109,5 @@ export interface Quote {
   total: number;
   notes: string;
   status: "borrador" | "enviada" | "aceptada" | "rechazada";
+  convertedToOrderId?: string;
 }

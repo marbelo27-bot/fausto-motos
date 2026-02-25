@@ -110,7 +110,7 @@ const sectionTitle: React.CSSProperties = {
 };
 
 export default function Quotes() {
-  const { clients, motorcycles, quotes, addQuote, updateQuote, deleteQuote } = useStore();
+  const { clients, motorcycles, quotes, addQuote, updateQuote, deleteQuote, addServiceOrder } = useStore();
 
   const [view, setView] = useState<"list" | "form" | "detail">("list");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -221,6 +221,34 @@ export default function Quotes() {
     const moto = motorcycles.find((m) => m.id === q.motorcycleId);
     if (!client || !moto) return;
     await generateQuotePDF(q, client, moto);
+  }
+
+  function handleConvertToOrder(q: Quote) {
+    const today = new Date().toLocaleDateString("sv-SE");
+    const partItems = q.items.filter((i) => i.type === "part");
+    const newOrder = addServiceOrder({
+      clientId: q.clientId,
+      motorcycleId: q.motorcycleId,
+      receptionId: "",
+      quoteId: q.id,
+      date: today,
+      requiredService: "Orden generada desde cotización #" + q.id.slice(0, 8),
+      performedService: "Orden generada desde cotización #" + q.id.slice(0, 8),
+      parts: partItems.map((i) => ({
+        partId: "",
+        description: i.description,
+        quantity: i.quantity,
+        unitPrice: i.unitPrice,
+      })),
+      laborCost: q.laborTotal,
+      partsCost: q.partsTotal,
+      totalCost: q.total,
+      status: "pendiente",
+      warranty: "",
+      notes: q.notes,
+    });
+    updateQuote(q.id, { convertedToOrderId: newOrder.id });
+    alert("Orden de servicio creada exitosamente");
   }
 
   const filtered = quotes.filter((q) => {
@@ -337,6 +365,18 @@ export default function Quotes() {
             </div>
           )}
 
+          {/* Converted badge */}
+          {selectedQuote.convertedToOrderId && (
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              background: "#14532d", border: "1px solid #22c55e",
+              borderRadius: 20, padding: "4px 14px", fontSize: 13, fontWeight: 700,
+              color: "#22c55e", marginBottom: 12,
+            }}>
+              ✅ Convertida a Orden #{selectedQuote.convertedToOrderId.slice(0, 8).toUpperCase()}
+            </div>
+          )}
+
           {/* Actions */}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", flexWrap: "wrap" }}>
             <select
@@ -349,6 +389,14 @@ export default function Quotes() {
               <option value="aceptada">Aceptada</option>
               <option value="rechazada">Rechazada</option>
             </select>
+            {selectedQuote.status === "aceptada" && !selectedQuote.convertedToOrderId && (
+              <button
+                onClick={() => handleConvertToOrder(selectedQuote)}
+                style={{ background: "#22c55e", color: "#000", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: "bold", cursor: "pointer", fontSize: 14 }}
+              >
+                🔧 Convertir a Orden de Servicio
+              </button>
+            )}
             <button className="btn-secondary" onClick={() => handleEdit(selectedQuote)}>✏️ Editar</button>
             <button className="btn-success" onClick={() => handlePDF(selectedQuote)}>📄 Generar PDF</button>
             <button className="btn-danger" onClick={() => handleDelete(selectedQuote.id)}>🗑️ Eliminar</button>
@@ -781,6 +829,15 @@ export default function Quotes() {
                     }}>
                       {STATUS_LABELS[q.status]}
                     </span>
+                    {q.convertedToOrderId && (
+                      <span style={{
+                        background: "#14532d", color: "#22c55e",
+                        border: "1px solid #22c55e",
+                        borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700,
+                      }}>
+                        ✅ Orden creada
+                      </span>
+                    )}
                     <div style={{ color: "#22c55e", fontWeight: 800, fontSize: 16 }}>
                       ${q.total.toLocaleString("es-AR")}
                     </div>

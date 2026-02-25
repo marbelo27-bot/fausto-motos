@@ -233,6 +233,17 @@ export default function ServiceOrders() {
                     <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                       {moto ? `${moto.brand} ${moto.model}` : "—"}{moto?.plate ? ` · ${moto.plate}` : ""} · {order.performedService}
                     </div>
+                    {order.quoteId && (
+                      <div style={{ marginTop: 4 }}>
+                        <span style={{
+                          background: "#1e3a5f", color: "#60a5fa",
+                          border: "1px solid #3b82f6",
+                          borderRadius: 20, padding: "1px 8px", fontSize: 11, fontWeight: 700,
+                        }}>
+                          📋 Generada desde Cotización #{order.quoteId.slice(0, 8).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
                     <span className={`badge ${statusColors[order.status] || "badge-gray"}`}>
@@ -475,6 +486,17 @@ export default function ServiceOrders() {
                     <div>🔧 Realizado: <strong>{viewingOrder.performedService}</strong></div>
                     <div>Estado: <span className={`badge ${statusColors[viewingOrder.status]}`}>{viewingOrder.status}</span></div>
                     {viewingOrder.warranty && <div>🛡️ Garantía: <strong>{viewingOrder.warranty}</strong></div>}
+                    {viewingOrder.quoteId && (
+                      <div>
+                        <span style={{
+                          background: "#1e3a5f", color: "#60a5fa",
+                          border: "1px solid #3b82f6",
+                          borderRadius: 20, padding: "2px 10px", fontSize: 12, fontWeight: 700,
+                        }}>
+                          📋 Generada desde Cotización #{viewingOrder.quoteId.slice(0, 8).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
