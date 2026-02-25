@@ -144,11 +144,11 @@ export const useStore = create<AppState>()(
         })),
 
       addServiceOrder: (data) => {
+        const now = new Date();
+        const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
         const existing = get().serviceOrders;
-        const n = existing.length + 1;
-        const left = String(Math.floor(n / 1000)).padStart(3, "0");
-        const right = String(n % 1000).padStart(3, "0");
-        const id = `${left}-${right}`;
+        const seq = String(existing.length + 1).padStart(3, "0");
+        const id = `${yyyymm}-${seq}`;
         const order: ServiceOrder = { ...data, id };
         set((s) => ({ serviceOrders: [...s.serviceOrders, order] }));
         return order;
