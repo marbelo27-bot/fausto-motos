@@ -318,6 +318,153 @@ export const motorcycleBrands: BrandModels[] = [
       "Century 125", "Century 250",
       "Marathon 125", "Marathon 250", "Marathon 450", "Marathon 500"
     ]
+  },
+  {
+    brand: "CF",
+    models: [
+      "CF 150", "CF 250", "CF 500",
+      "NK 150", "NK 250", "NK 400", "NK 650",
+      "R 150", "R 250", "R 300",
+      "TX 150", "TX 250", "TX 500",
+      "C 150", "C 250",
+      "V5", "V7", "V9"
+    ]
+  },
+  {
+    brand: "QJMOTOR",
+    models: [
+      "SRK 125", "SRK 150", "SRK 200", "SRK 250", "SRK 400", "SRK 600",
+      "SRT 500", "SRT 700", "SRT 1000",
+      "MTK 150", "MTK 250",
+      "DAC 150", "DAC 250",
+      "SL 150", "SL 250",
+      "M 150", "M 250",
+      "C 150", "C 250", "C 500",
+      "TR 150", "TR 250", "TR 500"
+    ]
+  },
+  {
+    brand: "KOVE",
+    models: [
+      "R 150", "R 250", "R 300", "R 450",
+      "RR 150", "RR 250", "RR 300",
+      "RX 150", "RX 250", "RX 450",
+      "Adventure 250", "Adventure 500",
+      "Street 150", "Street 250",
+      "Naked 250", "Naked 400"
+    ]
+  },
+  {
+    brand: "HERO",
+    models: [
+      "Splendor 100", "Splendor 125", "Splendor Plus",
+      "HF 100", "HF 110", "HF 125", "HF 150",
+      "Glamour 100", "Glamour 125", "Glamour 150",
+      "Passion 100", "Passion 125",
+      "Ignitor 125", "Ignitor 150",
+      "Xtreme 125", "Xtreme 150", "Xtreme 200", "Xtreme 250",
+      "Xpulse 125", "Xpulse 150", "Xpulse 200", "Xpulse 200T",
+      "Hunk 150", "Hunk 160", "Hunk 200",
+      "Mestro 125",
+      "Destini 125", "Destini 150"
+    ]
+  },
+  {
+    brand: "SIAM",
+    models: [
+      "Marco 125", "Marco 150",
+      "Forza 125", "Forza 150",
+      "Adventure 150", "Adventure 200",
+      "Street 125", "Street 150",
+      "RX 125", "RX 150",
+      "Tornado 150",
+      "Supercross 150", "Supercross 200"
+    ]
+  },
+  {
+    brand: "KEEWAY",
+    models: [
+      "K-Lite 125", "K-Lite 150",
+      "RKF 125", "RKF 150",
+      "TX 125", "TX 150", "TX 200", "TX 250",
+      "RX 125", "RX 150", "RX 200", "RX 250",
+      "Hofman 125", "Hofman 150",
+      "Stage 125", "Stage 150",
+      "SR 125", "SR 150",
+      "V 125", "V 150",
+      "Cityblade 125", "Cityblade 150"
+    ]
+  },
+  {
+    brand: "APPIA",
+    models: [
+      "Apulia 125", "Apulia 150",
+      "Classic 125", "Classic 150",
+      "Urban 125", "Urban 150",
+      "Sport 125", "Sport 150",
+      "Naked 125", "Naked 150",
+      "Sprint 125", "Sprint 150"
+    ]
+  },
+  {
+    brand: "RVM",
+    models: [
+      "RX 150", "RX 200", "RX 250", "RX 450",
+      "AT 150", "AT 200", "AT 250",
+      "ST 150", "ST 200",
+      "DT 150", "DT 200",
+      "Adventure 250", "Adventure 400",
+      "Naked 200", "Naked 250",
+      "Street 150", "Street 200"
+    ]
+  },
+  {
+    brand: "KELLER",
+    models: [
+      "Classic 100", "Classic 125", "Classic 150",
+      "Street 125", "Street 150",
+      "Adventure 150", "Adventure 200",
+      "Naked 125", "Naked 150",
+      "Sprint 125", "Sprint 150",
+      "TT 150", "TT 200",
+      "Cruiser 150", "Cruiser 200",
+      "Endurance 125", "Endurance 150"
+    ]
+  },
+  {
+    brand: "BRAVA",
+    models: [
+      "Neo 100", "Neo 125", "Neo 150",
+      "Street 100", "Street 125", "Street 150",
+      "Sport 125", "Sport 150",
+      "Classic 100", "Classic 125",
+      "Adventure 150", "Adventure 200",
+      "Turbo 125", "Turbo 150",
+      "Racing 125", "Racing 150",
+      "Eco 100", "Eco 125"
+    ]
+  },
+  {
+    brand: "Piaggio",
+    models: [
+      "Vespa 50", "Vespa 125", "Vespa 150", "Vespa 200",
+      "Vespa GTS 125", "Vespa GTS 250", "Vespa GTS 300",
+      "Vespa LX 125", "Vespa LX 150",
+      "Vespa S 125",
+      "Liberty 125", "Liberty 150", "Liberty 200",
+      "Medley 125", "Medley 150",
+      "Beverly 125", "Beverly 250", "Beverly 300",
+      "X8 125", "X8 150", "X8 200",
+      "X9 125", "X9 150", "X9 250", "X9 500",
+      "X10 125", "X10 350",
+      "NRG 50", "NRG 125",
+      "Zip 50", "Zip 100", "Zip 125",
+      "Fly 125", "Fly 150",
+      "Typhoon 125", "Typhoon 150",
+      "GT 125", "GT 200", "GT 250", "GT 500",
+      "GTV 125", "GTV 250",
+      "Paggio 125", "Paggio 150"
+    ]
   }
 ];
 
