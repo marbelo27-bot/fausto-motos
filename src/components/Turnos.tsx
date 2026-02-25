@@ -20,13 +20,15 @@ function getEmptyForm(): Omit<Turno, "id" | "createdAt"> {
 }
 
 export default function Turnos() {
-  const { clients, motorcycles, turnos, addTurno, updateTurno, deleteTurno, addClient } = useStore();
+  const { clients, motorcycles, turnos, addTurno, updateTurno, deleteTurno, addClient, addMotorcycle } = useStore();
   const [turnosList, setTurnosList] = useState<Turno[]>(turnos);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState(getEmptyForm());
   const [showNewClient, setShowNewClient] = useState(false);
   const [newClientData, setNewClientData] = useState({ fullName: "", phone: "", address: "", notes: "" });
+  const [showNewMoto, setShowNewMoto] = useState(false);
+  const [newMotoData, setNewMotoData] = useState({ brand: "", model: "", plate: "", year: new Date().getFullYear() });
   const [selectedTurno, setSelectedTurno] = useState<Turno | null>(null);
 
   // Sync with store
@@ -93,6 +95,22 @@ export default function Turnos() {
     setFormData((prev) => ({ ...prev, clientId: client.id }));
     setShowNewClient(false);
     setNewClientData({ fullName: "", phone: "", address: "", notes: "" });
+  };
+
+  const handleNewMotoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.clientId) {
+      alert("Por favor seleccioná un cliente primero");
+      return;
+    }
+    if (!newMotoData.brand || !newMotoData.model || !newMotoData.plate) {
+      alert("Por favor completá marca, modelo y patente");
+      return;
+    }
+    const moto = addMotorcycle({ ...newMotoData, clientId: formData.clientId });
+    setFormData((prev) => ({ ...prev, motorcycleId: moto.id }));
+    setShowNewMoto(false);
+    setNewMotoData({ brand: "", model: "", plate: "", year: new Date().getFullYear() });
   };
 
   const handleClientChange = (clientId: string) => {
@@ -175,17 +193,25 @@ export default function Turnos() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Moto</label>
-                  <select
-                    className="form-select"
-                    value={formData.motorcycleId}
-                    onChange={(e) => setFormData({ ...formData, motorcycleId: e.target.value })}
-                    required
-                  >
-                    <option value="">Seleccionar moto...</option>
-                    {clientMotos.map((m) => (
-                      <option key={m.id} value={m.id}>{m.brand} {m.model} ({m.plate})</option>
-                    ))}
-                  </select>
+                  <div className="flex gap-2">
+                    <select
+                      className="form-select"
+                      value={formData.motorcycleId}
+                      onChange={(e) => setFormData({ ...formData, motorcycleId: e.target.value })}
+                      required
+                      disabled={!formData.clientId}
+                    >
+                      <option value="">{!formData.clientId ? "Seleccioná un cliente primero" : "Seleccionar moto..."}</option>
+                      {clientMotos.map((m) => (
+                        <option key={m.id} value={m.id}>{m.brand} {m.model} ({m.plate})</option>
+                      ))}
+                    </select>
+                    {formData.clientId && (
+                      <button type="button" className="btn-secondary" onClick={() => setShowNewMoto(true)}>
+                        ➕
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -239,6 +265,65 @@ export default function Turnos() {
                       Guardar Cliente
                     </button>
                     <button type="button" className="btn-secondary" onClick={() => setShowNewClient(false)}>
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {showNewMoto && formData.clientId && (
+                <div className="card" style={{ marginBottom: "1rem", padding: "1rem" }}>
+                  <h3 className="text-lg font-bold mb-3" style={{ color: "#fbbf24" }}>Nueva Moto</h3>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Marca</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={newMotoData.brand}
+                        onChange={(e) => setNewMotoData({ ...newMotoData, brand: e.target.value })}
+                        placeholder="Honda, Yamaha, etc."
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Modelo</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={newMotoData.model}
+                        onChange={(e) => setNewMotoData({ ...newMotoData, model: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Patente</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={newMotoData.plate}
+                        onChange={(e) => setNewMotoData({ ...newMotoData, plate: e.target.value })}
+                        placeholder="ABC-123"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Año</label>
+                      <input
+                        type="number"
+                        className="form-input"
+                        value={newMotoData.year}
+                        onChange={(e) => setNewMotoData({ ...newMotoData, year: parseInt(e.target.value) || new Date().getFullYear() })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <button type="submit" className="btn-primary" onClick={handleNewMotoSubmit}>
+                      Guardar Moto
+                    </button>
+                    <button type="button" className="btn-secondary" onClick={() => setShowNewMoto(false)}>
                       Cancelar
                     </button>
                   </div>
