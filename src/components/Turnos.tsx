@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useStore } from "../lib/store";
 import type { Turno } from "../lib/types";
 import { generateTurnoPDF } from "../lib/pdfGenerator";
+import { getBrandNames, getModelsByBrand } from "../lib/motorcycleData";
 
 function getEmptyForm(): Omit<Turno, "id" | "createdAt"> {
   const today = new Date();
@@ -29,7 +30,12 @@ export default function Turnos() {
   const [newClientData, setNewClientData] = useState({ fullName: "", phone: "", address: "", notes: "" });
   const [showNewMoto, setShowNewMoto] = useState(false);
   const [newMotoData, setNewMotoData] = useState({ brand: "", model: "", plate: "", year: new Date().getFullYear() });
+  const [customBrand, setCustomBrand] = useState("");
+  const [customModel, setCustomModel] = useState("");
   const [selectedTurno, setSelectedTurno] = useState<Turno | null>(null);
+
+  const brands = getBrandNames();
+  const models = newMotoData.brand ? getModelsByBrand(newMotoData.brand) : [];
 
   // Sync with store
   useState(() => {
@@ -99,18 +105,22 @@ export default function Turnos() {
 
   const handleNewMotoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalBrand = newMotoData.brand === "__custom__" ? customBrand : newMotoData.brand;
+    const finalModel = newMotoData.model === "__custom__" ? customModel : newMotoData.model;
     if (!formData.clientId) {
       alert("Por favor seleccioná un cliente primero");
       return;
     }
-    if (!newMotoData.brand || !newMotoData.model || !newMotoData.plate) {
+    if (!finalBrand || !finalModel || !newMotoData.plate) {
       alert("Por favor completá marca, modelo y patente");
       return;
     }
-    const moto = addMotorcycle({ ...newMotoData, clientId: formData.clientId });
+    const moto = addMotorcycle({ clientId: formData.clientId, brand: finalBrand, model: finalModel, plate: newMotoData.plate, year: newMotoData.year });
     setFormData((prev) => ({ ...prev, motorcycleId: moto.id }));
     setShowNewMoto(false);
     setNewMotoData({ brand: "", model: "", plate: "", year: new Date().getFullYear() });
+    setCustomBrand("");
+    setCustomModel("");
   };
 
   const handleClientChange = (clientId: string) => {
@@ -276,25 +286,61 @@ export default function Turnos() {
                   <h3 className="text-lg font-bold mb-3" style={{ color: "#fbbf24" }}>Nueva Moto</h3>
                   <div className="form-row">
                     <div className="form-group">
-                      <label className="form-label">Marca</label>
-                      <input
-                        type="text"
-                        className="form-input"
+                      <label className="form-label">Marca *</label>
+                      <select
+                        className="form-select"
                         value={newMotoData.brand}
-                        onChange={(e) => setNewMotoData({ ...newMotoData, brand: e.target.value })}
-                        placeholder="Honda, Yamaha, etc."
+                        onChange={(e) => {
+                          setNewMotoData({ ...newMotoData, brand: e.target.value, model: "" });
+                          setCustomBrand("");
+                        }}
                         required
-                      />
+                      >
+                        <option value="">Seleccionar marca...</option>
+                        {brands.map((b) => (
+                          <option key={b} value={b}>{b}</option>
+                        ))}
+                        <option value="__custom__">Otra marca...</option>
+                      </select>
+                      {newMotoData.brand === "__custom__" && (
+                        <input
+                          className="form-input"
+                          style={{ marginTop: 6 }}
+                          placeholder="Escribir marca..."
+                          value={customBrand}
+                          onChange={(e) => setCustomBrand(e.target.value)}
+                          required
+                        />
+                      )}
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Modelo</label>
-                      <input
-                        type="text"
-                        className="form-input"
+                      <label className="form-label">Modelo *</label>
+                      <select
+                        className="form-select"
                         value={newMotoData.model}
-                        onChange={(e) => setNewMotoData({ ...newMotoData, model: e.target.value })}
+                        onChange={(e) => {
+                          setNewMotoData({ ...newMotoData, model: e.target.value });
+                          setCustomModel("");
+                        }}
                         required
-                      />
+                        disabled={!newMotoData.brand}
+                      >
+                        <option value="">{!newMotoData.brand ? "Seleccioná una marca primero" : "Seleccionar modelo..."}</option>
+                        {models.map((m) => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                        <option value="__custom__">Otro modelo...</option>
+                      </select>
+                      {newMotoData.model === "__custom__" && (
+                        <input
+                          className="form-input"
+                          style={{ marginTop: 6 }}
+                          placeholder="Escribir modelo..."
+                          value={customModel}
+                          onChange={(e) => setCustomModel(e.target.value)}
+                          required
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="form-row">
