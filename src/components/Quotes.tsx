@@ -119,6 +119,8 @@ export default function Quotes() {
   const [newLaborItem, setNewLaborItem] = useState<QuoteItem>(getEmptyLaborItem());
   const [newPartItem, setNewPartItem] = useState<QuoteItem>(getEmptyPartItem());
   const [search, setSearch] = useState("");
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editingItemData, setEditingItemData] = useState<QuoteItem | null>(null);
 
   const selectedQuote = quotes.find((q) => q.id === selectedId) ?? null;
   const clientMotorcycles = motorcycles.filter((m) => m.clientId === form.clientId);
@@ -154,6 +156,25 @@ export default function Quotes() {
     const items = form.items.filter((i) => i.id !== id);
     const totals = recalcTotals(items);
     setForm({ ...form, items, ...totals });
+  }
+
+  function handleStartEditItem(item: QuoteItem) {
+    setEditingItemId(item.id);
+    setEditingItemData({ ...item });
+  }
+
+  function handleSaveEditItem() {
+    if (!editingItemData) return;
+    const items = form.items.map((i) => i.id === editingItemData.id ? { ...editingItemData } : i);
+    const totals = recalcTotals(items);
+    setForm({ ...form, items, ...totals });
+    setEditingItemId(null);
+    setEditingItemData(null);
+  }
+
+  function handleCancelEditItem() {
+    setEditingItemId(null);
+    setEditingItemData(null);
   }
 
   function handleSubmit() {
@@ -413,17 +434,53 @@ export default function Quotes() {
               </thead>
               <tbody>
                 {form.items.filter(i => i.type === "labor").map((item) => (
-                  <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
-                    <td style={{ padding: "6px", color: "#fff" }}>{item.description}</td>
-                    <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
-                    <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
-                    <td style={{ padding: "6px", color: "#3b82f6", fontWeight: 700, textAlign: "right" }}>
-                      ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
-                    </td>
-                    <td style={{ padding: "6px", textAlign: "center" }}>
-                      <button onClick={() => handleRemoveItem(item.id)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}>✕</button>
-                    </td>
-                  </tr>
+                  editingItemId === item.id && editingItemData ? (
+                    <tr key={item.id} style={{ borderBottom: "1px solid #0f172a", background: "#0f172a" }}>
+                      <td style={{ padding: "4px 6px" }}>
+                        <input
+                          style={{ ...inputStyle, padding: "5px 8px", fontSize: 13 }}
+                          value={editingItemData.description}
+                          onChange={(e) => setEditingItemData({ ...editingItemData, description: e.target.value })}
+                          autoFocus
+                        />
+                      </td>
+                      <td style={{ padding: "4px 6px" }}>
+                        <input
+                          type="text" inputMode="numeric"
+                          style={{ ...inputStyle, padding: "5px 8px", fontSize: 13, textAlign: "right" }}
+                          value={editingItemData.quantity}
+                          onChange={(e) => setEditingItemData({ ...editingItemData, quantity: Number(e.target.value) || 1 })}
+                        />
+                      </td>
+                      <td style={{ padding: "4px 6px" }}>
+                        <input
+                          type="text" inputMode="decimal"
+                          style={{ ...inputStyle, padding: "5px 8px", fontSize: 13, textAlign: "right" }}
+                          value={editingItemData.unitPrice}
+                          onChange={(e) => setEditingItemData({ ...editingItemData, unitPrice: parseFloat(e.target.value) || 0 })}
+                        />
+                      </td>
+                      <td style={{ padding: "4px 6px", color: "#3b82f6", fontWeight: 700, textAlign: "right" }}>
+                        ${(editingItemData.quantity * editingItemData.unitPrice).toLocaleString("es-AR")}
+                      </td>
+                      <td style={{ padding: "4px 6px", textAlign: "center", whiteSpace: "nowrap" }}>
+                        <button onClick={handleSaveEditItem} style={{ background: "none", border: "none", color: "#22c55e", cursor: "pointer", fontSize: 14, marginRight: 4 }} title="Guardar">✔</button>
+                        <button onClick={handleCancelEditItem} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 14 }} title="Cancelar">✕</button>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={item.id} style={{ borderBottom: "1px solid #0f172a", cursor: "pointer" }} onClick={() => handleStartEditItem(item)}>
+                      <td style={{ padding: "6px", color: "#fff" }}>{item.description}</td>
+                      <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
+                      <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
+                      <td style={{ padding: "6px", color: "#3b82f6", fontWeight: 700, textAlign: "right" }}>
+                        ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
+                      </td>
+                      <td style={{ padding: "6px", textAlign: "center" }}>
+                        <button onClick={(e) => { e.stopPropagation(); handleRemoveItem(item.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}>✕</button>
+                      </td>
+                    </tr>
+                  )
                 ))}
               </tbody>
             </table>
@@ -496,17 +553,53 @@ export default function Quotes() {
               </thead>
               <tbody>
                 {form.items.filter(i => i.type === "part").map((item) => (
-                  <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
-                    <td style={{ padding: "6px", color: "#fff" }}>{item.description}</td>
-                    <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
-                    <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
-                    <td style={{ padding: "6px", color: "#f59e0b", fontWeight: 700, textAlign: "right" }}>
-                      ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
-                    </td>
-                    <td style={{ padding: "6px", textAlign: "center" }}>
-                      <button onClick={() => handleRemoveItem(item.id)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}>✕</button>
-                    </td>
-                  </tr>
+                  editingItemId === item.id && editingItemData ? (
+                    <tr key={item.id} style={{ borderBottom: "1px solid #0f172a", background: "#0f172a" }}>
+                      <td style={{ padding: "4px 6px" }}>
+                        <input
+                          style={{ ...inputStyle, padding: "5px 8px", fontSize: 13 }}
+                          value={editingItemData.description}
+                          onChange={(e) => setEditingItemData({ ...editingItemData, description: e.target.value })}
+                          autoFocus
+                        />
+                      </td>
+                      <td style={{ padding: "4px 6px" }}>
+                        <input
+                          type="text" inputMode="numeric"
+                          style={{ ...inputStyle, padding: "5px 8px", fontSize: 13, textAlign: "right" }}
+                          value={editingItemData.quantity}
+                          onChange={(e) => setEditingItemData({ ...editingItemData, quantity: Number(e.target.value) || 1 })}
+                        />
+                      </td>
+                      <td style={{ padding: "4px 6px" }}>
+                        <input
+                          type="text" inputMode="decimal"
+                          style={{ ...inputStyle, padding: "5px 8px", fontSize: 13, textAlign: "right" }}
+                          value={editingItemData.unitPrice}
+                          onChange={(e) => setEditingItemData({ ...editingItemData, unitPrice: parseFloat(e.target.value) || 0 })}
+                        />
+                      </td>
+                      <td style={{ padding: "4px 6px", color: "#f59e0b", fontWeight: 700, textAlign: "right" }}>
+                        ${(editingItemData.quantity * editingItemData.unitPrice).toLocaleString("es-AR")}
+                      </td>
+                      <td style={{ padding: "4px 6px", textAlign: "center", whiteSpace: "nowrap" }}>
+                        <button onClick={handleSaveEditItem} style={{ background: "none", border: "none", color: "#22c55e", cursor: "pointer", fontSize: 14, marginRight: 4 }} title="Guardar">✔</button>
+                        <button onClick={handleCancelEditItem} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 14 }} title="Cancelar">✕</button>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={item.id} style={{ borderBottom: "1px solid #0f172a", cursor: "pointer" }} onClick={() => handleStartEditItem(item)}>
+                      <td style={{ padding: "6px", color: "#fff" }}>{item.description}</td>
+                      <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
+                      <td style={{ padding: "6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
+                      <td style={{ padding: "6px", color: "#f59e0b", fontWeight: 700, textAlign: "right" }}>
+                        ${(item.quantity * item.unitPrice).toLocaleString("es-AR")}
+                      </td>
+                      <td style={{ padding: "6px", textAlign: "center" }}>
+                        <button onClick={(e) => { e.stopPropagation(); handleRemoveItem(item.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14 }}>✕</button>
+                      </td>
+                    </tr>
+                  )
                 ))}
               </tbody>
             </table>
@@ -691,6 +784,12 @@ export default function Quotes() {
                     <div style={{ color: "#22c55e", fontWeight: 800, fontSize: 16 }}>
                       ${q.total.toLocaleString("es-AR")}
                     </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleEdit(q); }}
+                      style={{ background: "#1e293b", border: "1px solid #334155", color: "#94a3b8", borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontSize: 11, fontWeight: 600 }}
+                    >
+                      ✏️ Editar
+                    </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); handlePDF(q); }}
                       style={{ background: "#1e293b", border: "1px solid #334155", color: "#CAF404", borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontSize: 11, fontWeight: 600 }}
