@@ -1,34 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
-import type { Part } from "@/lib/types";
-
-const PART_CATEGORIES = [
-  "Carrocería",
-  "Asiento o tapizado de asiento",
-  "Portaequipaje o maletas",
-  "Protector de motor / Sliders",
-  "Discos de embrague",
-  "Kit de pistón",
-  "Juntas de motor",
-  "Válvulas de admisión y escape",
-  "Cigüeñal y bielas",
-  "Árbol de levas",
-  "Bomba de aceite",
-  "Bomba de agua",
-  "Filtros de aceite",
-  "Filtros de aire",
-  "Filtros de combustible",
-  "Pastillas y discos de freno",
-  "Bujías",
-  "Kit de arrastre (cadena, piñón y corona)",
-  "Neumáticos / Llantas",
-  "Aceite de motor y líquidos",
-  "Batería",
-  "Bombillas y faros",
-  "Cables (acelerador, embrague)",
-  "Retenes y sellos de horquilla",
-];
+import type { Part, Category } from "@/lib/types";
 
 interface PartFormData {
   description: string;
@@ -38,33 +11,51 @@ interface PartFormData {
   stock: string;
 }
 
+interface CategoryFormData {
+  name: string;
+  code: string;
+}
+
 const emptyForm: PartFormData = {
   description: "",
-  category: PART_CATEGORIES[0],
+  category: "",
   costPrice: "",
   salePrice: "",
   stock: "",
 };
 
+const emptyCategoryForm: CategoryFormData = {
+  name: "",
+  code: "",
+};
+
 export default function Parts() {
-  const { parts, addPart, updatePart, deletePart } = useStore();
+  const { parts, addPart, updatePart, deletePart, categories, addCategory, updateCategory, deleteCategory } = useStore();
   const [showForm, setShowForm] = useState(false);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [form, setForm] = useState<PartFormData>(emptyForm);
+  const [categoryForm, setCategoryForm] = useState<CategoryFormData>(emptyCategoryForm);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
 
+  // Set default category on first load
+  const defaultCategory = categories.length > 0 ? categories[0].id : "";
+
   const filtered = parts.filter(p => {
-    const matchesSearch = p.description.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = p.description.toLowerCase().includes(search.toLowerCase()) || 
+                         p.code.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = filterCategory === "all" || p.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
 
   // Group parts by category
   const partsByCategory = filtered.reduce((acc, part) => {
-    const cat = part.category || "Sin categoría";
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(part);
+    const cat = categories.find(c => c.id === part.category);
+    const catName = cat?.name || "Sin categoría";
+    if (!acc[catName]) acc[catName] = [];
+    acc[catName].push(part);
     return acc;
   }, {} as Record<string, Part[]>);
 
@@ -72,6 +63,10 @@ export default function Parts() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.category) {
+      alert("Por favor seleccione una categoría");
+      return;
+    }
     const parsed = {
       description: form.description,
       category: form.category,
@@ -92,7 +87,7 @@ export default function Parts() {
   const handleEdit = (part: Part) => {
     setForm({
       description: part.description,
-      category: part.category || PART_CATEGORIES[0],
+      category: part.category || defaultCategory,
       costPrice: String(part.costPrice),
       salePrice: String(part.salePrice),
       stock: String(part.stock),
@@ -107,6 +102,48 @@ export default function Parts() {
     }
   };
 
+  const handleCategorySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!categoryForm.name.trim() || !categoryForm.code.trim()) {
+      alert("Complete todos los campos");
+      return;
+    }
+    if (editingCategoryId) {
+      updateCategory(editingCategoryId, {
+        name: categoryForm.name,
+        code: categoryForm.code.toUpperCase(),
+      });
+    } else {
+      addCategory({
+        name: categoryForm.name,
+        code: categoryForm.code.toUpperCase(),
+      });
+    }
+    setShowCategoryForm(false);
+    setEditingCategoryId(null);
+    setCategoryForm(emptyCategoryForm);
+  };
+
+  const handleEditCategory = (cat: Category) => {
+    setCategoryForm({
+      name: cat.name,
+      code: cat.code,
+    });
+    setEditingCategoryId(cat.id);
+    setShowCategoryForm(true);
+  };
+
+  const handleDeleteCategory = (id: string) => {
+    const partsInCategory = parts.filter(p => p.category === id).length;
+    if (partsInCategory > 0) {
+      alert(`No se puede eliminar: hay ${partsInCategory} repuestos en esta categoría`);
+      return;
+    }
+    if (confirm("¿Eliminar esta categoría?")) {
+      deleteCategory(id);
+    }
+  };
+
   const margin = (part: Part) => {
     if (part.costPrice === 0) return 0;
     return Math.round(((part.salePrice - part.costPrice) / part.costPrice) * 100);
@@ -116,9 +153,14 @@ export default function Parts() {
     <div>
       <div className="page-header">
         <h1 className="page-title">⚙️ Repuestos</h1>
-        <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}>
-          + Nuevo Repuesto
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn-secondary" onClick={() => { setShowCategoryForm(true); setEditingCategoryId(null); setCategoryForm(emptyCategoryForm); }}>
+            📂 Categorías
+          </button>
+          <button className="btn-primary" onClick={() => { setShowForm(true); setEditingId(null); setForm({...emptyForm, category: defaultCategory}); }}>
+            + Nuevo Repuesto
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -148,7 +190,7 @@ export default function Parts() {
             <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
             <input
               className="search-input"
-              placeholder="Buscar repuesto..."
+              placeholder="Buscar por código o descripción..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{ width: "100%", paddingLeft: 36 }}
@@ -161,8 +203,8 @@ export default function Parts() {
             style={{ flex: "1 1 200px", minWidth: 200, cursor: "pointer" }}
           >
             <option value="all">Todas las categorías</option>
-            {PART_CATEGORIES.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </div>
@@ -198,7 +240,20 @@ export default function Parts() {
                       gap: 12,
                     }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{part.description}</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span style={{ 
+                            background: "#3b82f6", 
+                            color: "#fff", 
+                            padding: "2px 8px", 
+                            borderRadius: 4, 
+                            fontSize: 11, 
+                            fontWeight: 700,
+                            fontFamily: "monospace"
+                          }}>
+                            {part.code}
+                          </span>
+                          <span style={{ fontWeight: 700, fontSize: 13, color: "#ffffff" }}>{part.description}</span>
+                        </div>
                         <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 12 }}>
                           Costo: ${part.costPrice.toLocaleString("es-AR")}
                         </div>
@@ -227,7 +282,7 @@ export default function Parts() {
         )}
       </div>
 
-      {/* Form Modal */}
+      {/* Parts Form Modal */}
       {showForm && (
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -254,8 +309,9 @@ export default function Parts() {
                   onChange={e => setForm({ ...form, category: e.target.value })}
                   required
                 >
-                  {PART_CATEGORIES.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  <option value="">Seleccionar categoría...</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
@@ -311,6 +367,104 @@ export default function Parts() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Categories Form Modal */}
+      {showCategoryForm && (
+        <div className="modal-overlay" onClick={() => setShowCategoryForm(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 500 }}>
+            <div className="modal-header">
+              <h2 className="modal-title">{editingCategoryId ? "Editar Categoría" : "Gestionar Categorías"}</h2>
+              <button onClick={() => setShowCategoryForm(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer" }}>✕</button>
+            </div>
+            
+            {/* Add/Edit Category Form */}
+            <form onSubmit={handleCategorySubmit} style={{ marginBottom: 20 }}>
+              <div className="grid-2" style={{ marginBottom: 12 }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Nombre</label>
+                  <input
+                    className="form-input"
+                    value={categoryForm.name}
+                    onChange={e => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                    placeholder="Ej: Aceites y líquidos"
+                  />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Código (1-4 letras)</label>
+                  <input
+                    className="form-input"
+                    value={categoryForm.code}
+                    onChange={e => setCategoryForm({ ...categoryForm, code: e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase() })}
+                    placeholder="Ej: LUB"
+                    maxLength={4}
+                  />
+                </div>
+              </div>
+              <button type="submit" className="btn-primary" style={{ width: "100%" }}>
+                {editingCategoryId ? "Guardar Categoría" : "Agregar Categoría"}
+              </button>
+            </form>
+
+            {/* Categories List */}
+            <div style={{ maxHeight: 300, overflowY: "auto" }}>
+              <table style={{ width: "100%", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #334155" }}>
+                    <th style={{ textAlign: "left", padding: "8px 4px", color: "#94a3b8" }}>Código</th>
+                    <th style={{ textAlign: "left", padding: "8px 4px", color: "#94a3b8" }}>Nombre</th>
+                    <th style={{ textAlign: "right", padding: "8px 4px", color: "#94a3b8" }}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories.map(cat => {
+                    const partCount = parts.filter(p => p.category === cat.id).length;
+                    return (
+                      <tr key={cat.id} style={{ borderBottom: "1px solid #1e293b" }}>
+                        <td style={{ padding: "8px 4px" }}>
+                          <span style={{ 
+                            background: "#3b82f6", 
+                            color: "#fff", 
+                            padding: "2px 6px", 
+                            borderRadius: 4, 
+                            fontSize: 11, 
+                            fontWeight: 700,
+                            fontFamily: "monospace"
+                          }}>
+                            {cat.code}
+                          </span>
+                        </td>
+                        <td style={{ padding: "8px 4px", color: "#e2e8f0" }}>
+                          {cat.name}
+                          <span style={{ color: "#64748b", fontSize: 11, marginLeft: 8 }}>
+                            ({partCount} rep.)
+                          </span>
+                        </td>
+                        <td style={{ padding: "8px 4px", textAlign: "right" }}>
+                          <button 
+                            className="btn-secondary" 
+                            style={{ padding: "2px 6px", fontSize: 10, marginRight: 4 }}
+                            onClick={() => handleEditCategory(cat)}
+                          >
+                            ✏️
+                          </button>
+                          <button 
+                            className="btn-danger" 
+                            style={{ padding: "2px 6px", fontSize: 10 }}
+                            onClick={() => handleDeleteCategory(cat.id)}
+                            disabled={partCount > 0}
+                          >
+                            🗑️
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

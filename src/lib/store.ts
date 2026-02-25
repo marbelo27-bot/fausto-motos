@@ -12,6 +12,7 @@ import type {
   ServiceType,
   Quote,
   Turno,
+  Category,
 } from "./types";
 
 interface AppState {
@@ -20,6 +21,7 @@ interface AppState {
   receptions: Reception[];
   serviceOrders: ServiceOrder[];
   parts: Part[];
+  categories: Category[];
   payments: Payment[];
   serviceTypes: ServiceType[];
   quotes: Quote[];
@@ -46,9 +48,14 @@ interface AppState {
   deleteServiceOrder: (id: string) => void;
 
   // Parts
-  addPart: (data: Omit<Part, "id">) => Part;
+  addPart: (data: Omit<Part, "id" | "code">) => Part;
   updatePart: (id: string, data: Partial<Part>) => void;
   deletePart: (id: string) => void;
+
+  // Categories
+  addCategory: (data: Omit<Category, "id">) => Category;
+  updateCategory: (id: string, data: Partial<Category>) => void;
+  deleteCategory: (id: string) => void;
 
   // Payments
   addPayment: (data: Omit<Payment, "id">) => Payment;
@@ -90,6 +97,33 @@ const defaultServiceTypes: ServiceType[] = [
   { id: uuidv4(), name: "Preparación para VTV" },
 ];
 
+const defaultCategories: Category[] = [
+  { id: uuidv4(), name: "Carrocería", code: "C" },
+  { id: uuidv4(), name: "Asiento / Tapizado", code: "A" },
+  { id: uuidv4(), name: "Portaequipaje / Maletas", code: "P" },
+  { id: uuidv4(), name: "Protector de motor / Sliders", code: "S" },
+  { id: uuidv4(), name: "Discos de embrague", code: "D" },
+  { id: uuidv4(), name: "Kit de pistón", code: "K" },
+  { id: uuidv4(), name: "Juntas de motor", code: "J" },
+  { id: uuidv4(), name: "Válvulas", code: "V" },
+  { id: uuidv4(), name: "Cigüeñal y bielas", code: "B" },
+  { id: uuidv4(), name: "Árbol de levas", code: "L" },
+  { id: uuidv4(), name: "Bomba de aceite", code: "O" },
+  { id: uuidv4(), name: "Bomba de agua", code: "W" },
+  { id: uuidv4(), name: "Filtros de aceite", code: "FA" },
+  { id: uuidv4(), name: "Filtros de aire", code: "F" },
+  { id: uuidv4(), name: "Filtros de combustible", code: "FC" },
+  { id: uuidv4(), name: "Pastillas y discos de freno", code: "Freno" },
+  { id: uuidv4(), name: "Bujías", code: "Buj" },
+  { id: uuidv4(), name: "Kit de arrastre", code: "R" },
+  { id: uuidv4(), name: "Neumáticos / Llantas", code: "N" },
+  { id: uuidv4(), name: "Aceites y líquidos", code: "Lub" },
+  { id: uuidv4(), name: "Batería", code: "Bat" },
+  { id: uuidv4(), name: "Bombillas y faros", code: "Ilum" },
+  { id: uuidv4(), name: "Cables", code: "Cab" },
+  { id: uuidv4(), name: "Retenes de horquilla", code: "RH" },
+];
+
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -100,6 +134,7 @@ export const useStore = create<AppState>()(
       parts: [],
       payments: [],
       serviceTypes: defaultServiceTypes,
+      categories: defaultCategories,
       quotes: [],
       turnos: [],
 
@@ -173,7 +208,15 @@ export const useStore = create<AppState>()(
         })),
 
       addPart: (data) => {
-        const part: Part = { ...data, id: uuidv4() };
+        const category = get().categories.find(c => c.id === data.category);
+        const categoryCode = category?.code || "X";
+        const existingInCategory = get().parts.filter(p => {
+          const cat = get().categories.find(c => c.id === p.category);
+          return cat?.code === categoryCode;
+        });
+        const seq = String(existingInCategory.length + 1).padStart(4, "0");
+        const code = `${categoryCode}-${seq}`;
+        const part: Part = { ...data, id: uuidv4(), code };
         set((s) => ({ parts: [...s.parts, part] }));
         return part;
       },
@@ -183,6 +226,20 @@ export const useStore = create<AppState>()(
         })),
       deletePart: (id) =>
         set((s) => ({ parts: s.parts.filter((p) => p.id !== id) })),
+
+      addCategory: (data) => {
+        const category: Category = { ...data, id: uuidv4() };
+        set((s) => ({ categories: [...s.categories, category] }));
+        return category;
+      },
+      updateCategory: (id, data) =>
+        set((s) => ({
+          categories: s.categories.map((c) =>
+            c.id === id ? { ...c, ...data } : c
+          ),
+        })),
+      deleteCategory: (id) =>
+        set((s) => ({ categories: s.categories.filter((c) => c.id !== id) })),
 
       addPayment: (data) => {
         const payment: Payment = { ...data, id: uuidv4() };

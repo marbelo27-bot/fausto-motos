@@ -40,8 +40,15 @@ export interface Reception {
   notes: string;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  code: string; // First letter for part codes, e.g., "A", "C"
+}
+
 export interface Part {
   id: string;
+  code: string; // Auto-generated: e.g., "A-0001", "C-0002"
   description: string;
   category: string;
   costPrice: number;

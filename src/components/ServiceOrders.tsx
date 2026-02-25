@@ -2,34 +2,15 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { generateServiceOrderPDF } from "@/lib/pdfGenerator";
-import type { ServiceOrder, ServiceOrderPart } from "@/lib/types";
+import type { ServiceOrder, ServiceOrderPart, Category } from "@/lib/types";
 
-const PART_CATEGORIES = [
-  "Carrocería",
-  "Asiento o tapizado de asiento",
-  "Portaequipaje o maletas",
-  "Protector de motor / Sliders",
-  "Discos de embrague",
-  "Kit de pistón",
-  "Juntas de motor",
-  "Válvulas de admisión y escape",
-  "Cigüeñal y bielas",
-  "Árbol de levas",
-  "Bomba de aceite",
-  "Bomba de agua",
-  "Filtros de aceite",
-  "Filtros de aire",
-  "Filtros de combustible",
-  "Pastillas y discos de freno",
-  "Bujías",
-  "Kit de arrastre (cadena, piñón y corona)",
-  "Neumáticos / Llantas",
-  "Aceite de motor y líquidos",
-  "Batería",
-  "Bombillas y faros",
-  "Cables (acelerador, embrague)",
-  "Retenes y sellos de horquilla",
-];
+interface NewPartForm {
+  description: string;
+  category: string;
+  costPrice: string;
+  salePrice: string;
+  stock: string;
+}
 
 interface NewPartForm {
   description: string;
@@ -84,7 +65,7 @@ const statusColors: Record<string, string> = {
 
 export default function ServiceOrders() {
   const {
-    clients, motorcycles, receptions, serviceOrders, parts, serviceTypes,
+    clients, motorcycles, receptions, serviceOrders, parts, serviceTypes, categories,
     addServiceOrder, updateServiceOrder, deleteServiceOrder, addServiceType, addPart
   } = useStore();
 
@@ -96,14 +77,23 @@ export default function ServiceOrders() {
   const [newServiceType, setNewServiceType] = useState("");
   const [showAddServiceType, setShowAddServiceType] = useState(false);
   const [selectedPartId, setSelectedPartId] = useState("");
+  const [selectedPartCategory, setSelectedPartCategory] = useState<string>("all");
   const [partQty, setPartQty] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
   // New part inline form
   const [showNewPartForm, setShowNewPartForm] = useState(false);
-  const [newPartForm, setNewPartForm] = useState<NewPartForm>({ description: "", category: PART_CATEGORIES[0], costPrice: "", salePrice: "", stock: "1" });
+  const [newPartForm, setNewPartForm] = useState<NewPartForm>({ description: "", category: "", costPrice: "", salePrice: "", stock: "1" });
   // Inline price editing in parts table
   const [editingPartIdx, setEditingPartIdx] = useState<number | null>(null);
   const [editingPartPrice, setEditingPartPrice] = useState("");
+
+  // Filter parts by selected category
+  const filteredPartsForOrder = selectedPartCategory === "all" 
+    ? parts 
+    : parts.filter(p => p.category === selectedPartCategory);
+
+  // Default category for new part form
+  const defaultCategoryId = categories.length > 0 ? categories[0].id : "";
 
   const clientMotorcycles = form.clientId
     ? motorcycles.filter(m => m.clientId === form.clientId)
@@ -176,7 +166,7 @@ export default function ServiceOrders() {
     }];
     const { partsCost, totalCost } = recalcTotals(updatedParts, form.laborCost);
     setForm({ ...form, parts: updatedParts, partsCost, totalCost });
-    setNewPartForm({ description: "", category: PART_CATEGORIES[0], costPrice: "", salePrice: "", stock: "1" });
+    setNewPartForm({ description: "", category: defaultCategoryId, costPrice: "", salePrice: "", stock: "1" });
     setShowNewPartForm(false);
     setPartQty(1);
   };
@@ -427,12 +417,27 @@ export default function ServiceOrders() {
 
               {/* Parts */}
               <div className="section-title">Repuestos Utilizados</div>
-              <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-end" }}>
-                <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-end", flexWrap: "wrap" }}>
+                <div style={{ flex: "1 1 150px", minWidth: 150 }}>
+                  <label className="form-label">Categoría</label>
+                  <select 
+                    className="form-select" 
+                    value={selectedPartCategory} 
+                    onChange={e => { setSelectedPartCategory(e.target.value); setSelectedPartId(""); }}
+                  >
+                    <option value="all">Todas las categorías</option>
+                    {categories.map((cat: Category) => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                  </select>
+                </div>
+                <div style={{ flex: "2 1 300px", minWidth: 200 }}>
                   <label className="form-label">Repuesto del inventario</label>
                   <select className="form-select" value={selectedPartId} onChange={e => setSelectedPartId(e.target.value)}>
                     <option value="">Seleccionar repuesto...</option>
-                    {parts.map(p => <option key={p.id} value={p.id}>{p.description} — ${p.salePrice.toLocaleString("es-AR")}</option>)}
+                    {filteredPartsForOrder.map(p => (
+                      <option key={p.id} value={p.id}>
+                        {p.code} - {p.description} — ${p.salePrice.toLocaleString("es-AR")}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div style={{ width: 80 }}>
@@ -469,8 +474,9 @@ export default function ServiceOrders() {
                         value={newPartForm.category}
                         onChange={e => setNewPartForm({ ...newPartForm, category: e.target.value })}
                       >
-                        {PART_CATEGORIES.map(cat => (
-                          <option key={cat} value={cat}>{cat}</option>
+                        <option value="">Seleccionar...</option>
+                        {categories.map((cat: Category) => (
+                          <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
                       </select>
                     </div>
