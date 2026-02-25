@@ -195,192 +195,125 @@ export default function Quotes() {
     const client = clients.find((c) => c.id === selectedQuote.clientId);
     const moto = motorcycles.find((m) => m.id === selectedQuote.motorcycleId);
     return (
-      <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-          <button
-            onClick={() => setView("list")}
-            style={{ background: "#1e293b", border: "1px solid #334155", color: "#94a3b8", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}
-          >
-            ← Volver
-          </button>
-          <h2 style={{ color: "#fff", fontWeight: 700, fontSize: 20, margin: 0 }}>
-            Cotización #{selectedQuote.id.slice(0, 8).toUpperCase()}
-          </h2>
-          <span style={{
-            background: STATUS_COLORS[selectedQuote.status] + "33",
-            color: STATUS_COLORS[selectedQuote.status],
-            border: `1px solid ${STATUS_COLORS[selectedQuote.status]}`,
-            borderRadius: 20, padding: "2px 12px", fontSize: 12, fontWeight: 700,
-          }}>
-            {STATUS_LABELS[selectedQuote.status]}
-          </span>
-        </div>
-
-        {/* Client + Moto */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={sectionTitle}>Datos del Cliente</div>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{client?.fullName ?? "—"}</div>
-            <div style={{ color: "#94a3b8", fontSize: 13, marginTop: 4 }}>📞 {client?.phone ?? "—"}</div>
-            {client?.address && <div style={{ color: "#94a3b8", fontSize: 13 }}>📍 {client.address}</div>}
+      <div className="modal-overlay" onClick={() => setView("list")}>
+        <div className="modal modal-lg" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">
+              📝 Cotización #{selectedQuote.id.slice(0, 8).toUpperCase()}
+              <span style={{
+                marginLeft: 12,
+                background: STATUS_COLORS[selectedQuote.status] + "33",
+                color: STATUS_COLORS[selectedQuote.status],
+                border: `1px solid ${STATUS_COLORS[selectedQuote.status]}`,
+                borderRadius: 20, padding: "2px 12px", fontSize: 12, fontWeight: 700,
+                verticalAlign: "middle",
+              }}>
+                {STATUS_LABELS[selectedQuote.status]}
+              </span>
+            </h2>
+            <button onClick={() => setView("list")} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#94a3b8" }}>✕</button>
           </div>
-          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={sectionTitle}>Datos de la Moto</div>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{moto ? `${moto.brand} ${moto.model}` : "—"}</div>
-            <div style={{ color: "#94a3b8", fontSize: 13, marginTop: 4 }}>
-              {moto?.year} · Dom: {moto?.plate}
+
+          {/* Client + Moto + Dates */}
+          <div className="grid-2" style={{ marginBottom: 16 }}>
+            <div>
+              <div className="section-title">Cliente y Vehículo</div>
+              <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div>👤 <strong>{client?.fullName ?? "—"}</strong>{client?.phone ? ` — ${client.phone}` : ""}</div>
+                <div>🏍️ <strong>{moto ? `${moto.brand} ${moto.model}` : "—"}</strong>{moto ? ` (${moto.year}) — ${moto.plate}` : ""}</div>
+                {client?.address && <div>📍 {client.address}</div>}
+              </div>
+            </div>
+            <div>
+              <div className="section-title">Fechas</div>
+              <div style={{ fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div>📅 Fecha: <strong>{new Date(selectedQuote.date + "T00:00:00").toLocaleDateString("es-AR")}</strong></div>
+                <div>⏳ Válida hasta: <strong>{new Date(selectedQuote.validUntil + "T00:00:00").toLocaleDateString("es-AR")}</strong></div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Dates */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
-          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 10, padding: "10px 16px", flex: 1 }}>
-            <span style={{ color: "#94a3b8", fontSize: 12 }}>Fecha</span>
-            <div style={{ color: "#fff", fontWeight: 600, fontSize: 14 }}>
-              {new Date(selectedQuote.date + "T00:00:00").toLocaleDateString("es-AR")}
-            </div>
-          </div>
-          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 10, padding: "10px 16px", flex: 1 }}>
-            <span style={{ color: "#94a3b8", fontSize: 12 }}>Válida hasta</span>
-            <div style={{ color: "#fff", fontWeight: 600, fontSize: 14 }}>
-              {new Date(selectedQuote.validUntil + "T00:00:00").toLocaleDateString("es-AR")}
-            </div>
-          </div>
-        </div>
-
-        {/* Items — split into two sections side by side */}
-        {selectedQuote.items.length === 0 ? (
-          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px", marginBottom: 20, color: "#64748b", fontSize: 13 }}>
-            Sin ítems
-          </div>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-            {/* Mano de obra */}
-            <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ ...sectionTitle, color: "#3b82f6" }}>🔧 Mano de Obra</div>
-              {selectedQuote.items.filter((i) => i.type === "labor").length === 0 ? (
-                <div style={{ color: "#64748b", fontSize: 13 }}>Sin trabajos</div>
-              ) : (
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid #334155" }}>
-                      <th style={{ color: "#3b82f6", textAlign: "left", padding: "5px 6px", fontWeight: 700 }}>Descripción</th>
-                      <th style={{ color: "#3b82f6", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Cant.</th>
-                      <th style={{ color: "#3b82f6", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>P. Unit.</th>
-                      <th style={{ color: "#3b82f6", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Subtotal</th>
+          {/* Items — Mano de obra */}
+          <div className="section-title">🔧 Mano de Obra</div>
+          {selectedQuote.items.filter((i) => i.type === "labor").length === 0 ? (
+            <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 16 }}>Sin trabajos registrados</p>
+          ) : (
+            <div className="table-container" style={{ marginBottom: 16 }}>
+              <table>
+                <thead>
+                  <tr><th>Descripción</th><th>Cant.</th><th>Precio unit.</th><th>Subtotal</th></tr>
+                </thead>
+                <tbody>
+                  {selectedQuote.items.filter((i) => i.type === "labor").map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.description}</td>
+                      <td>{item.quantity}</td>
+                      <td>${item.unitPrice.toLocaleString("es-AR")}</td>
+                      <td style={{ fontWeight: 600 }}>${(item.quantity * item.unitPrice).toLocaleString("es-AR")}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {selectedQuote.items.filter((i) => i.type === "labor").map((item) => (
-                      <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
-                        <td style={{ padding: "7px 6px", color: "#fff" }}>{item.description}</td>
-                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
-                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
-                        <td style={{ padding: "7px 6px", color: "#3b82f6", fontWeight: 700, textAlign: "right" }}>${(item.quantity * item.unitPrice).toLocaleString("es-AR")}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr style={{ borderTop: "1px solid #334155" }}>
-                      <td colSpan={3} style={{ padding: "7px 6px", color: "#94a3b8", fontSize: 12, textAlign: "right", fontWeight: 600 }}>Total M.O.</td>
-                      <td style={{ padding: "7px 6px", color: "#3b82f6", fontWeight: 800, textAlign: "right" }}>${selectedQuote.laborTotal.toLocaleString("es-AR")}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              )}
+                  ))}
+                </tbody>
+              </table>
             </div>
+          )}
 
-            {/* Repuestos */}
-            <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ ...sectionTitle, color: "#f59e0b" }}>⚙️ Repuestos</div>
-              {selectedQuote.items.filter((i) => i.type === "part").length === 0 ? (
-                <div style={{ color: "#64748b", fontSize: 13 }}>Sin repuestos</div>
-              ) : (
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid #334155" }}>
-                      <th style={{ color: "#f59e0b", textAlign: "left", padding: "5px 6px", fontWeight: 700 }}>Descripción</th>
-                      <th style={{ color: "#f59e0b", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Cant.</th>
-                      <th style={{ color: "#f59e0b", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>P. Unit.</th>
-                      <th style={{ color: "#f59e0b", textAlign: "right", padding: "5px 6px", fontWeight: 700 }}>Subtotal</th>
+          {/* Items — Repuestos */}
+          <div className="section-title">⚙️ Repuestos</div>
+          {selectedQuote.items.filter((i) => i.type === "part").length === 0 ? (
+            <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 16 }}>Sin repuestos registrados</p>
+          ) : (
+            <div className="table-container" style={{ marginBottom: 16 }}>
+              <table>
+                <thead>
+                  <tr><th>Descripción</th><th>Cant.</th><th>Precio unit.</th><th>Subtotal</th></tr>
+                </thead>
+                <tbody>
+                  {selectedQuote.items.filter((i) => i.type === "part").map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.description}</td>
+                      <td>{item.quantity}</td>
+                      <td>${item.unitPrice.toLocaleString("es-AR")}</td>
+                      <td style={{ fontWeight: 600 }}>${(item.quantity * item.unitPrice).toLocaleString("es-AR")}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {selectedQuote.items.filter((i) => i.type === "part").map((item) => (
-                      <tr key={item.id} style={{ borderBottom: "1px solid #0f172a" }}>
-                        <td style={{ padding: "7px 6px", color: "#fff" }}>{item.description}</td>
-                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>{item.quantity}</td>
-                        <td style={{ padding: "7px 6px", color: "#94a3b8", textAlign: "right" }}>${item.unitPrice.toLocaleString("es-AR")}</td>
-                        <td style={{ padding: "7px 6px", color: "#f59e0b", fontWeight: 700, textAlign: "right" }}>${(item.quantity * item.unitPrice).toLocaleString("es-AR")}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr style={{ borderTop: "1px solid #334155" }}>
-                      <td colSpan={3} style={{ padding: "7px 6px", color: "#94a3b8", fontSize: 12, textAlign: "right", fontWeight: 600 }}>Total Repuestos</td>
-                      <td style={{ padding: "7px 6px", color: "#f59e0b", fontWeight: 800, textAlign: "right" }}>${selectedQuote.partsTotal.toLocaleString("es-AR")}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Totals */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, marginBottom: 16 }}>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 13, color: "#94a3b8", fontWeight: 500 }}>Mano de obra: ${selectedQuote.laborTotal.toLocaleString("es-AR")}</div>
+              <div style={{ fontSize: 13, color: "#94a3b8", fontWeight: 500 }}>Repuestos: ${selectedQuote.partsTotal.toLocaleString("es-AR")}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#22c55e" }}>Total: ${selectedQuote.total.toLocaleString("es-AR")}</div>
             </div>
           </div>
-        )}
 
-        {/* Totals */}
-        <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 18px", marginBottom: 20 }}>
-          <div style={{ display: "flex", justifyContent: "flex-end", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-            <div style={{ color: "#94a3b8", fontSize: 13 }}>
-              Mano de obra: <span style={{ color: "#3b82f6", fontWeight: 700 }}>${selectedQuote.laborTotal.toLocaleString("es-AR")}</span>
+          {/* Notes */}
+          {selectedQuote.notes && (
+            <div style={{ padding: "12px 16px", background: "#1e293b", borderRadius: 12, border: "1px solid #334155", fontSize: 13, marginBottom: 16, color: "#94a3b8", fontWeight: 500 }}>
+              📝 {selectedQuote.notes}
             </div>
-            <div style={{ color: "#94a3b8", fontSize: 13 }}>
-              Repuestos: <span style={{ color: "#f59e0b", fontWeight: 700 }}>${selectedQuote.partsTotal.toLocaleString("es-AR")}</span>
-            </div>
-            <div style={{ color: "#fff", fontSize: 18, fontWeight: 800, borderTop: "1px solid #334155", paddingTop: 8, marginTop: 4 }}>
-              TOTAL: <span style={{ color: "#CAF404" }}>${selectedQuote.total.toLocaleString("es-AR")}</span>
-            </div>
+          )}
+
+          {/* Actions */}
+          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", flexWrap: "wrap" }}>
+            <select
+              value={selectedQuote.status}
+              onChange={(e) => updateQuote(selectedQuote.id, { status: e.target.value as Quote["status"] })}
+              style={{ ...inputStyle, width: "auto", padding: "8px 14px" }}
+            >
+              <option value="borrador">Borrador</option>
+              <option value="enviada">Enviada</option>
+              <option value="aceptada">Aceptada</option>
+              <option value="rechazada">Rechazada</option>
+            </select>
+            <button className="btn-secondary" onClick={() => handleEdit(selectedQuote)}>✏️ Editar</button>
+            <button className="btn-success" onClick={() => handlePDF(selectedQuote)}>📄 Generar PDF</button>
+            <button className="btn-danger" onClick={() => handleDelete(selectedQuote.id)}>🗑️ Eliminar</button>
+            <button className="btn-secondary" onClick={() => setView("list")}>Cerrar</button>
           </div>
-        </div>
-
-        {/* Notes */}
-        {selectedQuote.notes && (
-          <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "14px 18px", marginBottom: 20 }}>
-            <div style={sectionTitle}>Observaciones</div>
-            <div style={{ color: "#94a3b8", fontSize: 13, whiteSpace: "pre-wrap" }}>{selectedQuote.notes}</div>
-          </div>
-        )}
-
-        {/* Actions */}
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button
-            onClick={() => handlePDF(selectedQuote)}
-            style={{ background: "#CAF404", color: "#000", border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, cursor: "pointer", fontSize: 14 }}
-          >
-            📄 Descargar PDF
-          </button>
-          <button
-            onClick={() => handleEdit(selectedQuote)}
-            style={{ background: "#1e293b", border: "1px solid #334155", color: "#fff", borderRadius: 8, padding: "10px 20px", fontWeight: 600, cursor: "pointer", fontSize: 14 }}
-          >
-            ✏️ Editar
-          </button>
-          <select
-            value={selectedQuote.status}
-            onChange={(e) => updateQuote(selectedQuote.id, { status: e.target.value as Quote["status"] })}
-            style={{ ...inputStyle, width: "auto", padding: "10px 14px" }}
-          >
-            <option value="borrador">Borrador</option>
-            <option value="enviada">Enviada</option>
-            <option value="aceptada">Aceptada</option>
-            <option value="rechazada">Rechazada</option>
-          </select>
-          <button
-            onClick={() => handleDelete(selectedQuote.id)}
-            style={{ background: "#ef444422", border: "1px solid #ef4444", color: "#ef4444", borderRadius: 8, padding: "10px 20px", fontWeight: 600, cursor: "pointer", fontSize: 14, marginLeft: "auto" }}
-          >
-            🗑️ Eliminar
-          </button>
         </div>
       </div>
     );
