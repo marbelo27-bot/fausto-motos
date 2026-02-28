@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
-import type { Quote, QuoteItem } from "@/lib/types";
+import type { Quote, QuoteItem, Category, ServiceType } from "@/lib/types";
 import { generateQuotePDF } from "@/lib/pdfGenerator";
 import { v4 as uuidv4 } from "uuid";
 
@@ -110,7 +110,7 @@ const sectionTitle: React.CSSProperties = {
 };
 
 export default function Quotes() {
-  const { clients, motorcycles, quotes, addQuote, updateQuote, deleteQuote, addServiceOrder } = useStore();
+  const { clients, motorcycles, quotes, addQuote, updateQuote, deleteQuote, addServiceOrder, parts, categories, serviceTypes } = useStore();
 
   const [view, setView] = useState<"list" | "form" | "detail">("list");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -121,9 +121,43 @@ export default function Quotes() {
   const [search, setSearch] = useState("");
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editingItemData, setEditingItemData] = useState<QuoteItem | null>(null);
+  // Parts selection with category filter
+  const [selectedPartCategory, setSelectedPartCategory] = useState<string>("all");
+  const [selectedPartId, setSelectedPartId] = useState<string>("");
+  const [partQty, setPartQty] = useState(1);
+  // Services dropdown
+  const [selectedService, setSelectedService] = useState<string>("");
 
   const selectedQuote = quotes.find((q) => q.id === selectedId) ?? null;
   const clientMotorcycles = motorcycles.filter((m) => m.clientId === form.clientId);
+
+  // Filter parts by selected category
+  const filteredPartsForQuote = selectedPartCategory === "all" 
+    ? parts 
+    : parts.filter(p => p.category === selectedPartCategory);
+
+  // Add service from dropdown
+  const handleAddServiceFromDropdown = () => {
+    if (!selectedService) return;
+    const service = serviceTypes.find(s => s.id === selectedService);
+    if (!service) return;
+    const items = [...form.items, { ...getEmptyLaborItem(), description: service.name, id: uuidv4() }];
+    const totals = recalcTotals(items);
+    setForm({ ...form, items, ...totals });
+    setSelectedService("");
+  };
+
+  // Add part from dropdown
+  const handleAddPartFromDropdown = () => {
+    if (!selectedPartId) return;
+    const part = parts.find(p => p.id === selectedPartId);
+    if (!part) return;
+    const items = [...form.items, { ...getEmptyPartItem(), description: part.description, quantity: partQty, unitPrice: part.salePrice, id: uuidv4() }];
+    const totals = recalcTotals(items);
+    setForm({ ...form, items, ...totals });
+    setSelectedPartId("");
+    setPartQty(1);
+  };
 
   // Recalculate totals from items
   function recalcTotals(items: QuoteItem[]) {
@@ -469,6 +503,33 @@ export default function Quotes() {
         <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "18px", marginBottom: 16 }}>
           <div style={sectionTitle}>🔧 Mano de Obra (Trabajo)</div>
 
+          {/* Services dropdown */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "flex-end", flexWrap: "wrap" }}>
+            <div style={{ flex: "2 1 300px", minWidth: 200 }}>
+              <label style={labelStyle}>Seleccionar servicio</label>
+              <select
+                style={inputStyle}
+                value={selectedService}
+                onChange={(e) => setSelectedService(e.target.value)}
+              >
+                <option value="">Elegir de la lista...</option>
+                {serviceTypes.map((st: ServiceType) => (
+                  <option key={st.id} value={st.id}>{st.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={{ ...labelStyle, visibility: "hidden" }}>.</label>
+              <button
+                onClick={handleAddServiceFromDropdown}
+                disabled={!selectedService}
+                style={{ background: selectedService ? "#3b82f6" : "#334155", color: selectedService ? "#fff" : "#64748b", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, cursor: selectedService ? "pointer" : "not-allowed", fontSize: 14, whiteSpace: "nowrap" }}
+              >
+                + Agregar
+              </button>
+            </div>
+          </div>
+
           {form.items.filter(i => i.type === "labor").length > 0 && (
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 14 }}>
               <thead>
@@ -587,6 +648,56 @@ export default function Quotes() {
         {/* Parts Items */}
         <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "18px", marginBottom: 16 }}>
           <div style={sectionTitle}>⚙️ Repuestos</div>
+
+          {/* Parts dropdown with category filter */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "flex-end", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 150px", minWidth: 150 }}>
+              <label style={labelStyle}>Categoría</label>
+              <select
+                style={inputStyle}
+                value={selectedPartCategory}
+                onChange={(e) => { setSelectedPartCategory(e.target.value); setSelectedPartId(""); }}
+              >
+                <option value="all">Todas las categorías</option>
+                {categories.map((cat: Category) => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+              </select>
+            </div>
+            <div style={{ flex: "2 1 300px", minWidth: 200 }}>
+              <label style={labelStyle}>Seleccionar repuesto</label>
+              <select
+                style={inputStyle}
+                value={selectedPartId}
+                onChange={(e) => setSelectedPartId(e.target.value)}
+              >
+                <option value="">Elegir de la lista...</option>
+                {filteredPartsForQuote.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.code} - {p.description} — ${p.salePrice.toLocaleString("es-AR")}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={{ width: 80 }}>
+              <label style={labelStyle}>Cantidad</label>
+              <input
+                type="number"
+                style={inputStyle}
+                value={partQty}
+                onChange={(e) => setPartQty(parseInt(e.target.value) || 1)}
+                min={1}
+              />
+            </div>
+            <div>
+              <label style={{ ...labelStyle, visibility: "hidden" }}>.</label>
+              <button
+                onClick={handleAddPartFromDropdown}
+                disabled={!selectedPartId}
+                style={{ background: selectedPartId ? "#f59e0b" : "#334155", color: selectedPartId ? "#000" : "#64748b", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, cursor: selectedPartId ? "pointer" : "not-allowed", fontSize: 14, whiteSpace: "nowrap" }}
+              >
+                + Agregar
+              </button>
+            </div>
+          </div>
 
           {form.items.filter(i => i.type === "part").length > 0 && (
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 14 }}>
