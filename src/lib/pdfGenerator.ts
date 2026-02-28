@@ -4,6 +4,16 @@ import autoTable from "jspdf-autotable";
 import type { Client, Motorcycle, Reception, ServiceOrder, Payment, Quote, Turno } from "./types";
 import { getLogoDataUrl } from "./logoData";
 
+// Helper to format client name for PDF filenames
+function formatClientNameForFile(client: Client): string {
+  // Get first two words (typically Apellido Nombre) or full name if shorter
+  const parts = client.fullName.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return `${parts[0]}-${parts[1]}`;
+  }
+  return parts[0].replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9]/g, "");
+}
+
 // ── Light theme palette ──────────────────────────────────────────────────────
 // Header: light gray background, dark text
 const HEADER_BG: [number, number, number] = [245, 245, 245];
@@ -243,8 +253,8 @@ export async function generateReceptionPDF(
   }
 
   addFooter(doc);
-  const clientNameR = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
-  doc.save(`recepcion-${clientNameR}-${reception.id.slice(0, 8)}.pdf`);
+  const clientNameR = formatClientNameForFile(client);
+  doc.save(`R-${clientNameR}-${reception.id.slice(0, 8)}.pdf`);
 }
 
 export async function generateServiceOrderPDF(
@@ -353,8 +363,8 @@ export async function generateServiceOrderPDF(
   }
 
   addFooter(doc);
-  const clientNameO = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
-  doc.save(`orden-servicio-${clientNameO}-${order.id}.pdf`);
+  const clientNameO = formatClientNameForFile(client);
+  doc.save(`O.S-${clientNameO}-${order.id}.pdf`);
 }
 
 export async function generatePaymentPDF(
@@ -363,7 +373,7 @@ export async function generatePaymentPDF(
   serviceOrder?: ServiceOrder
 ) {
   const doc = new jsPDF();
-  let y = await addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "COMPROBANTE DE PAGO", `N° ${payment.id.toUpperCase()}`);
 
   y = addClientInfo(doc, y, client);
 
@@ -420,8 +430,8 @@ export async function generatePaymentPDF(
   doc.text("Firma del taller", 160, y + 20, { align: "center" });
 
   addFooter(doc);
-  const clientNameP = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
-  doc.save(`pago-${clientNameP}-${payment.id.slice(0, 8)}.pdf`);
+  const clientNameP = formatClientNameForFile(client);
+  doc.save(`P-${clientNameP}-${payment.id}.pdf`);
 }
 
 export async function generateTurnoPDF(
@@ -430,7 +440,7 @@ export async function generateTurnoPDF(
   motorcycle: Motorcycle
 ) {
   const doc = new jsPDF();
-  let y = await addHeader(doc, "TURNO DE TRABAJO", `N° ${turno.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "TURNO DE TRABAJO", `N° ${turno.id.toUpperCase()}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -487,7 +497,8 @@ export async function generateTurnoPDF(
   doc.setTextColor(...FOOTER_TEXT);
   doc.text("FAUSTO MOTOS - Taller de Motocicletas", 105, 283, { align: "center" });
 
-  doc.save(`Turno-${turno.date}-${turno.time.replace(":", "")}.pdf`);
+  const clientNameT = formatClientNameForFile(client);
+  doc.save(`T-${clientNameT}-${turno.date.replace(/-/g, "")}.pdf`);
 }
 
 export async function generateQuotePDF(
@@ -503,7 +514,7 @@ export async function generateQuotePDF(
     rechazada: "RECHAZADA",
   };
 
-  let y = await addHeader(doc, "COTIZACIÓN", `N° ${quote.id.slice(0, 8).toUpperCase()}`);
+  let y = await addHeader(doc, "COTIZACIÓN", `N° ${quote.id.toUpperCase()}`);
 
   y = addClientInfo(doc, y, client, motorcycle);
 
@@ -639,8 +650,8 @@ export async function generateQuotePDF(
   );
 
   addFooter(doc);
-  const clientNameQ = client.fullName.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]/g, "").trim().replace(/\s+/g, "-");
-  doc.save(`cotizacion-${clientNameQ}-${quote.id.slice(0, 8)}.pdf`);
+  const clientNameQ = formatClientNameForFile(client);
+  doc.save(`C-${clientNameQ}-${quote.id}.pdf`);
 }
 
 function addFooter(doc: jsPDF) {

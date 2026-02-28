@@ -242,7 +242,12 @@ export const useStore = create<AppState>()(
         set((s) => ({ categories: s.categories.filter((c) => c.id !== id) })),
 
       addPayment: (data) => {
-        const payment: Payment = { ...data, id: uuidv4() };
+        const now = new Date();
+        const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
+        const existing = get().payments;
+        const seq = String(existing.length + 1).padStart(3, "0");
+        const id = `${yyyymm}-${seq}`;
+        const payment: Payment = { ...data, id };
         set((s) => ({ payments: [...s.payments, payment] }));
         return payment;
       },
@@ -266,7 +271,12 @@ export const useStore = create<AppState>()(
         })),
 
       addQuote: (data) => {
-        const quote: Quote = { ...data, id: uuidv4() };
+        const now = new Date();
+        const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
+        const existing = get().quotes;
+        const seq = String(existing.length + 1).padStart(3, "0");
+        const id = `C${yyyymm}-${seq}`;
+        const quote: Quote = { ...data, id };
         set((s) => ({ quotes: [...s.quotes, quote] }));
         return quote;
       },
@@ -278,9 +288,14 @@ export const useStore = create<AppState>()(
         set((s) => ({ quotes: s.quotes.filter((q) => q.id !== id) })),
 
       addTurno: (data) => {
+        const now = new Date();
+        const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
+        const existing = get().turnos;
+        const seq = String(existing.length + 1).padStart(3, "0");
+        const id = `T${yyyymm}-${seq}`;
         const turno: Turno = {
           ...data,
-          id: uuidv4(),
+          id,
           createdAt: new Date().toISOString(),
         };
         set((s) => ({ turnos: [...s.turnos, turno] }));
