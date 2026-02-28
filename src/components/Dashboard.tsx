@@ -22,11 +22,15 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
   const laborPct = totalEarnings > 0 ? Math.round((totalLaborIncome / totalEarnings) * 100) : 0;
   const partsPct = totalEarnings > 0 ? Math.round((totalPartsIncome / totalEarnings) * 100) : 0;
 
-  // Parts inventory margin
+  // Parts margin - based on SOLD parts (from service orders)
+  // Calculate estimated cost using inventory margin ratio
   const totalInventoryCost = parts.reduce((sum, p) => sum + p.costPrice * p.stock, 0);
   const totalInventorySale = parts.reduce((sum, p) => sum + p.salePrice * p.stock, 0);
-  const totalInventoryMargin = totalInventorySale - totalInventoryCost;
-  const marginPct = totalInventorySale > 0 ? Math.round((totalInventoryMargin / totalInventorySale) * 100) : 0;
+  const totalPartsRevenue = totalPartsIncome; // Revenue from parts in service orders
+  const inventoryCostRatio = totalInventorySale > 0 ? totalInventoryCost / totalInventorySale : 0.7; // Default to 70% if no inventory
+  const estimatedPartsCost = totalPartsRevenue * inventoryCostRatio;
+  const totalPartsMargin = totalPartsRevenue - estimatedPartsCost;
+  const partsMarginPct = totalPartsRevenue > 0 ? Math.round((totalPartsMargin / totalPartsRevenue) * 100) : 0;
 
   const recentOrders = [...serviceOrders]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -326,13 +330,13 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
         )}
       </div>
 
-      {/* Parts Inventory Margin */}
+      {/* Parts Sold Margin */}
       <div className="card" style={{ marginTop: 24 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <h3 style={{ fontWeight: 700, fontSize: 15, color: "#f1f5f9" }}>📦 Margen de Repuestos (Inventario)</h3>
+            <h3 style={{ fontWeight: 700, fontSize: 15, color: "#f1f5f9" }}>📦 Margen de Repuestos Vendidos</h3>
             <p style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>
-              Diferencia entre precio de costo y precio de venta del stock actual
+              Ganancia estimada basada en repuestos utilizados en órdenes de servicio
             </p>
           </div>
           <button className="btn-secondary" style={{ fontSize: 12, padding: "4px 10px" }} onClick={() => onNavigate("parts")}>
@@ -365,7 +369,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                   <span style={{ fontWeight: 600, fontSize: 12, color: "#f87171" }}>Costo Total</span>
                 </div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: "#f87171" }}>
-                  ${totalInventoryCost.toLocaleString("es-AR")}
+                  ${estimatedPartsCost.toLocaleString("es-AR")}
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
                   Precio de compra × stock
@@ -389,7 +393,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
                   <span style={{ fontWeight: 600, fontSize: 12, color: "#4ade80" }}>Venta Total</span>
                 </div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: "#4ade80" }}>
-                  ${totalInventorySale.toLocaleString("es-AR")}
+                  ${totalPartsRevenue.toLocaleString("es-AR")}
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
                   Precio de venta × stock
@@ -398,47 +402,47 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
 
               {/* Margin */}
               <div style={{
-                background: marginPct >= 0 ? "rgba(251, 191, 36, 0.1)" : "rgba(220, 38, 38, 0.1)",
-                border: `1px solid ${marginPct >= 0 ? "rgba(251, 191, 36, 0.25)" : "rgba(220, 38, 38, 0.25)"}`,
+                background: partsMarginPct >= 0 ? "rgba(251, 191, 36, 0.1)" : "rgba(220, 38, 38, 0.1)",
+                border: `1px solid ${partsMarginPct >= 0 ? "rgba(251, 191, 36, 0.25)" : "rgba(220, 38, 38, 0.25)"}`,
                 borderRadius: 10,
                 padding: "16px 18px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: 8,
-                    background: marginPct >= 0 ? "rgba(251, 191, 36, 0.2)" : "rgba(220, 38, 38, 0.2)",
+                    background: partsMarginPct >= 0 ? "rgba(251, 191, 36, 0.2)" : "rgba(220, 38, 38, 0.2)",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 16,
                   }}>📈</div>
-                  <span style={{ fontWeight: 600, fontSize: 12, color: marginPct >= 0 ? "#fbbf24" : "#f87171" }}>
-                    Ganancia Potencial
+                  <span style={{ fontWeight: 600, fontSize: 12, color: partsMarginPct >= 0 ? "#fbbf24" : "#f87171" }}>
+                    Ganancia Estimada
                   </span>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: marginPct >= 0 ? "#fbbf24" : "#f87171" }}>
-                  ${totalInventoryMargin.toLocaleString("es-AR")}
+                <div style={{ fontSize: 20, fontWeight: 800, color: partsMarginPct >= 0 ? "#fbbf24" : "#f87171" }}>
+                  ${totalPartsMargin.toLocaleString("es-AR")}
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
-                  Margen: {marginPct}%
+                  Margen: {partsMarginPct}%
                 </div>
               </div>
             </div>
 
             {/* Visual margin bar */}
-            {totalInventorySale > 0 && (
+            {totalPartsRevenue > 0 && (
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginBottom: 6 }}>
-                  <span>🏷️ Costo ({100 - marginPct}%)</span>
-                  <span>📈 Ganancia ({marginPct}%)</span>
+                  <span>🏷️ Costo ({100 - partsMarginPct}%)</span>
+                  <span>📈 Ganancia ({partsMarginPct}%)</span>
                 </div>
                 <div style={{ height: 10, borderRadius: 99, background: "#0f172a", overflow: "hidden", display: "flex" }}>
                   <div style={{
-                    width: `${100 - marginPct}%`,
+                    width: `${100 - partsMarginPct}%`,
                     background: "#f87171",
                     borderRadius: "99px 0 0 99px",
                     transition: "width 0.5s ease",
                   }} />
                   <div style={{
-                    width: `${marginPct}%`,
+                    width: `${partsMarginPct}%`,
                     background: "#fbbf24",
                     borderRadius: "0 99px 99px 0",
                     transition: "width 0.5s ease",
