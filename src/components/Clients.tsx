@@ -60,11 +60,13 @@ export default function Clients() {
   };
 
   const getClientStats = (clientId: string) => {
-    const motos = motorcycles.filter(m => m.clientId === clientId);
+    const clientMotorcycles = motorcycles.filter(m => m.clientId === clientId);
     const orders = serviceOrders.filter(o => o.clientId === clientId);
     const pays = payments.filter(p => p.clientId === clientId);
+    const totalOrders = orders.reduce((sum, o) => sum + o.totalCost, 0);
     const totalPaid = pays.reduce((sum, p) => sum + p.amount, 0);
-    return { motos: motos.length, orders: orders.length, totalPaid };
+    const balance = totalOrders - totalPaid;
+    return { motorcycles: clientMotorcycles.length, orders: orders.length, totalOrders, totalPaid, balance };
   };
 
   return (
@@ -117,11 +119,16 @@ export default function Clients() {
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                    <span className="badge badge-blue" title="Motos">🏍️ {stats.motos}</span>
+                    <span className="badge badge-blue" title="Motos">🏍️ {stats.motorcycles}</span>
                     <span className="badge badge-yellow" title="Órdenes">🔧 {stats.orders}</span>
                     <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 13 }}>
                       ${stats.totalPaid.toLocaleString("es-AR")}
                     </span>
+                    {stats.balance > 0 && (
+                      <span style={{ fontWeight: 800, color: "#f87171", fontSize: 13 }}>
+                        Pendiente: ${stats.balance.toLocaleString("es-AR")}
+                      </span>
+                    )}
                   </div>
                   <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                     <button className="btn-secondary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => setViewingClient(client)}>👁️</button>
@@ -220,9 +227,20 @@ export default function Clients() {
                   const stats = getClientStats(viewingClient.id);
                   return (
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      <div>🏍️ <strong>{stats.motos}</strong> moto(s) registrada(s)</div>
+                      <div>🏍️ <strong>{stats.motorcycles}</strong> moto(s) registrada(s)</div>
                       <div>🔧 <strong>{stats.orders}</strong> orden(es) de servicio</div>
-                      <div>💰 Total pagado: <strong style={{ color: "#4ade80" }}>${stats.totalPaid.toLocaleString("es-AR")}</strong></div>
+                      <div>💰 Total órdenes: <strong>${stats.totalOrders.toLocaleString("es-AR")}</strong></div>
+                      <div>💵 Total pagado: <strong style={{ color: "#4ade80" }}>${stats.totalPaid.toLocaleString("es-AR")}</strong></div>
+                      {stats.balance > 0 && (
+                        <div style={{ color: "#f87171", fontWeight: 700 }}>
+                          ⏳ Saldo pendiente: <strong>${stats.balance.toLocaleString("es-AR")}</strong>
+                        </div>
+                      )}
+                      {stats.balance <= 0 && stats.orders > 0 && (
+                        <div style={{ color: "#4ade80", fontWeight: 700 }}>
+                          ✅ Saldo al día
+                        </div>
+                      )}
                     </div>
                   );
                 })()}
