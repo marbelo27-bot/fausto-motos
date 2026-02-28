@@ -32,6 +32,9 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
   const totalPartsMargin = totalPartsRevenue - estimatedPartsCost;
   const partsMarginPct = totalPartsRevenue > 0 ? Math.round((totalPartsMargin / totalPartsRevenue) * 100) : 0;
 
+  // Net profit = labor income + parts margin
+  const netProfit = totalLaborIncome + totalPartsMargin;
+
   const recentOrders = [...serviceOrders]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
@@ -247,6 +250,29 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
           </div>
           <div style={{ fontSize: 36 }}>💵</div>
         </div>
+
+        {/* Net profit highlight */}
+        {netProfit > 0 && (
+          <div style={{
+            background: "linear-gradient(135deg, #065f46 0%, #059669 100%)",
+            borderRadius: 12,
+            padding: "20px 24px",
+            marginBottom: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}>
+            <div>
+              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+                GANANCIA NETA (Mano de obra + Margen repuestos)
+              </div>
+              <div style={{ color: "#fff", fontSize: 28, fontWeight: 800, letterSpacing: "-0.5px" }}>
+                ${netProfit.toLocaleString("es-AR")}
+              </div>
+            </div>
+            <div style={{ fontSize: 36 }}>📈</div>
+          </div>
+        )}
 
         {/* Breakdown cards */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
