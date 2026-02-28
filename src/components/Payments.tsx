@@ -11,6 +11,8 @@ interface PaymentFormData {
   type: Payment["type"];
   method: Payment["method"];
   amount: number;
+  installmentFrequency?: Payment["installmentFrequency"];
+  installmentCount?: number;
   notes: string;
 }
 
@@ -24,6 +26,8 @@ const getEmptyForm = (): PaymentFormData => {
     type: "pago total",
     method: "efectivo",
     amount: 0,
+    installmentFrequency: "mensual",
+    installmentCount: 1,
     notes: "",
   };
 };
@@ -32,6 +36,7 @@ const typeColors: Record<string, string> = {
   anticipo: "badge-yellow",
   "pago total": "badge-green",
   "pago saldo": "badge-blue",
+  cuotas: "badge-purple",
 };
 
 const methodIcons: Record<string, string> = {
@@ -51,6 +56,21 @@ export default function Payments() {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("all");
 
+  // Calculate total paid for an order
+  const getTotalPaidForOrder = (orderId: string) => {
+    return payments
+      .filter(p => p.serviceOrderId === orderId)
+      .reduce((sum, p) => sum + p.amount, 0);
+  };
+
+  // Calculate remaining balance for an order
+  const getRemainingBalance = (orderId: string) => {
+    const order = serviceOrders.find(o => o.id === orderId);
+    if (!order) return 0;
+    const totalPaid = getTotalPaidForOrder(orderId);
+    return order.totalCost - totalPaid;
+  };
+
   const clientOrders = form.clientId
     ? serviceOrders.filter(o => o.clientId === form.clientId)
     : [];
@@ -67,6 +87,7 @@ export default function Payments() {
     anticipo: payments.filter(p => p.type === "anticipo").reduce((s, p) => s + p.amount, 0),
     "pago total": payments.filter(p => p.type === "pago total").reduce((s, p) => s + p.amount, 0),
     "pago saldo": payments.filter(p => p.type === "pago saldo").reduce((s, p) => s + p.amount, 0),
+    cuotas: payments.filter(p => p.type === "cuotas").reduce((s, p) => s + p.amount, 0),
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -144,6 +165,12 @@ export default function Payments() {
           </div>
           <div className="stat-label">Saldos</div>
         </div>
+        <div className="stat-card">
+          <div className="stat-value" style={{ color: "#a855f7" }}>
+            ${totalByType.cuotas.toLocaleString("es-AR")}
+          </div>
+          <div className="stat-label">Cuotas</div>
+        </div>
       </div>
 
       {/* Filters */}
@@ -164,6 +191,7 @@ export default function Payments() {
             <option value="anticipo">Anticipo</option>
             <option value="pago total">Pago total</option>
             <option value="pago saldo">Pago saldo</option>
+            <option value="cuotas">Cuotas</option>
           </select>
         </div>
       </div>
@@ -195,7 +223,9 @@ export default function Payments() {
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
                     <span className={`badge ${typeColors[payment.type] || "badge-gray"}`}>
-                      {payment.type}
+                      {payment.type === "cuotas" && payment.installmentCount 
+                        ? `Cuotas (${payment.installmentCount})` 
+                        : payment.type}
                     </span>
                     <span style={{ fontWeight: 800, color: "#22c55e", fontSize: 14 }}>
                       ${payment.amount.toLocaleString("es-AR")}
@@ -262,10 +292,19 @@ export default function Payments() {
                 <div className="form-group">
                   <label className="form-label">Tipo de pago *</label>
                   <select className="form-select" value={form.type}
-                    onChange={e => setForm({ ...form, type: e.target.value as Payment["type"] })} required>
+                    onChange={e => {
+                      const newType = e.target.value as Payment["type"];
+                      // Auto-fill amount for "pago saldo" with remaining balance
+                      let newAmount = form.amount;
+                      if (newType === "pago saldo" && form.serviceOrderId) {
+                        newAmount = getRemainingBalance(form.serviceOrderId);
+                      }
+                      setForm({ ...form, type: newType, amount: newAmount });
+                    }} required>
                     <option value="anticipo">Anticipo</option>
                     <option value="pago total">Pago total</option>
                     <option value="pago saldo">Pago saldo</option>
+                    <option value="cuotas">Cuotas</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -281,6 +320,71 @@ export default function Payments() {
                   </select>
                 </div>
               </div>
+
+              {/* Mostrar saldo pendiente si hay orden seleccionada y es pago saldo o cuotas */}
+              {form.serviceOrderId && (form.type === "pago saldo" || form.type === "cuotas") && (
+                <div className="form-group" style={{ 
+                  background: form.type === "pago saldo" ? "#1e3a5f" : "#4a1e5f", 
+                  padding: 12, 
+                  borderRadius: 8,
+                  marginBottom: 16 
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: "#94a3b8", fontWeight: 500 }}>
+                      {form.type === "pago saldo" ? "💰 Saldo pendiente:" : "💳 Importe total en cuotas:"}
+                    </span>
+                    <span style={{ color: "#60a5fa", fontWeight: 800, fontSize: 18 }}>
+                      ${getRemainingBalance(form.serviceOrderId).toLocaleString("es-AR")}
+                    </span>
+                  </div>
+                  {form.type === "cuotas" && (
+                    <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ color: "#94a3b8", fontSize: 12, fontWeight: 500, marginBottom: 4, display: "block" }}>
+                          Frecuencia
+                        </label>
+                        <select 
+                          className="form-select" 
+                          value={form.installmentFrequency || "mensual"}
+                          onChange={e => setForm({ ...form, installmentFrequency: e.target.value as Payment["installmentFrequency"] })}
+                        >
+                          <option value="semanal">📅 Semanal</option>
+                          <option value="quincenal">📅 Quincenal</option>
+                          <option value="mensual">📅 Mensual</option>
+                        </select>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ color: "#94a3b8", fontSize: 12, fontWeight: 500, marginBottom: 4, display: "block" }}>
+                          Cantidad de cuotas
+                        </label>
+                        <input 
+                          type="number" 
+                          className="form-input" 
+                          value={form.installmentCount || 1}
+                          onChange={e => setForm({ ...form, installmentCount: parseInt(e.target.value) || 1 })}
+                          min={1}
+                          max={60}
+                        />
+                      </div>
+                      {form.installmentCount && form.installmentCount > 1 && (
+                        <div style={{ flex: 1, display: "flex", alignItems: "flex-end", paddingBottom: 2 }}>
+                          <div style={{ 
+                            background: "#22c55e", 
+                            padding: "8px 12px", 
+                            borderRadius: 8,
+                            width: "100%"
+                          }}>
+                            <div style={{ color: "#ffffff", fontSize: 11, fontWeight: 500 }}>Cada cuota</div>
+                            <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 800 }}>
+                              ${(getRemainingBalance(form.serviceOrderId) / form.installmentCount).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="form-group">
                 <label className="form-label">Monto ($) *</label>

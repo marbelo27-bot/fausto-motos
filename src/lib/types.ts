@@ -86,9 +86,11 @@ export interface Payment {
   clientId: string;
   serviceOrderId?: string;
   date: string;
-  type: 'anticipo' | 'pago total' | 'pago saldo';
+  type: 'anticipo' | 'pago total' | 'pago saldo' | 'cuotas';
   method: 'efectivo' | 'transferencia' | 'tarjeta débito' | 'tarjeta crédito' | 'mercado pago' | 'otro';
   amount: number;
+  installmentFrequency?: 'semanal' | 'quincenal' | 'mensual';
+  installmentCount?: number;
   notes: string;
 }
 
