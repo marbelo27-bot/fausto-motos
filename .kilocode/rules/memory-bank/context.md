@@ -99,3 +99,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-02 | Changed `performedService` (single string) to `performedServices` (string array) in ServiceOrder type; updated form UI to add/remove multiple services with visual tags; updated all references in Dashboard, Clients, Payments, Quotes, PDF generator |
 | 2026-02 | Fixed client balance (saldo) in Clients module: now calculates balance = total orders cost - total paid; shows pending balance in client list cards (red) and detailed view with total orders, total paid, and pending balance |
 | 2026-03 | Changed PDF of Service Orders: removed unit price and subtotal columns from parts detail table, only shows description and quantity |
+| 2026-03 | Added manual parts text input to Service Orders form: textarea field for entering repuestos utilizados manually, displayed in PDF as "REPUESTOS UTILIZADOS" section |
