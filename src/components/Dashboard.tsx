@@ -68,10 +68,20 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
             {currentDate}
           </p>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <button
-            className="btn-secondary"
-            style={{ padding: "8px 12px", fontSize: 13 }}
+            style={{
+              background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+              color: "white",
+              border: "2px solid #60a5fa",
+              borderRadius: 12,
+              padding: "12px 24px",
+              fontSize: 16,
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)",
+              fontFamily: "system-ui, sans-serif",
+            }}
             onClick={() => {
               const data = exportData();
               const blob = new Blob([data], { type: "application/json" });
@@ -83,11 +93,21 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
               URL.revokeObjectURL(url);
             }}
           >
-            💾 Backup
+            💾 HACER BACKUP
           </button>
           <label
-            className="btn-secondary"
-            style={{ padding: "8px 12px", fontSize: 13, cursor: "pointer" }}
+            style={{
+              background: "linear-gradient(135deg, #16a34a, #15803d)",
+              color: "white",
+              border: "2px solid #4ade80",
+              borderRadius: 12,
+              padding: "12px 24px",
+              fontSize: 16,
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(22, 163, 74, 0.4)",
+              fontFamily: "system-ui, sans-serif",
+            }}
           >
             📂 Restaurar
             <input
