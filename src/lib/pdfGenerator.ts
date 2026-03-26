@@ -294,6 +294,20 @@ export async function generateServiceOrderPDF(
 
   y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 5;
 
+  // Manual parts text
+  if (order.manualParts) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...SECTION_COLOR);
+    doc.text("REPUESTOS UTILIZADOS", 14, y + 5);
+    y += 10;
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...ROW_BODY_TEXT);
+    const partsLines = doc.splitTextToSize(order.manualParts, 180);
+    doc.text(partsLines, 14, y + 5);
+    y += partsLines.length * 5 + 5;
+  }
+
   // Totals
   const totalsData = [
     ["Mano de obra", `$${order.laborCost.toLocaleString("es-AR")}`],

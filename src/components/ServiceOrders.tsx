@@ -34,6 +34,7 @@ interface OrderFormData {
   warranty: string;
   status: ServiceOrder["status"];
   notes: string;
+  manualParts: string;
 }
 
 const getEmptyForm = (): OrderFormData => {
@@ -53,6 +54,7 @@ const getEmptyForm = (): OrderFormData => {
     warranty: "",
     status: "pendiente",
     notes: "",
+    manualParts: "",
   };
 };
 
@@ -221,6 +223,7 @@ export default function ServiceOrders() {
       warranty: order.warranty,
       status: order.status,
       notes: order.notes,
+      manualParts: order.manualParts || "",
     });
     setEditingId(order.id);
     setShowForm(true);
@@ -643,6 +646,14 @@ export default function ServiceOrders() {
                   </div>
                 </div>
               )}
+
+              {/* Manual parts text input */}
+              <div className="form-group" style={{ marginTop: 16 }}>
+                <label className="form-label">Repuestos utilizados (manual)</label>
+                <textarea className="form-textarea" value={form.manualParts}
+                  onChange={e => setForm({ ...form, manualParts: e.target.value })}
+                  placeholder="Ej: Filtro de aceite, Bujía, Pastillas de freno..." rows={2} />
+              </div>
 
               {/* Costs */}
               <div className="section-title">Costos</div>

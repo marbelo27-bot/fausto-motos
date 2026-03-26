@@ -79,6 +79,7 @@ export interface ServiceOrder {
   warranty: string;
   status: 'pendiente' | 'en proceso' | 'completado' | 'entregado';
   notes: string;
+  manualParts: string;
 }
 
 export interface Payment {

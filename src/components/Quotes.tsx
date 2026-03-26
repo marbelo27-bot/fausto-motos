@@ -280,6 +280,7 @@ export default function Quotes() {
       status: "pendiente",
       warranty: "",
       notes: q.notes,
+      manualParts: "",
     });
     updateQuote(q.id, { convertedToOrderId: newOrder.id });
     alert("Orden de servicio creada exitosamente");
