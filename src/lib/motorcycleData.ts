@@ -465,6 +465,22 @@ export const motorcycleBrands: BrandModels[] = [
       "GTV 125", "GTV 250",
       "Paggio 125", "Paggio 150"
     ]
+  },
+  {
+    brand: "VOGE",
+    models: [
+      "Voge 125R", "Voge 150R", "Voge 180R",
+      "Voge 250R", "Voge 300R", "Voge 500R",
+      "Voge 125N", "Voge 150N", "Voge 180N",
+      "Voge 250N", "Voge 300N", "Voge 500N", "Voge 650N",
+      "Voge 125S", "Voge 150S", "Voge 180S",
+      "Voge 250S", "Voge 300S", "Voge 500S", "Voge 650S",
+      "Voge 125X", "Voge 150X", "Voge 180X",
+      "Voge 250X", "Voge 300X", "Voge 500X", "Voge 650X",
+      "Voge Rally 200", "Vogue 150", "Vogue 250",
+      "DSX 250", "DSX 400",
+      "SR4 350", "SR4 450"
+    ]
   }
 ];
 
