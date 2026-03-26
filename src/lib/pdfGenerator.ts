@@ -296,12 +296,13 @@ export async function generateServiceOrderPDF(
 
   // Manual parts text
   if (order.manualParts) {
-    doc.setFontSize(9);
+    doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...SECTION_COLOR);
     doc.text("REPUESTOS UTILIZADOS", 14, y + 5);
     y += 10;
-    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(...ROW_BODY_TEXT);
     const partsLines = doc.splitTextToSize(order.manualParts, 180);
     doc.text(partsLines, 14, y + 5);
