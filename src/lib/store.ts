@@ -72,9 +72,13 @@ interface AppState {
   deleteQuote: (id: string) => void;
 
   // Turnos
-  addTurno: (data: Omit<Turno, "id" | "createdAt">) => Turno;
+  addTurno: (data: Omit<Turno, "id">) => Turno;
   updateTurno: (id: string, data: Partial<Turno>) => void;
   deleteTurno: (id: string) => void;
+
+  // Backup
+  exportData: () => string;
+  importData: (jsonData: string) => boolean;
 }
 
 const defaultServiceTypes: ServiceType[] = [
@@ -307,6 +311,41 @@ export const useStore = create<AppState>()(
         })),
       deleteTurno: (id) =>
         set((s) => ({ turnos: s.turnos.filter((t) => t.id !== id) })),
+
+      exportData: () => {
+        const state = get();
+        return JSON.stringify({
+          clients: state.clients,
+          motorcycles: state.motorcycles,
+          receptions: state.receptions,
+          serviceOrders: state.serviceOrders,
+          parts: state.parts,
+          payments: state.payments,
+          serviceTypes: state.serviceTypes,
+          categories: state.categories,
+          quotes: state.quotes,
+          turnos: state.turnos,
+        }, null, 2);
+      },
+
+      importData: (jsonData: string) => {
+        try {
+          const data = JSON.parse(jsonData);
+          if (data.clients) set({ clients: data.clients });
+          if (data.motorcycles) set({ motorcycles: data.motorcycles });
+          if (data.receptions) set({ receptions: data.receptions });
+          if (data.serviceOrders) set({ serviceOrders: data.serviceOrders });
+          if (data.parts) set({ parts: data.parts });
+          if (data.payments) set({ payments: data.payments });
+          if (data.serviceTypes) set({ serviceTypes: data.serviceTypes });
+          if (data.categories) set({ categories: data.categories });
+          if (data.quotes) set({ quotes: data.quotes });
+          if (data.turnos) set({ turnos: data.turnos });
+          return true;
+        } catch {
+          return false;
+        }
+      },
     }),
     {
       name: "moto-workshop-storage",

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 
 export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => void }) {
-  const { clients, motorcycles, receptions, serviceOrders, payments, parts } = useStore();
+  const { clients, motorcycles, receptions, serviceOrders, payments, parts, exportData, importData } = useStore();
   const [currentDate, setCurrentDate] = useState<string>("");
 
   useEffect(() => {
@@ -67,6 +67,51 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
           <p style={{ color: "#64748b", fontSize: 14, marginTop: 4 }}>
             {currentDate}
           </p>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            className="btn-secondary"
+            style={{ padding: "8px 12px", fontSize: 13 }}
+            onClick={() => {
+              const data = exportData();
+              const blob = new Blob([data], { type: "application/json" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `fausto-motos-backup-${new Date().toISOString().split("T")[0]}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+          >
+            💾 Backup
+          </button>
+          <label
+            className="btn-secondary"
+            style={{ padding: "8px 12px", fontSize: 13, cursor: "pointer" }}
+          >
+            📂 Restaurar
+            <input
+              type="file"
+              accept=".json"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                  const json = ev.target?.result as string;
+                  const success = importData(json);
+                  if (success) {
+                    alert("Datos restaurados correctamente");
+                  } else {
+                    alert("Error al restaurar: formato inválido");
+                  }
+                };
+                reader.readAsText(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
         </div>
       </div>
 

@@ -132,5 +132,5 @@ export interface Turno {
   service: string;
   notes: string;
   status: 'programado' | 'confirmado' | 'completado' | 'cancelado';
-  createdAt: string;
+  createdAt?: string;
 }
