@@ -294,34 +294,6 @@ export async function generateServiceOrderPDF(
 
   y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 5;
 
-  // Parts
-  if (order.parts && order.parts.length > 0) {
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(...SECTION_COLOR);
-    doc.text("REPUESTOS UTILIZADOS", 14, y + 5);
-    y += 8;
-
-    autoTable(doc, {
-      startY: y,
-      head: [["Descripción", "Cantidad", "Precio Unit.", "Subtotal"]],
-      body: order.parts.map((p) => [
-        p.description,
-        p.quantity.toString(),
-        `$${p.unitPrice.toLocaleString("es-AR")}`,
-        `$${(p.quantity * p.unitPrice).toLocaleString("es-AR")}`,
-      ]),
-      theme: "grid",
-      headStyles: { fillColor: TH_BG, textColor: TH_TEXT, fontStyle: "bold" },
-      alternateRowStyles: { fillColor: ROW_ALT },
-      bodyStyles: { textColor: ROW_BODY_TEXT, fontStyle: "bold" },
-      styles: { fontSize: 9 },
-      margin: { left: 14, right: 14 },
-    });
-
-    y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 5;
-  }
-
   // Totals
   const totalsData = [
     ["Mano de obra", `$${order.laborCost.toLocaleString("es-AR")}`],
