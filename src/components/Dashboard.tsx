@@ -74,14 +74,15 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
     .sort((a, b) => a.daysUntil - b.daysUntil)
     .slice(0, 5); // Show next 5 services
 
-  const stats = [
-    { label: "Clientes", value: clients.length, icon: "👥", color: "#38bdf8", section: "clients" },
-    { label: "Motos registradas", value: motorcycles.length, icon: "🏍️", color: "#a78bfa", section: "motorcycles" },
-    { label: "Recepciones", value: receptions.length, icon: "📋", color: "#22d3ee", section: "reception" },
-    { label: "Órdenes activas", value: pendingOrders, icon: "🔧", color: "#fbbf24", section: "serviceOrders" },
-    { label: "Órdenes completadas", value: completedOrders, icon: "✅", color: "#4ade80", section: "serviceOrders" },
-    { label: "Ingresos totales", value: `$${totalRevenue.toLocaleString("es-AR")}`, icon: "💰", color: "#f87171", section: "payments" },
-  ];
+   const stats = [
+     { label: "Clientes", value: clients.length, icon: "👥", color: "#38bdf8", section: "clients" },
+     { label: "Motos registradas", value: motorcycles.length, icon: "🏍️", color: "#a78bfa", section: "motorcycles" },
+     { label: "Recepciones", value: receptions.length, icon: "📋", color: "#22d3ee", section: "reception" },
+     { label: "Órdenes activas", value: pendingOrders, icon: "🔧", color: "#fbbf24", section: "serviceOrders" },
+     { label: "Órdenes completadas", value: completedOrders, icon: "✅", color: "#4ade80", section: "serviceOrders" },
+     { label: "Próximos services", value: upcomingServices.length, icon: "🔔", color: "#fbbf24", section: "serviceOrders" },
+     { label: "Ingresos totales", value: `$${totalRevenue.toLocaleString("es-AR")}`, icon: "💰", color: "#f87171", section: "payments" },
+   ];
 
   const statusColors: Record<string, string> = {
     pendiente: "badge-yellow",
