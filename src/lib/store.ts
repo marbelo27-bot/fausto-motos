@@ -14,6 +14,7 @@ import type {
   Turno,
   Category,
 } from "./types";
+import { createServiceCalendarEvent, updateServiceCalendarEvent, deleteServiceCalendarEvent } from "./googleCalendar";
 
 interface AppState {
   clients: Client[];
@@ -198,14 +199,41 @@ export const useStore = create<AppState>()(
         const id = `${yyyymm}-${seq}`;
         const order: ServiceOrder = { ...data, id };
         set((s) => ({ serviceOrders: [...s.serviceOrders, order] }));
+        
+        // Try to create Google Calendar event (non-blocking)
+        const client = get().clients.find(c => c.id === order.clientId);
+        const motorcycle = get().motorcycles.find(m => m.id === order.motorcycleId);
+        if (client && motorcycle) {
+          // For new orders, we don't have a "next service date" yet, so we'll skip calendar creation
+          // This would be implemented when we have a next service calculation feature
+          // createServiceCalendarEvent(order, client, motorcycle, nextServiceDate);
+        }
+        
         return order;
       },
       updateServiceOrder: (id, data) =>
-        set((s) => ({
-          serviceOrders: s.serviceOrders.map((o) =>
+        set((s) => {
+          const updatedServiceOrders = s.serviceOrders.map((o) =>
             o.id === id ? { ...o, ...data } : o
-          ),
-        })),
+          );
+          
+          // Find the order to get client and motorcycle info
+          const order = updatedServiceOrders.find(o => o.id === id);
+          if (order) {
+            const client = s.clients.find(c => c.id === order.clientId);
+            const motorcycle = s.motorcycles.find(m => m.id === order.motorcycleId);
+            
+            // Try to update Google Calendar event if we have the calendar event ID stored
+            // For now, we'll just log that we would update it
+            // In a full implementation, we'd store the event ID with the order
+            if (client && motorcycle) {
+              console.log(`Would update Google Calendar event for order ${id}`);
+              // updateServiceCalendarEvent(eventId, order, client, motorcycle, nextServiceDate);
+            }
+          }
+          
+          return { serviceOrders: updatedServiceOrders };
+        }),
       deleteServiceOrder: (id) =>
         set((s) => ({
           serviceOrders: s.serviceOrders.filter((o) => o.id !== id),
