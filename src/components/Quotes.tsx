@@ -281,6 +281,12 @@ export default function Quotes() {
       warranty: "",
       notes: q.notes,
       manualParts: "",
+      // Service reminder fields (default values when converting from quote)
+      nextServiceDate: "",
+      serviceIntervalMonths: 0,
+      serviceIntervalKm: 0,
+      wantReminder: false,
+      reminderSent: false,
     });
     updateQuote(q.id, { convertedToOrderId: newOrder.id });
     alert("Orden de servicio creada exitosamente");

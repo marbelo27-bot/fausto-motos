@@ -101,3 +101,4 @@ The app is a complete workshop management system for Argentine motorcycle shops,
 | 2026-03 | Changed PDF of Service Orders: removed unit price and subtotal columns from parts detail table, only shows description and quantity |
 | 2026-03 | Added manual parts text input to Service Orders form: textarea field for entering repuestos utilizados manually, displayed in PDF as "REPUESTOS UTILIZADOS" section |
 | 2026-04 | Added Google Calendar integration: functions to create/update/delete calendar events for service orders, with reminders 48 hours in advance |
+| 2026-04 | Added service reminder feature: option to set next service date or interval (months/km) with visual reminders in Dashboard showing upcoming services |

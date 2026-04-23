@@ -35,28 +35,40 @@ interface OrderFormData {
   status: ServiceOrder["status"];
   notes: string;
   manualParts: string;
+  // Service reminder fields
+  nextServiceDate?: string;
+  serviceIntervalMonths?: number;
+  serviceIntervalKm?: number;
+  wantReminder: boolean;
+  reminderSent: boolean;
 }
 
-const getEmptyForm = (): OrderFormData => {
-  const d = new Date();
-  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  return {
-    clientId: "",
-    motorcycleId: "",
-    receptionId: "",
-    date: today,
-    requiredService: "",
-    performedServices: [],
-    parts: [],
-    laborCost: 0,
-    partsCost: 0,
-    totalCost: 0,
-    warranty: "",
-    status: "pendiente",
-    notes: "",
-    manualParts: "",
+  const getEmptyForm = (): OrderFormData => {
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    return {
+      clientId: "",
+      motorcycleId: "",
+      receptionId: "",
+      date: today,
+      requiredService: "",
+      performedServices: [],
+      parts: [],
+      laborCost: 0,
+      partsCost: 0,
+      totalCost: 0,
+      warranty: "",
+      status: "pendiente",
+      notes: "",
+      manualParts: "",
+      // Service reminder fields
+      nextServiceDate: "",
+      serviceIntervalMonths: 0,
+      serviceIntervalKm: 0,
+      wantReminder: false,
+      reminderSent: false,
+    };
   };
-};
 
 const statusColors: Record<string, string> = {
   pendiente: "badge-yellow",
@@ -223,7 +235,13 @@ export default function ServiceOrders() {
       warranty: order.warranty,
       status: order.status,
       notes: order.notes,
-      manualParts: order.manualParts || "",
+      manualParts: order.manualParts,
+      // Service reminder fields
+      nextServiceDate: order.nextServiceDate || "",
+      serviceIntervalMonths: order.serviceIntervalMonths || 0,
+      serviceIntervalKm: order.serviceIntervalKm || 0,
+      wantReminder: order.wantReminder || false,
+      reminderSent: order.reminderSent || false,
     });
     setEditingId(order.id);
     setShowForm(true);
@@ -694,12 +712,73 @@ export default function ServiceOrders() {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Observaciones</label>
-                <textarea className="form-textarea" value={form.notes}
-                  onChange={e => setForm({ ...form, notes: e.target.value })}
-                  placeholder="Notas adicionales sobre el servicio..." />
-              </div>
+               <div className="form-group">
+                 <label className="form-label">Observaciones</label>
+                 <textarea className="form-textarea" value={form.notes}
+                   onChange={e => setForm({ ...form, notes: e.target.value })}
+                   placeholder="Notas adicionales sobre el servicio..." />
+               </div>
+
+               {/* Service Reminder Section */}
+               <div className="form-group" style={{ marginTop: 20 }}>
+                 <label className="form-label">Recordatorio de Próximo Service</label>
+                 <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                   <div style={{ flex: 1, minWidth: 150 }}>
+                     <label className="form-label">¿Activar recordatorio?</label>
+                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                       <input
+                         type="checkbox"
+                         checked={form.wantReminder || false}
+                         onChange={(e) => setForm({ ...form, wantReminder: e.target.checked })}
+                         style={{ width: 16, height: 16 }}
+                       />
+                     </div>
+                   </div>
+                   
+                   <div style={{ flex: 1, minWidth: 150 }}>
+                     <label className="form-label">Próximo service (fecha)</label>
+                     <input
+                       type="date"
+                       className="form-input"
+                       value={form.nextServiceDate || ""}
+                       onChange={(e) => setForm({ ...form, nextServiceDate: e.target.value })}
+                       disabled={!(form.wantReminder || false)}
+                     />
+                   </div>
+                   
+                   <div style={{ flex: 1, minWidth: 150 }}>
+                     <label className="form-label">O cada (meses)</label>
+                     <input
+                       type="number"
+                       className="form-input"
+                       value={form.serviceIntervalMonths?.toString() || ""}
+                       onChange={(e) => {
+                         const value = parseInt(e.target.value) || 0;
+                         setForm({ ...form, serviceIntervalMonths: value });
+                       }}
+                       min={0}
+                       placeholder="Ej: 6"
+                       disabled={!(form.wantReminder || false)}
+                     />
+                   </div>
+                   
+                   <div style={{ flex: 1, minWidth: 150 }}>
+                     <label className="form-label">O cada (km)</label>
+                     <input
+                       type="number"
+                       className="form-input"
+                       value={form.serviceIntervalKm?.toString() || ""}
+                       onChange={(e) => {
+                         const value = parseInt(e.target.value) || 0;
+                         setForm({ ...form, serviceIntervalKm: value });
+                       }}
+                       min={0}
+                       placeholder="Ej: 10000"
+                       disabled={!(form.wantReminder || false)}
+                     />
+                   </div>
+                 </div>
+               </div>
 
               <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
                 <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>Cancelar</button>

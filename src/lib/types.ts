@@ -80,6 +80,12 @@ export interface ServiceOrder {
   status: 'pendiente' | 'en proceso' | 'completado' | 'entregado';
   notes: string;
   manualParts: string;
+  // Service reminder fields
+  nextServiceDate?: string; // ISO date string for next service
+  serviceIntervalMonths?: number; // Service interval in months
+  serviceIntervalKm?: number; // Service interval in kilometers
+  wantReminder: boolean; // Whether to show reminder for this service
+  reminderSent: boolean; // Whether reminder has been sent/shown
 }
 
 export interface Payment {

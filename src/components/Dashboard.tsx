@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
+import type { Client, Motorcycle, ServiceOrder } from "@/lib/types";
 
 export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => void }) {
   const { clients, motorcycles, receptions, serviceOrders, payments, parts, exportData, importData } = useStore();
@@ -42,6 +43,36 @@ export default function Dashboard({ onNavigate }: { onNavigate: (s: string) => v
   const recentPayments = [...payments]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
+
+  // Calculate upcoming services with reminders
+  const upcomingServices = serviceOrders
+    .filter(order => 
+      order.wantReminder && 
+      order.nextServiceDate && 
+      order.status !== 'completado' && 
+      order.status !== 'entregado'
+    )
+    .map(order => {
+      const client = clients.find(c => c.id === order.clientId);
+      const motorcycle = motorcycles.find(m => m.id === order.motorcycleId);
+      // Safety check: ensure nextServiceDate is not null/undefined
+      const nextServiceDateStr = order.nextServiceDate || '';
+      const serviceDate = new Date(nextServiceDateStr);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const daysUntil = Math.ceil((serviceDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return {
+        id: order.id,
+        client: client || null,
+        motorcycle: motorcycle || null,
+        performedServices: order.performedServices,
+        formattedDate: serviceDate.toLocaleDateString('es-AR'),
+        daysUntil: Math.max(0, daysUntil)
+      };
+    })
+    .sort((a, b) => a.daysUntil - b.daysUntil)
+    .slice(0, 5); // Show next 5 services
 
   const stats = [
     { label: "Clientes", value: clients.length, icon: "👥", color: "#38bdf8", section: "clients" },
