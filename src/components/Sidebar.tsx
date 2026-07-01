@@ -17,6 +17,7 @@ const navItems = [
   { id: "quotes", label: "Cotizaciones", icon: "📝" },
   { id: "parts", label: "Repuestos", icon: "⚙️" },
   { id: "payments", label: "Pagos", icon: "💰" },
+  { id: "reports", label: "Reportes", icon: "📈" },
 ];
 
 export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
